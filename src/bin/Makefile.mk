@@ -1,4 +1,4 @@
-bin_BIN = ender-sharp.exe
+bin_BIN = ender2sharp.exe
 bin_SRC = src/bin/EnderSharp.cs
 
 noinst_DATA += $(bin_BIN)
