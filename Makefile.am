@@ -31,10 +31,15 @@ m4/ltversion.m4
 lib_LTLIBRARIES =
 check_PROGRAMS =
 EXTRA_DIST =
+noinst_DATA =
 
 ### Library
 
 include src/lib/Makefile.mk
+
+### Binary
+
+include src/bin/Makefile.mk
 
 EXTRA_DIST += \
 AUTHORS \

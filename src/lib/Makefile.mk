@@ -1,0 +1,16 @@
+lib_BIN = $(PACKAGE).dll
+lib_SRC = src/lib/Generator.cs
+
+noinst_DATA += $(lib_BIN)
+
+$(lib_BIN): $(lib_SRC)
+	$(CSC) -nowarn:169 -unsafe -lib:library $(lib_SRC) \
+		-out:$(lib_BIN)
+
+install-data-local:
+	echo "$(GACUTIL) /i $(lib_BIN) /f $(GACUTIL_FLAGS)";  \
+        $(GACUTIL) /i $(lib_BIN) /f $(GACUTIL_FLAGS) || exit 1;
+
+uninstall-local:
+	echo "$(GACUTIL) /u $(lib_BIN) $(GACUTIL_FLAGS)"; \
+        $(GACUTIL) /u $(lib_BIN) $(GACUTIL_FLAGS) || exit 1;
