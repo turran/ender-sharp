@@ -89,10 +89,12 @@ namespace Ender
 			return parent;
 		}
 
-		private CodeTypeDeclaration GenerateObject(Item item)
+		private CodeTypeDeclaration GenerateObject(Object o)
 		{
 			// Get the real item name
-			CodeTypeDeclaration o = new CodeTypeDeclaration(item.Identifier);
+			CodeTypeDeclaration co = new CodeTypeDeclaration(o.Identifier);
+			// Get the constructors
+			List ctors = o.Ctors;
 #if FOO
 			// add the base type
 			IntPtr inherit = ender_item_object_inherit_get(item);
@@ -102,7 +104,7 @@ namespace Ender
 				ender_item_unref(inherit);
 			}
 #endif
-			return o;
+			return co;
 		}
 
 		private void GenerateLib()
@@ -133,7 +135,7 @@ namespace Ender
 			switch (item.Type)
 			{
 				case ItemType.OBJECT:
-					ret = GenerateObject(item);
+					ret = GenerateObject((Object)item);
 					break;
 				default:
 					break;

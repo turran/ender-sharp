@@ -38,7 +38,7 @@ namespace Ender
 		// Track whether Dispose has been called.
 		private bool disposed = false;
 		// Our private handle
-		private IntPtr raw;
+		protected IntPtr raw;
 
 		internal Item()
 		{
@@ -86,6 +86,33 @@ namespace Ender
 		{
 			get {
 				return ender_item_type_get(raw);
+			}
+		}
+
+		static internal System.Type ItemTypeToSystemType(ItemType type)
+		{
+			switch (type)
+			{
+				case ItemType.INVALID:
+					return typeof(object);
+
+				case ItemType.BASIC:
+				case ItemType.FUNCTION:
+				case ItemType.ATTR:
+				case ItemType.ARG:
+					return typeof(Item);
+
+				case ItemType.OBJECT:
+					return typeof(Object);
+
+				case ItemType.STRUCT:
+				case ItemType.CONSTANT:
+				case ItemType.ENUM:
+				case ItemType.DEF:
+					return typeof(Item);
+
+				default:
+					return null;
 			}
 		}
 

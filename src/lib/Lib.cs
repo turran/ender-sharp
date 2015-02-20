@@ -51,15 +51,14 @@ namespace Ender
 			IntPtr i = ender_lib_item_find(raw, name);
 			if (i == IntPtr.Zero)
 				return null;
-			// TODO create the correct object through a factory
-			Item ret = new Item(i, true);
+			Item ret = Item.Create(i);
 			return ret;
 		}
 
 		public List List(ItemType type)
 		{
 			IntPtr i = ender_lib_item_list(raw, type);
-			List ret = new List(i, typeof(Item), true, true);
+			List ret = new List(i, Item.ItemTypeToSystemType(type), true, true);
 			return ret;
 		}
 
