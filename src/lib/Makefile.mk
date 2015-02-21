@@ -1,6 +1,8 @@
 lib_BIN = $(PACKAGE).dll
 lib_SRC = \
+src/lib/Arg.cs \
 src/lib/Main.cs \
+src/lib/Function.cs \
 src/lib/Item.cs \
 src/lib/Lib.cs \
 src/lib/List.cs \
@@ -11,7 +13,7 @@ src/lib/Generator.cs
 noinst_DATA += $(lib_BIN)
 
 $(lib_BIN): $(lib_SRC)
-	$(CSC) -nowarn:169 -unsafe -target:library $(lib_SRC) \
+	$(CSC) -nowarn:169 -unsafe -target:library -debug $(lib_SRC) \
 		-out:$(lib_BIN)
 
 install-data-local:
