@@ -29,7 +29,8 @@ namespace Ender
 		static extern IntPtr ender_item_name_get(IntPtr i);
 		[DllImport("libender.dll")]
 		static extern ItemType ender_item_type_get(IntPtr i);
-		//static extern Ender_Item * ender_item_parent_get(Ender_Item *thiz);
+		[DllImport("libender.dll")]
+		static extern IntPtr ender_item_parent_get(IntPtr i);
 		//static extern const char * ender_item_type_name_get(Ender_Item_Type type);
 		[DllImport("libender.dll")]
 		static extern IntPtr ender_item_lib_get(IntPtr i);
@@ -82,6 +83,14 @@ namespace Ender
 			}
 		}
 
+		public Item Parent
+		{
+			get {
+				IntPtr i = ender_item_parent_get(raw);
+				return Create(i);
+			}
+		}
+
 		public ItemType Type
 		{
 			get {
@@ -97,10 +106,16 @@ namespace Ender
 					return typeof(object);
 
 				case ItemType.BASIC:
-				case ItemType.FUNCTION:
-				case ItemType.ATTR:
-				case ItemType.ARG:
 					return typeof(Item);
+
+				case ItemType.FUNCTION:
+					return typeof(Object);
+
+				case ItemType.ATTR:
+					return typeof(Item);
+
+				case ItemType.ARG:
+					return typeof(Arg);
 
 				case ItemType.OBJECT:
 					return typeof(Object);
@@ -118,6 +133,9 @@ namespace Ender
 
 		static internal Item Create(IntPtr p)
 		{
+			if (p == IntPtr.Zero)
+				return null;
+
 			// Create the element based on its type
 			ItemType type = ender_item_type_get(p);
 			switch (type)
@@ -126,12 +144,14 @@ namespace Ender
 				break;
 				case ItemType.BASIC:
 				break;
+
 				case ItemType.FUNCTION:
-				break;
+					return new Function(p);
+
 				case ItemType.ATTR:
 				break;
 				case ItemType.ARG:
-				break;
+					return new Arg(p);
 
 				case ItemType.OBJECT:
 					return new Object(p);

@@ -35,8 +35,10 @@ namespace Ender
 		{
 			get {
 				IntPtr l = ender_item_object_ctor_get(raw);
-				// TODO return the correct type
-				List list = new List(l, typeof(Item), true, true);
+				if (l == IntPtr.Zero)
+					return null;
+
+				List list = new List(l, typeof(Function), true, true);
 				return list;
 			}
 		}

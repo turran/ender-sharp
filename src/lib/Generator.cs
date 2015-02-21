@@ -89,12 +89,168 @@ namespace Ender
 			return parent;
 		}
 
+		private string GenerateRetPinvoke(Arg arg)
+		{
+			if (arg == null)
+				return "void";
+
+			Item i = arg.ArgType;
+			if (i == null)
+			{
+				Console.WriteLine("[WRN] Arg '" + arg.Name + "' without a type?");
+				return "IntPtr";
+			}
+			switch (i.Type)
+			{
+				// Impossible cases
+				case ItemType.INVALID:
+				case ItemType.ATTR:
+				case ItemType.ARG:
+					return null;
+				// TODO simple cases
+				case ItemType.BASIC:
+					return null;
+				// TODO how to handle a function ptr?
+				case ItemType.FUNCTION:
+					return "IntPtr";
+				case ItemType.OBJECT:
+					return "IntPtr";
+				case ItemType.STRUCT:
+					return "IntPtr";
+				// TODO same as basic?
+				case ItemType.CONSTANT:
+					return null;
+				// TODO Check the processed for the enum name
+				case ItemType.ENUM:
+					return null;
+				case ItemType.DEF:
+					return null;
+				default:
+					return null;
+			}	
+		}
+
+		private string GenerateArgPinvoke(Arg arg)
+		{
+			if (arg == null)
+				return null;
+
+			string ret = null;
+			Item i = arg.ArgType;
+			if (i == null)
+			{
+				Console.WriteLine("[ERR] Arg '" + arg.Name + "' without a type?");
+				ret = "IntPtr";
+			}
+			else
+			{
+				switch (i.Type)
+				{
+					// Impossible cases
+					case ItemType.INVALID:
+					case ItemType.ATTR:
+					case ItemType.ARG:
+						ret = null;
+						break;
+					// TODO simple cases
+					case ItemType.BASIC:
+						ret = null;
+						break;
+					// TODO how to handle a function ptr?
+					case ItemType.FUNCTION:
+						ret = "IntPtr";
+						break;
+					case ItemType.OBJECT:
+						ret = "IntPtr";
+						break;
+					case ItemType.STRUCT:
+						ret = "IntPtr";
+						break;
+					// TODO same as basic?
+					case ItemType.CONSTANT:
+						ret = null;
+						break;
+					// TODO Check the processed for the enum name
+					case ItemType.ENUM:
+						ret = null;
+						break;
+					case ItemType.DEF:
+						ret = null;
+						break;
+					default:
+						ret = null;
+						break;
+				}
+			}
+			ret += " " + arg.Name;
+			return ret;
+		}
+
+		private string GenerateNamePinvoke(Function f)
+		{
+			Item parent = f.Parent;
+			if (parent == null)
+			{
+				// TODO use the correct replacement to support case/notation
+				return f.Name.Replace(".", "_");
+			}
+			else
+			{
+				// TODO use the correct replacement to support case/notation
+				string fName = parent.Namespace.Replace(".", "_") + "_" + parent.Identifier + "_" + f.Identifier;
+				return fName;
+			}
+		}
+
+		private string GenerateArgsPinvoke(Function f)
+		{
+			string ret;
+			List args = f.Args;
+
+			if (args == null)
+				return null;
+
+			string[] argsString = new string[args.Count];
+			// Generate each arg string
+			for (uint i = 0; i < args.Count; i++)
+			{
+				argsString[i] = GenerateArgPinvoke((Arg)args.Nth(i));
+			}
+			ret = String.Join(", ", argsString);
+			return ret;
+		}
+
+		private CodeSnippetTypeMember GeneratePinvoke(Function f)
+		{
+			string pinvoke = string.Format("[DllImport(\"{0}.dll\") CallingConvention=CallingConvention.Cdecl]", lib.Name);
+			// Handle the return value
+			string retString = GenerateRetPinvoke(f.Ret);
+			// Handle the function name
+			string fName = GenerateNamePinvoke(f);
+			// Handle the args
+			string argsString = GenerateArgsPinvoke(f);
+			pinvoke += string.Format("\nprivate static extern {0} {1}({2});", retString, fName, argsString);
+			CodeSnippetTypeMember ext = new CodeSnippetTypeMember(pinvoke);
+			return ext;
+		}
+
 		private CodeTypeDeclaration GenerateObject(Object o)
 		{
 			// Get the real item name
 			CodeTypeDeclaration co = new CodeTypeDeclaration(o.Identifier);
+			// TODO make the object disposable
 			// Get the constructors
 			List ctors = o.Ctors;
+			if (ctors != null)
+			{
+				foreach (Function f in ctors)
+				{
+					co.Members.Add(GeneratePinvoke(f));
+					CodeConstructor cc = new CodeConstructor();
+					cc.Attributes = MemberAttributes.Public;
+					co.Members.Add(cc);
+				}
+			}
 #if FOO
 			// add the base type
 			IntPtr inherit = ender_item_object_inherit_get(item);
@@ -111,6 +267,8 @@ namespace Ender
 		{
 			CodeNamespace root = new CodeNamespace();
 			cu.Namespaces.Add(root);
+			// Our default imports
+			root.Imports.Add(new CodeNamespaceImport("System.Runtime.InteropServices"));
 		}
 
 		private CodeObject GenerateItem(Item item)
