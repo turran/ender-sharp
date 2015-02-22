@@ -11,6 +11,8 @@ namespace Ender
 		static extern IntPtr ender_item_object_inherit_get(IntPtr i);
 		[DllImport("libender.dll")]
 		static extern IntPtr ender_item_object_ctor_get(IntPtr i);
+		[DllImport("libender.dll")]
+		static extern IntPtr ender_item_object_functions_get(IntPtr i);
 
 		internal Object()
 		{
@@ -24,17 +26,31 @@ namespace Ender
 		{
 		}
 
-		public Item Inherit
+		public Object Inherit
 		{
 			get {
 				IntPtr inherit = ender_item_object_inherit_get(raw);
-				return Item.Create(inherit);
+				if (inherit == IntPtr.Zero)
+					return null;
+				return new Object(inherit);
 			}
 		}
 		public List Ctors
 		{
 			get {
 				IntPtr l = ender_item_object_ctor_get(raw);
+				if (l == IntPtr.Zero)
+					return null;
+
+				List list = new List(l, typeof(Function), true, true);
+				return list;
+			}
+		}
+
+		public List Functions
+		{
+			get {
+				IntPtr l = ender_item_object_functions_get(raw);
 				if (l == IntPtr.Zero)
 					return null;
 
