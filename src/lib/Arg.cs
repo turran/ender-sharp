@@ -27,9 +27,8 @@ namespace Ender
 		static extern ArgDirection ender_item_arg_direction_get(IntPtr i);
 		[DllImport("libender.dll")]
 		static extern ArgFlag ender_item_arg_flags_get(IntPtr i);
-/*
-EAPI Ender_Item_Transfer ender_item_arg_transfer_get(Ender_Item *i);
-*/
+		[DllImport("libender.dll")]
+		static extern ItemTransfer ender_item_arg_transfer_get(IntPtr i);
 
 		internal Arg()
 		{
@@ -59,6 +58,12 @@ EAPI Ender_Item_Transfer ender_item_arg_transfer_get(Ender_Item *i);
 		public ArgFlag Flags {
 			get {
 				return ender_item_arg_flags_get(raw);
+			}
+		}
+
+		public ItemTransfer Transfer {
+			get {
+				return ender_item_arg_transfer_get(raw);
 			}
 		}
 	}

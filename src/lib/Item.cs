@@ -18,6 +18,14 @@ namespace Ender
 		DEF,
 	}
 
+	public enum ItemTransfer
+	{
+		FULL,
+		NONE,
+		CONTAINER,
+		CONTENT,
+	}
+
 	public class Item : IDisposable
 	{
 		// ender_item.h
