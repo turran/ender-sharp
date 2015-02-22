@@ -429,6 +429,8 @@ namespace Ender
 
 			if (ret == null)
 				return ret;
+			if (arg.Direction == ArgDirection.OUT)
+				ret.Direction = FieldDirection.Out;
 			ret.Name = provider.CreateValidIdentifier(arg.Name);
 			return ret;
 		}
