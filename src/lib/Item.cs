@@ -106,7 +106,7 @@ namespace Ender
 					return typeof(object);
 
 				case ItemType.BASIC:
-					return typeof(Item);
+					return typeof(Basic);
 
 				case ItemType.FUNCTION:
 					return typeof(Object);
@@ -140,10 +140,8 @@ namespace Ender
 			ItemType type = ender_item_type_get(p);
 			switch (type)
 			{
-				case ItemType.INVALID:
-				break;
 				case ItemType.BASIC:
-				break;
+					return new Basic(p);
 
 				case ItemType.FUNCTION:
 					return new Function(p);
@@ -164,6 +162,8 @@ namespace Ender
 				break;
 				case ItemType.DEF:
 				break;
+
+				case ItemType.INVALID:
 				default:
 				break;
 			}
