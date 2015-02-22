@@ -115,7 +115,6 @@ namespace Ender
 				case ItemType.BASIC:
 					Basic b = (Basic)i;
 					// The special case for const char *
-					Console.WriteLine(arg.Transfer);
 					if (b.ValueType == ValueType.STRING && arg.Transfer == ItemTransfer.NONE)
 						return "IntPtr";
 					else
@@ -282,7 +281,7 @@ namespace Ender
 				CodeMemberMethod dispose1 = new CodeMemberMethod();
 				dispose1.Name = "Dispose";
 				dispose1.Statements.Add(new CodeExpressionStatement(new CodeMethodInvokeExpression(null, "Dispose", new CodePrimitiveExpression(false))));
-				dispose1.Statements.Add(new CodeExpressionStatement(new CodeMethodInvokeExpression(new CodeTypeReferenceExpression("GC"), "SuppresFinalize", new CodeThisReferenceExpression())));
+				dispose1.Statements.Add(new CodeExpressionStatement(new CodeMethodInvokeExpression(new CodeTypeReferenceExpression("GC"), "SuppressFinalize", new CodeThisReferenceExpression())));
 				co.Members.Add(dispose1);
 				// Add the dispose protected method
 				CodeMemberMethod dispose2 = new CodeMemberMethod();
@@ -396,20 +395,10 @@ namespace Ender
 				case ItemType.FUNCTION:
 					ret = null;
 					break;
-				case ItemType.OBJECT:
-					if (processed.ContainsKey(i.Name))
-					{
-						CodeTypeMember ct = (CodeTypeMember) processed[i.Name];
-						ret = new CodeParameterDeclarationExpression();
-						ret.Type = new CodeTypeReference(ct.Name);
-					}
-					else
-					{
-						ret = null;
-					}
-					break;
 				case ItemType.STRUCT:
-					ret = null;
+				case ItemType.OBJECT:
+					ret = new CodeParameterDeclarationExpression();
+					ret.Type = new CodeTypeReference(i.Identifier);
 					break;
 				// TODO same as basic?
 				case ItemType.CONSTANT:
@@ -463,15 +452,7 @@ namespace Ender
 					break;
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
-					if (processed.ContainsKey(i.Name))
-					{
-						CodeTypeMember ct = (CodeTypeMember) processed[i.Name];
-						ret = new CodeTypeReference(ct.Name);
-					}
-					else
-					{
-						ret = null;
-					}
+					ret = new CodeTypeReference(i.Identifier);
 					break;
 				// TODO same as basic?
 				case ItemType.CONSTANT:
@@ -494,6 +475,13 @@ namespace Ender
 		private CodeMemberMethod GenerateFunction(Function f)
 		{
 			CodeMemberMethod cm = null;
+			// We for sure invoke a function
+			CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
+			ci.Method = new CodeMethodReferenceExpression(null, GenerateNamePinvoke(f));
+			// The default statement will be the invoke, unless we have a return value
+			CodeStatement cs = new CodeExpressionStatement(ci);
+			// To know if we must skip the first arg
+			bool skipFirst = false;
 
 			if ((f.Flags & FunctionFlag.CTOR) == FunctionFlag.CTOR)
 			{
@@ -505,27 +493,53 @@ namespace Ender
 				cm = new CodeMemberMethod();
 				cm.Name = f.Identifier;
 				cm.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-			}
-
-			// Now the return value
-			if ((f.Flags & FunctionFlag.CTOR) != FunctionFlag.CTOR)
-			{
-				CodeTypeReference ret = GenerateRet(f.Ret);
-				if (ret != null)
-					cm.ReturnType = ret;
+				// Add the raw
+				ci.Parameters.Add(new CodeVariableReferenceExpression("raw"));
+				skipFirst = true;
 			}
 
 			// Now the args
 			List args = f.Args;
 			if (args != null)
 			{
+				// If it is a method, skip the first Arg, it will be self
+				int count = 0;
 				foreach (Arg a in args)
 				{
+					if (count == 0 && skipFirst)
+					{
+						count++;
+						continue;
+					}
+
 					CodeParameterDeclarationExpression cp = GenerateArg(a);
 					if (cp != null)
+					{
+						// TODO Add any conversion we might need
+						// Add the invoke function
+						// Add the parameter
+						ci.Parameters.Add(new CodeVariableReferenceExpression(cp.Name));
 						cm.Parameters.Add(cp);
+					}
 				}
 			}
+			// Now the return value
+			if ((f.Flags & FunctionFlag.CTOR) != FunctionFlag.CTOR)
+			{
+				CodeTypeReference ret = GenerateRet(f.Ret);
+				if (ret != null)
+				{
+					// Check if we need to generate more statements to transform the return value
+					cs = new CodeMethodReturnStatement(ci);
+					if (cm != null)
+						cm.ReturnType = ret;
+				}
+			}
+
+
+			// The body
+			if (cm != null)
+				cm.Statements.Add(cs);
 
 			return cm;
 		}
