@@ -1,5 +1,6 @@
 lib_BIN = $(PACKAGE).dll
 lib_SRC = \
+src/lib/Basic.cs \
 src/lib/Arg.cs \
 src/lib/Main.cs \
 src/lib/Function.cs \
@@ -8,6 +9,7 @@ src/lib/Lib.cs \
 src/lib/List.cs \
 src/lib/Object.cs \
 src/lib/Utils.cs \
+src/lib/Value.cs \
 src/lib/Generator.cs
 
 noinst_DATA += $(lib_BIN)
