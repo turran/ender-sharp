@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.CodeDom;
+using System.CodeDom.Compiler;
 
 namespace Ender
 {
@@ -11,12 +12,13 @@ namespace Ender
 		private CodeNamespace root;
 		private Lib lib;
 		private Dictionary<string, CodeObject> processed;
+		private CodeDomProvider provider;
 
 		private Generator()
 		{
 		}
 
-		public Generator(string name)
+		public Generator(string name, CodeDomProvider provider)
 		{
 			// Create our empty compilation unit
 			cu = new CodeCompileUnit();
@@ -24,6 +26,8 @@ namespace Ender
 			lib = Lib.Find(name);
 			// Our dictionary to keep processed items in sync
  			processed = new Dictionary<string, CodeObject>();
+			// Our code provider to identify keywords
+			this.provider = provider;
 		}
 
 		/* for a given item, generate all the namespaces and items
@@ -107,9 +111,15 @@ namespace Ender
 				case ItemType.ATTR:
 				case ItemType.ARG:
 					return null;
-				// TODO simple cases
+				// Basic cases
 				case ItemType.BASIC:
-					return null;
+					Basic b = (Basic)i;
+					// The special case for const char *
+					Console.WriteLine(arg.Transfer);
+					if (b.ValueType == ValueType.STRING && arg.Transfer == ItemTransfer.NONE)
+						return "IntPtr";
+					else
+						return GenerateBasicPinvoke((Basic)i);
 				// TODO how to handle a function ptr?
 				case ItemType.FUNCTION:
 					return "IntPtr";
@@ -128,6 +138,37 @@ namespace Ender
 				default:
 					return null;
 			}	
+		}
+
+		private string GenerateBasicPinvoke(Basic b)
+		{
+			switch (b.ValueType)
+			{
+				case ValueType.BOOL:
+					return "bool";
+				case ValueType.UINT8:
+					return "byte";
+				case ValueType.INT8:
+					return "sbyte";
+				case ValueType.UINT32:
+					return "uint";
+				case ValueType.INT32:
+					return "int";
+				case ValueType.UINT64:
+					return "ulong";
+				case ValueType.INT64:
+					return "long";
+				case ValueType.DOUBLE:
+					return "double";
+				case ValueType.STRING:
+					return "string";
+				case ValueType.POINTER:
+					return "IntPtr";
+				case ValueType.SIZE:
+					return "IntPtr";
+				default:
+					return "object";
+			}
 		}
 
 		private string GenerateArgPinvoke(Arg arg)
@@ -152,17 +193,23 @@ namespace Ender
 					case ItemType.ARG:
 						ret = null;
 						break;
-					// TODO simple cases
+					// Basic case
 					case ItemType.BASIC:
-						ret = null;
+						Basic b = (Basic)i;
+						// The special case for in, full char *
+						Console.WriteLine(arg.Transfer);
+						if (b.ValueType == ValueType.STRING &&
+								arg.Transfer == ItemTransfer.FULL
+								&& arg.Direction == ArgDirection.IN)
+							ret = "IntPtr";
+						else
+							ret = GenerateBasicPinvoke((Basic)i);
 						break;
 					// TODO how to handle a function ptr?
 					case ItemType.FUNCTION:
 						ret = "IntPtr";
 						break;
 					case ItemType.OBJECT:
-						ret = "IntPtr";
-						break;
 					case ItemType.STRUCT:
 						ret = "IntPtr";
 						break;
@@ -182,7 +229,9 @@ namespace Ender
 						break;
 				}
 			}
-			ret += " " + arg.Name;
+			if (arg.Direction == ArgDirection.OUT)
+				ret = "out " + ret;
+			ret += " " + provider.CreateValidIdentifier(arg.Name);
 			return ret;
 		}
 
@@ -220,9 +269,53 @@ namespace Ender
 			return ret;
 		}
 
+		private void GenerateDisposable(CodeTypeDeclaration co, Function unrefFunc)
+		{
+			if (provider.Supports(GeneratorSupport.DeclareInterfaces))
+			{
+				// make the object disposable
+				co.BaseTypes.Add("IDisposable");
+				// Add the overloaded functions
+				CodeMemberField disposedField = new CodeMemberField(typeof(bool), "disposed");
+				co.Members.Add(disposedField);
+				// Add the dispose method
+				CodeMemberMethod dispose1 = new CodeMemberMethod();
+				dispose1.Name = "Dispose";
+				dispose1.Statements.Add(new CodeExpressionStatement(new CodeMethodInvokeExpression(null, "Dispose", new CodePrimitiveExpression(false))));
+				dispose1.Statements.Add(new CodeExpressionStatement(new CodeMethodInvokeExpression(new CodeTypeReferenceExpression("GC"), "SuppresFinalize", new CodeThisReferenceExpression())));
+				co.Members.Add(dispose1);
+				// Add the dispose protected method
+				CodeMemberMethod dispose2 = new CodeMemberMethod();
+				dispose2.Name = "Dispose";
+				dispose2.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "disposing"));
+				dispose2.Attributes = MemberAttributes.Family;
+				CodeStatement cs = new CodeConditionStatement(new CodeVariableReferenceExpression("disposed"),
+						new CodeStatement[] {},
+						new CodeStatement[] {
+							// unref(raw)
+							new CodeExpressionStatement(new CodeMethodInvokeExpression(null, GenerateNamePinvoke(unrefFunc), new CodeVariableReferenceExpression("raw"))),
+							// raw = IntPtr.Zero
+							new CodeAssignStatement(new CodeVariableReferenceExpression("raw"), new CodeTypeReferenceExpression("IntPtr.Zero")),
+							// disposed = false
+							new CodeAssignStatement(new CodeVariableReferenceExpression("disposed"), new CodePrimitiveExpression(false))
+						});
+				dispose2.Statements.Add(cs);
+				co.Members.Add(dispose2);
+				// Add the dstructor that will call Dispose(false), seems that CodeDom does not support destructors!
+				CodeSnippetTypeMember ext = new CodeSnippetTypeMember("~" + co.Name + "() { Dispose(false); }");
+				co.Members.Add(ext);
+			}
+			else
+			{
+				// make the destructor call directly the unref
+				CodeSnippetTypeMember ext = new CodeSnippetTypeMember("~" + co.Name + "() { " + GenerateNamePinvoke(unrefFunc) + "(); }");
+				co.Members.Add(ext);
+			}
+		}
+
 		private CodeSnippetTypeMember GeneratePinvoke(Function f)
 		{
-			string pinvoke = string.Format("[DllImport(\"{0}.dll\") CallingConvention=CallingConvention.Cdecl]", lib.Name);
+			string pinvoke = string.Format("[DllImport(\"{0}.dll\", CallingConvention=CallingConvention.Cdecl)]", lib.Name);
 			// Handle the return value
 			string retString = GenerateRetPinvoke(f.Ret);
 			// Handle the function name
@@ -234,32 +327,330 @@ namespace Ender
 			return ext;
 		}
 
+		private CodeTypeReference GenerateBasic(Basic b)
+		{
+			System.Type st;
+			switch (b.ValueType)
+			{
+				case ValueType.BOOL:
+					st = typeof(bool);
+					break;
+				case ValueType.UINT8:
+					st = typeof(byte);
+					break;
+				case ValueType.INT8:
+					st = typeof(sbyte);
+					break;
+				case ValueType.UINT32:
+					st = typeof(uint);
+					break;
+				case ValueType.INT32:
+					st = typeof(int);
+					break;
+				case ValueType.UINT64:
+					st = typeof(ulong);
+					break;
+				case ValueType.INT64:
+					st = typeof(long);
+					break;
+				case ValueType.DOUBLE:
+					st = typeof(double);
+					break;
+				case ValueType.STRING:
+					st = typeof(string);
+					break;
+				case ValueType.POINTER:
+					st = typeof(IntPtr);
+					break;
+				case ValueType.SIZE:
+					st = typeof(IntPtr);
+					break;
+				default:
+					st = typeof(object);
+					break;
+			}
+			return new CodeTypeReference(st);
+		}
+
+		private CodeParameterDeclarationExpression GenerateArg(Arg arg)
+		{
+			CodeParameterDeclarationExpression ret = null;
+			Item i = arg.ArgType;
+
+			if (i == null)
+				return null;
+			switch (i.Type)
+			{
+				// Impossible cases
+				case ItemType.INVALID:
+				case ItemType.ATTR:
+				case ItemType.ARG:
+					ret = null;
+					break;
+				// Basic case
+				case ItemType.BASIC:
+					ret = new CodeParameterDeclarationExpression();
+					ret.Type = GenerateBasic((Basic)i);
+					break;
+				// TODO how to handle a function ptr?
+				case ItemType.FUNCTION:
+					ret = null;
+					break;
+				case ItemType.OBJECT:
+					if (processed.ContainsKey(i.Name))
+					{
+						CodeTypeMember ct = (CodeTypeMember) processed[i.Name];
+						ret = new CodeParameterDeclarationExpression();
+						ret.Type = new CodeTypeReference(ct.Name);
+					}
+					else
+					{
+						ret = null;
+					}
+					break;
+				case ItemType.STRUCT:
+					ret = null;
+					break;
+				// TODO same as basic?
+				case ItemType.CONSTANT:
+					ret = null;
+					break;
+				// TODO Check the processed for the enum name
+				case ItemType.ENUM:
+					ret = null;
+					break;
+				case ItemType.DEF:
+					ret = null;
+					break;
+				default:
+					ret = null;
+					break;
+			}
+
+			if (ret == null)
+				return ret;
+			ret.Name = provider.CreateValidIdentifier(arg.Name);
+			return ret;
+		}
+
+		private CodeTypeReference GenerateRet(Arg arg)
+		{
+			if (arg == null)
+				return null;
+
+			Item i = arg.ArgType;
+			if (i == null)
+				return null;
+
+			CodeTypeReference ret = null;
+			switch (i.Type)
+			{
+				// Impossible cases
+				case ItemType.INVALID:
+				case ItemType.ATTR:
+				case ItemType.ARG:
+					ret = null;
+					break;
+				// Basic case
+				case ItemType.BASIC:
+					ret = GenerateBasic((Basic)i);
+					break;
+				// TODO how to handle a function ptr?
+				case ItemType.FUNCTION:
+					ret = null;
+					break;
+				case ItemType.STRUCT:
+				case ItemType.OBJECT:
+					if (processed.ContainsKey(i.Name))
+					{
+						CodeTypeMember ct = (CodeTypeMember) processed[i.Name];
+						ret = new CodeTypeReference(ct.Name);
+					}
+					else
+					{
+						ret = null;
+					}
+					break;
+				// TODO same as basic?
+				case ItemType.CONSTANT:
+					ret = null;
+					break;
+				// TODO Check the processed for the enum name
+				case ItemType.ENUM:
+					ret = null;
+					break;
+				case ItemType.DEF:
+					ret = null;
+					break;
+				default:
+					ret = null;
+					break;
+			}
+			return ret;
+		}
+
+		private CodeMemberMethod GenerateFunction(Function f)
+		{
+			CodeMemberMethod cm = null;
+
+			if ((f.Flags & FunctionFlag.CTOR) == FunctionFlag.CTOR)
+			{
+				cm = new CodeConstructor();
+				cm.Attributes = MemberAttributes.Public;
+			}
+			else if ((f.Flags & FunctionFlag.IS_METHOD) == FunctionFlag.IS_METHOD)
+			{
+				cm = new CodeMemberMethod();
+				cm.Name = f.Identifier;
+				cm.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+			}
+
+			// Now the return value
+			if ((f.Flags & FunctionFlag.CTOR) != FunctionFlag.CTOR)
+			{
+				CodeTypeReference ret = GenerateRet(f.Ret);
+				if (ret != null)
+					cm.ReturnType = ret;
+			}
+
+			// Now the args
+			List args = f.Args;
+			if (args != null)
+			{
+				foreach (Arg a in args)
+				{
+					CodeParameterDeclarationExpression cp = GenerateArg(a);
+					if (cp != null)
+						cm.Parameters.Add(cp);
+				}
+			}
+
+			return cm;
+		}
+
 		private CodeTypeDeclaration GenerateObject(Object o)
 		{
+			Function refFunc = null;
+			Function unrefFunc = null;
+			List functions;
+			bool hasRef = false;
+			bool hasUnref = false;
+
+			// Do nothing if cannot ref an object
+			Object tmp = o;
+			while (tmp != null && !hasRef && !hasUnref)
+			{
+				functions = tmp.Functions;
+				if (functions != null)
+				{
+					foreach (Function f in functions)
+					{
+						if ((f.Flags & FunctionFlag.REF) == FunctionFlag.REF)
+						{
+							refFunc = f;
+							hasRef = true;
+						}
+						if ((f.Flags & FunctionFlag.UNREF) == FunctionFlag.UNREF)
+						{
+							unrefFunc = f;
+							hasUnref = true;
+						}
+					}
+				}
+				tmp = tmp.Inherit;
+			}
+			if (!hasRef || !hasUnref)
+			{
+				Console.WriteLine("[ERR] Skipping object " + o.Name + ", it does not have a ref/unref function");
+				return null;
+			}
+
 			// Get the real item name
 			CodeTypeDeclaration co = new CodeTypeDeclaration(o.Identifier);
-			// TODO make the object disposable
+			// In case it does no inherit from anything, add the raw pointer
+			Object inherit = o.Inherit;
+			if (inherit == null)
+			{
+				CodeMemberField rawField = new CodeMemberField("IntPtr", "raw");
+				co.Members.Add(rawField);
+				GenerateDisposable(co, unrefFunc);
+			}
+			else
+			{
+				// add the inheritance on the type
+				if (!processed.ContainsKey(inherit.Name))
+					GenerateObject(inherit);
+				if (processed.ContainsKey(inherit.Name))
+				{
+					CodeTypeDeclaration cob = (CodeTypeDeclaration)processed[inherit.Name];
+					co.BaseTypes.Add(cob.Name);
+				}	
+			}
+			// Create every pinvoke
+			functions = o.Functions;
+			if (functions != null)
+			{
+				foreach (Function f in functions)
+				{
+					Console.WriteLine("Processing function " + f.Name);
+					co.Members.Add(GeneratePinvoke(f));
+				}
+
+			}
 			// Get the constructors
 			List ctors = o.Ctors;
 			if (ctors != null)
 			{
-				foreach (Function f in ctors)
-				{
-					co.Members.Add(GeneratePinvoke(f));
-					CodeConstructor cc = new CodeConstructor();
-					cc.Attributes = MemberAttributes.Public;
-					co.Members.Add(cc);
-				}
+				// Create a dummy constructor to handle the owning of a pointer
+				CodeConstructor cc = new CodeConstructor();
+				cc.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IntPtr), "i"));
+				cc.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "owned"));
+				cc.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("i"));
+				cc.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("owned"));
+				// must be protected
+				cc.Attributes = MemberAttributes.Family;
+				co.Members.Add(cc);
 			}
-#if FOO
-			// add the base type
-			IntPtr inherit = ender_item_object_inherit_get(item);
-			if (inherit != IntPtr.Zero)
+			else
 			{
-				o.BaseTypes.Add(getItemName(inherit));
-				ender_item_unref(inherit);
+				// Make the prvate constructor
+				CodeConstructor cc = new CodeConstructor();
+				cc.Attributes = MemberAttributes.Private;
+				co.Members.Add(cc);
+
+				// Make the protected constructor
+				cc = new CodeConstructor();
+				cc.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IntPtr), "i"));
+				cc.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "owned"));
+				CodeAssignStatement as1 = new CodeAssignStatement(new CodeVariableReferenceExpression("raw"),
+						new CodeVariableReferenceExpression("i"));
+				cc.Statements.Add(as1);
+				CodeMethodInvokeExpression invoke1 = new CodeMethodInvokeExpression(
+						null,
+						GenerateNamePinvoke(refFunc),
+						new CodeVariableReferenceExpression("i"));
+				CodeConditionStatement cs = new CodeConditionStatement(new CodeVariableReferenceExpression("owned"),
+						new CodeExpressionStatement(invoke1));
+				cc.Statements.Add(cs);
+				// FIXME must be protected
+				cc.Attributes = MemberAttributes.Public;
+				co.Members.Add(cc);
 			}
-#endif
+			// in case the object has a ref() method
+			foreach (Function f in o.Functions)
+			{
+				// Skip the ref/unref
+				if ((f.Flags & FunctionFlag.REF) == FunctionFlag.REF)
+					continue;
+				if ((f.Flags & FunctionFlag.UNREF) == FunctionFlag.UNREF)
+					continue;
+
+				Console.WriteLine("Generating function " + f.Name);
+				CodeMemberMethod cm = GenerateFunction(f);
+				if (cm != null)
+					co.Members.Add(cm);
+			}
+
 			return co;
 		}
 
@@ -268,6 +659,7 @@ namespace Ender
 			CodeNamespace root = new CodeNamespace();
 			cu.Namespaces.Add(root);
 			// Our default imports
+			root.Imports.Add(new CodeNamespaceImport("System"));
 			root.Imports.Add(new CodeNamespaceImport("System.Runtime.InteropServices"));
 		}
 
@@ -326,6 +718,7 @@ namespace Ender
 			}
 			return ret;
 		}
+
 		public CodeCompileUnit Generate()
 		{
 			if (lib == null)

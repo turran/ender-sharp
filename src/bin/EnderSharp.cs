@@ -12,11 +12,8 @@ public class EnderSharp
 		// of generating
 	}
 
-	public static string generateCSharpCode(CodeCompileUnit cu, string outfile)
+	public static string GenerateCode(CodeDomProvider provider, CodeCompileUnit cu, string outfile)
 	{
-		// Generate the code with the C# code provider.
-		CSharpCodeProvider provider = new CSharpCodeProvider();
-
 		// Build the output file name. 
 		string sourceFile;
 		if (provider.FileExtension[0] == '.')
@@ -43,9 +40,11 @@ public class EnderSharp
 		// TODO do the args processing
 		// initialize ender before we do anything
 		Ender.Main.Init();
-		Generator eg = new Generator(args[0]);
+		// Generate the code with the C# code provider.
+		CSharpCodeProvider provider = new CSharpCodeProvider();
+		Generator eg = new Generator(args[0], provider);
 		CodeCompileUnit cu = eg.Generate();
-		generateCSharpCode(cu, args[0]);
+		GenerateCode(provider, cu, args[0]);
 		Ender.Main.Shutdown();
 	}
 }
