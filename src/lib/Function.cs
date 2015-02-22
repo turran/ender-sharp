@@ -4,6 +4,18 @@ using System.Runtime.InteropServices;
 
 namespace Ender
 {
+	[Flags]
+	public enum FunctionFlag
+	{
+		IS_METHOD = (1 << 0),
+		THROWS    = (1 << 1),
+		CTOR      = (1 << 2),
+		REF       = (1 << 3),
+		UNREF     = (1 << 4),
+		CALLBACK  = (1 << 5),
+		VALUE_OF  = (1 << 6),
+	}
+
 	public class Function : Item
 	{
 		/* ender_item_function.h */
@@ -11,12 +23,13 @@ namespace Ender
 		static extern IntPtr ender_item_function_args_get(IntPtr i);
 		[DllImport("libender.dll")]
 		static extern IntPtr ender_item_function_ret_get(IntPtr i);
+		[DllImport("libender.dll")]
+		static extern FunctionFlag ender_item_function_flags_get(IntPtr i);
 /*
 EAPI Ender_Item * ender_item_function_args_at(Ender_Item *i, int idx);
 EAPI int ender_item_function_args_count(Ender_Item *i);
 Eina_Bool ender_item_function_call(Ender_Item *i,
 		Ender_Value *args, Ender_Value *retval);
-EAPI int ender_item_function_flags_get(Ender_Item *i);
 EAPI int ender_item_function_throw_position_get(Ender_Item *i);
 */
 		internal Function()
@@ -47,7 +60,17 @@ EAPI int ender_item_function_throw_position_get(Ender_Item *i);
 		{
 			get {
 				IntPtr i = ender_item_function_ret_get(raw);
+				if (i == IntPtr.Zero)
+					return null;
+
 				return new Arg(i, true);
+			}
+		}
+
+		public FunctionFlag Flags
+		{
+			get {
+				return ender_item_function_flags_get(raw);
 			}
 		}
 	}
