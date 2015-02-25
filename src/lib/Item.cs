@@ -129,8 +129,14 @@ namespace Ender
 					return typeof(Object);
 
 				case ItemType.STRUCT:
+					return typeof(Struct);
+
 				case ItemType.CONSTANT:
+					return typeof(Item);
+
 				case ItemType.ENUM:
+					return typeof(Enum);
+
 				case ItemType.DEF:
 					return typeof(Item);
 
@@ -155,7 +161,8 @@ namespace Ender
 					return new Function(p);
 
 				case ItemType.ATTR:
-				break;
+					return new Attr(p);
+
 				case ItemType.ARG:
 					return new Arg(p);
 
@@ -163,11 +170,14 @@ namespace Ender
 					return new Object(p);
 
 				case ItemType.STRUCT:
-				break;
+					return new Struct(p);
+
 				case ItemType.CONSTANT:
 				break;
+
 				case ItemType.ENUM:
-				break;
+					return new Enum(p);
+
 				case ItemType.DEF:
 				break;
 

@@ -196,7 +196,6 @@ namespace Ender
 					case ItemType.BASIC:
 						Basic b = (Basic)i;
 						// The special case for in, full char *
-						Console.WriteLine(arg.Transfer);
 						if (b.ValueType == ValueType.STRING &&
 								arg.Transfer == ItemTransfer.FULL
 								&& arg.Direction == ArgDirection.IN)
@@ -544,6 +543,27 @@ namespace Ender
 			return cm;
 		}
 
+		private CodeTypeDeclaration GenerateEnum(Enum e)
+		{
+			Console.WriteLine("Generating enum " + e.Name);
+			// Get the real item name
+			CodeTypeDeclaration co = new CodeTypeDeclaration(e.Identifier);
+			co.IsEnum = true;
+			return co;
+		}
+
+		private CodeTypeDeclaration GenerateStruct(Struct s)
+		{
+			Console.WriteLine("Generating struct " + s.Name);
+			// Get the real item name
+			CodeTypeDeclaration co = new CodeTypeDeclaration(s.Identifier);
+			// Generate the raw field
+			CodeMemberField rawField = new CodeMemberField("IntPtr", "raw");
+			rawField.Attributes = MemberAttributes.Family;
+			co.Members.Add(rawField);
+			return co;
+		}
+
 		private CodeTypeDeclaration GenerateObject(Object o)
 		{
 			Function refFunc = null;
@@ -552,6 +572,7 @@ namespace Ender
 			bool hasRef = false;
 			bool hasUnref = false;
 
+			Console.WriteLine("Generating object " + o.Name);
 			// Do nothing if cannot ref an object
 			Object tmp = o;
 			while (tmp != null && !hasRef && !hasUnref)
@@ -588,6 +609,7 @@ namespace Ender
 			if (inherit == null)
 			{
 				CodeMemberField rawField = new CodeMemberField("IntPtr", "raw");
+				rawField.Attributes = MemberAttributes.Family;
 				co.Members.Add(rawField);
 				GenerateDisposable(co, unrefFunc);
 			}
@@ -595,7 +617,7 @@ namespace Ender
 			{
 				// add the inheritance on the type
 				if (!processed.ContainsKey(inherit.Name))
-					GenerateObject(inherit);
+					GenerateItem(inherit);
 				if (processed.ContainsKey(inherit.Name))
 				{
 					CodeTypeDeclaration cob = (CodeTypeDeclaration)processed[inherit.Name];
@@ -703,6 +725,12 @@ namespace Ender
 				case ItemType.OBJECT:
 					ret = GenerateObject((Object)item);
 					break;
+				case ItemType.STRUCT:
+					ret = GenerateStruct((Struct)item);
+					break;
+				case ItemType.ENUM:
+					ret = GenerateEnum((Enum)item);
+					break;
 				default:
 					break;
 			}
@@ -743,7 +771,7 @@ namespace Ender
 			// First set the information from the library itself
 			GenerateLib();
 			// Iterate over every type and generate it
-			foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
+			foreach (ItemType type in System.Enum.GetValues(typeof(ItemType)))
 			{
 				List items = lib.List(type);
 				foreach (Item item in items)
