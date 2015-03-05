@@ -566,6 +566,8 @@ namespace Ender
 			Console.WriteLine("Generating enum " + e.Name);
 			// Get the real item name
 			CodeTypeDeclaration co = new CodeTypeDeclaration(e.Identifier);
+			// Add the generated type into our hash
+			processed[e.Name] = co;
 			co.IsEnum = true;
 			return co;
 		}
@@ -575,6 +577,8 @@ namespace Ender
 			Console.WriteLine("Generating struct " + s.Name);
 			// Get the real item name
 			CodeTypeDeclaration co = new CodeTypeDeclaration(s.Identifier);
+			// Add the generated type into our hash
+			processed[s.Name] = co;
 			// Generate the raw field
 			CodeMemberField rawField = new CodeMemberField("IntPtr", "raw");
 			rawField.Attributes = MemberAttributes.Family;
@@ -622,6 +626,8 @@ namespace Ender
 
 			// Get the real item name
 			CodeTypeDeclaration co = new CodeTypeDeclaration(o.Identifier);
+			// Add the generated type into our hash
+			processed[o.Name] = co;
 			// In case it does no inherit from anything, add the raw pointer
 			Object inherit = o.Inherit;
 			if (inherit == null)
@@ -757,9 +763,6 @@ namespace Ender
 				Console.WriteLine("[ERR] Impossible to generate type '" + item.Name + "'");
 				return ret;
 			}
-
-			// Add the generated type into our hash
-			processed[item.Name] = ret;
 
 			// Add it to the parent object
 			if (parent.GetType() == typeof(CodeNamespace))
