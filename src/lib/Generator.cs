@@ -129,9 +129,18 @@ namespace Ender
 				// TODO same as basic?
 				case ItemType.CONSTANT:
 					return null;
-				// TODO Check the processed for the enum name
 				case ItemType.ENUM:
-					return null;
+					// if the created object is actually an enum (it can be a class in
+					// case it has methods) use it, otherwise the inner enum
+					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateItem(i);
+					if (ce.IsEnum)
+					{
+						return i.Name;
+					}
+					else
+					{
+						return i.Name + ".Enum";
+					}
 				case ItemType.DEF:
 					return null;
 				default:
@@ -215,9 +224,18 @@ namespace Ender
 					case ItemType.CONSTANT:
 						ret = null;
 						break;
-					// TODO Check the processed for the enum name
 					case ItemType.ENUM:
-						ret = null;
+						// if the created object is actually an enum (it can be a class in
+						// case it has methods) use it, otherwise the inner enum
+						CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateItem(i);
+						if (ce.IsEnum)
+						{
+							ret = i.Name;
+						}
+						else
+						{
+							ret = i.Name + ".Enum";
+						}
 						break;
 					case ItemType.DEF:
 						ret = null;
