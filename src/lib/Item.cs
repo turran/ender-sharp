@@ -138,7 +138,7 @@ namespace Ender
 					return typeof(Enum);
 
 				case ItemType.DEF:
-					return typeof(Item);
+					return typeof(Def);
 
 				default:
 					return null;
@@ -179,7 +179,7 @@ namespace Ender
 					return new Enum(p);
 
 				case ItemType.DEF:
-				break;
+					return new Def(p);
 
 				case ItemType.INVALID:
 				default:
