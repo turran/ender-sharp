@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.CodeDom;
 using System.CodeDom.Compiler;
+using System.Runtime.InteropServices;
 
 namespace Ender
 {
@@ -93,17 +94,8 @@ namespace Ender
 			return parent;
 		}
 
-		private string GenerateRetPinvoke(Arg arg)
+		private string GenerateRetPinvokeFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
 		{
-			if (arg == null)
-				return "void";
-
-			Item i = arg.ArgType;
-			if (i == null)
-			{
-				Console.WriteLine("[WRN] Arg '" + arg.Name + "' without a type?");
-				return "IntPtr";
-			}
 			switch (i.Type)
 			{
 				// Impossible cases
@@ -115,7 +107,7 @@ namespace Ender
 				case ItemType.BASIC:
 					Basic b = (Basic)i;
 					// The special case for const char *
-					if (b.ValueType == ValueType.STRING && arg.Transfer == ItemTransfer.NONE)
+					if (b.ValueType == ValueType.STRING && transfer == ItemTransfer.NONE)
 						return "IntPtr";
 					else
 						return GenerateBasicPinvoke((Basic)i);
@@ -128,7 +120,7 @@ namespace Ender
 					return "IntPtr";
 				// TODO same as basic?
 				case ItemType.CONSTANT:
-					return null;
+					return "IntPtr";
 				case ItemType.ENUM:
 					// if the created object is actually an enum (it can be a class in
 					// case it has methods) use it, otherwise the inner enum
@@ -142,10 +134,26 @@ namespace Ender
 						return i.Name + ".Enum";
 					}
 				case ItemType.DEF:
-					return null;
+					Def def = (Def)i;
+					return GenerateRetPinvokeFull(def.DefType, name, direction, transfer);
 				default:
 					return null;
 			}	
+		}
+
+		private string GenerateRetPinvoke(Arg arg)
+		{
+			if (arg == null)
+				return "void";
+
+			Item i = arg.ArgType;
+			if (i == null)
+			{
+				Console.WriteLine("[WRN] Arg '" + arg.Name + "' without a type?");
+				return "IntPtr";
+			}
+
+			return GenerateRetPinvokeFull(i, arg.Name, arg.Direction, arg.Transfer);
 		}
 
 		private string GenerateBasicPinvoke(Basic b)
@@ -179,76 +187,80 @@ namespace Ender
 			}
 		}
 
+		private string GenerateArgPinvokeFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
+		{
+			string ret = null;
+
+			switch (i.Type)
+			{
+				// Impossible cases
+				case ItemType.INVALID:
+				case ItemType.ATTR:
+				case ItemType.ARG:
+					ret = null;
+					break;
+				// Basic case
+				case ItemType.BASIC:
+					Basic b = (Basic)i;
+					// The special case for in, full char *
+					if (b.ValueType == ValueType.STRING &&
+							transfer == ItemTransfer.FULL
+							&& direction == ArgDirection.IN)
+						ret = "IntPtr";
+					else
+						ret = GenerateBasicPinvoke((Basic)i);
+					break;
+				// TODO how to handle a function ptr?
+				case ItemType.FUNCTION:
+					ret = "IntPtr";
+					break;
+				case ItemType.OBJECT:
+				case ItemType.STRUCT:
+					ret = "IntPtr";
+					break;
+				// TODO same as basic?
+				case ItemType.CONSTANT:
+					ret = null;
+					break;
+				case ItemType.ENUM:
+					// if the created object is actually an enum (it can be a class in
+					// case it has methods) use it, otherwise the inner enum
+					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateItem(i);
+					if (ce.IsEnum)
+					{
+						ret = i.Name;
+					}
+					else
+					{
+						ret = i.Name + ".Enum";
+					}
+					break;
+				case ItemType.DEF:
+					Def d = (Def)i;
+					return GenerateArgPinvokeFull(d.DefType, name, direction, transfer);
+				default:
+					ret = null;
+					break;
+			}
+			// For structs, the out is irrelevant
+			if (direction == ArgDirection.OUT && i.Type != ItemType.STRUCT)
+				ret = "out " + ret;
+			ret += " " + provider.CreateValidIdentifier(name);
+			return ret;
+		}
+
 		private string GenerateArgPinvoke(Arg arg)
 		{
 			if (arg == null)
 				return null;
 
-			string ret = null;
 			Item i = arg.ArgType;
 			if (i == null)
 			{
 				Console.WriteLine("[ERR] Arg '" + arg.Name + "' without a type?");
-				ret = "IntPtr";
+				return "IntPtr " + arg.Name;
 			}
-			else
-			{
-				switch (i.Type)
-				{
-					// Impossible cases
-					case ItemType.INVALID:
-					case ItemType.ATTR:
-					case ItemType.ARG:
-						ret = null;
-						break;
-					// Basic case
-					case ItemType.BASIC:
-						Basic b = (Basic)i;
-						// The special case for in, full char *
-						if (b.ValueType == ValueType.STRING &&
-								arg.Transfer == ItemTransfer.FULL
-								&& arg.Direction == ArgDirection.IN)
-							ret = "IntPtr";
-						else
-							ret = GenerateBasicPinvoke((Basic)i);
-						break;
-					// TODO how to handle a function ptr?
-					case ItemType.FUNCTION:
-						ret = "IntPtr";
-						break;
-					case ItemType.OBJECT:
-					case ItemType.STRUCT:
-						ret = "IntPtr";
-						break;
-					// TODO same as basic?
-					case ItemType.CONSTANT:
-						ret = null;
-						break;
-					case ItemType.ENUM:
-						// if the created object is actually an enum (it can be a class in
-						// case it has methods) use it, otherwise the inner enum
-						CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateItem(i);
-						if (ce.IsEnum)
-						{
-							ret = i.Name;
-						}
-						else
-						{
-							ret = i.Name + ".Enum";
-						}
-						break;
-					case ItemType.DEF:
-						ret = null;
-						break;
-					default:
-						ret = null;
-						break;
-				}
-			}
-			if (arg.Direction == ArgDirection.OUT)
-				ret = "out " + ret;
-			ret += " " + provider.CreateValidIdentifier(arg.Name);
-			return ret;
+			return GenerateArgPinvokeFull(i, arg.Name, arg.Direction, arg.Transfer);
 		}
 
 		private string GenerateNamePinvoke(Function f)
@@ -299,6 +311,7 @@ namespace Ender
 				dispose1.Name = "Dispose";
 				dispose1.Statements.Add(new CodeExpressionStatement(new CodeMethodInvokeExpression(null, "Dispose", new CodePrimitiveExpression(false))));
 				dispose1.Statements.Add(new CodeExpressionStatement(new CodeMethodInvokeExpression(new CodeTypeReferenceExpression("GC"), "SuppressFinalize", new CodeThisReferenceExpression())));
+				dispose1.Attributes = MemberAttributes.Public;
 				co.Members.Add(dispose1);
 				// Add the dispose protected method
 				CodeMemberMethod dispose2 = new CodeMemberMethod();
@@ -388,13 +401,100 @@ namespace Ender
 			return new CodeTypeReference(st);
 		}
 
-		private CodeParameterDeclarationExpression GenerateArg(Arg arg)
+		// The statements needed to convert an arg from C# to Pinvoke
+		private CodeStatement GenerateArgStatementFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
 		{
-			CodeParameterDeclarationExpression ret = null;
+			switch (i.Type)
+			{
+				case ItemType.DEF:
+					Def d = (Def)i;
+					return GenerateArgStatementFull(d.DefType, name, direction, transfer);
+				case ItemType.STRUCT:
+					// For out structs, we need to create the struct first before passing the raw arg
+					if (direction == ArgDirection.OUT)
+						return new CodeAssignStatement(new CodeVariableReferenceExpression(name), new CodeObjectCreateExpression(
+							new CodeTypeReference(i.Name)));
+					return null;
+				default:
+					return null;
+			}
+		}
+
+		// The statements needed to convert an arg from C# to Pinvoke
+		private CodeStatement GenerateArgStatement(Arg arg)
+		{
 			Item i = arg.ArgType;
 
 			if (i == null)
 				return null;
+			return GenerateArgStatementFull(i, arg.Name, arg.Direction, arg.Transfer);
+		}
+
+		// The expression to pass into the Pinvoke method for this arg
+		private CodeExpression GenerateArgExpressionFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
+		{
+			CodeExpression ret = null;
+			CodeVariableReferenceExpression cvr;
+
+			switch (i.Type)
+			{
+				// Impossible cases
+				case ItemType.INVALID:
+				case ItemType.ATTR:
+				case ItemType.ARG:
+					break;
+				// call itself with the def pointer
+				case ItemType.DEF:
+					Def d = (Def)i;
+					return GenerateArgExpressionFull(d.DefType, name, direction, transfer);
+				// TODO how to handle a function ptr?
+				case ItemType.FUNCTION:
+				// TODO same as basic?
+				case ItemType.CONSTANT:
+				// TODO Check the processed for the enum name
+				case ItemType.ENUM:
+				case ItemType.BASIC:
+					cvr = new CodeVariableReferenceExpression();
+					cvr.VariableName = provider.CreateValidIdentifier(name);
+					ret = cvr;
+					break;
+				case ItemType.STRUCT:
+				case ItemType.OBJECT:
+					cvr = new CodeVariableReferenceExpression();
+					cvr.VariableName = provider.CreateValidIdentifier(name);
+					ret = new CodePropertyReferenceExpression(cvr, "Raw");
+					break;
+				default:
+					break;
+			}
+
+			if (ret == null)
+				return ret;
+
+			if (direction == ArgDirection.OUT && i.Type != ItemType.STRUCT)
+				return new CodeDirectionExpression(FieldDirection.Out, ret);
+			else
+				return ret;
+		}
+
+		// The expression to pass into the Pinvoke method for this arg
+		private CodeExpression GenerateArgExpression(Arg arg)
+		{
+			Item i = arg.ArgType;
+
+			if (i == null)
+			{
+				Console.WriteLine("[ERR] Invalid arg " + arg.Name);
+				CodeVariableReferenceExpression cvr = new CodeVariableReferenceExpression();
+				cvr.VariableName = provider.CreateValidIdentifier(arg.Name);
+				return cvr;
+			}
+			return GenerateArgExpressionFull(i, arg.Name, arg.Direction, arg.Transfer);
+		}
+
+		private CodeParameterDeclarationExpression GenerateArgFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
+		{
+			CodeParameterDeclarationExpression ret = null;
 			switch (i.Type)
 			{
 				// Impossible cases
@@ -410,34 +510,109 @@ namespace Ender
 					break;
 				// TODO how to handle a function ptr?
 				case ItemType.FUNCTION:
-					ret = null;
+					ret = new CodeParameterDeclarationExpression();
+					ret.Type = new CodeTypeReference("System.IntPtr");
 					break;
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
 					ret = new CodeParameterDeclarationExpression();
-					ret.Type = new CodeTypeReference(i.Identifier);
+					ret.Type = new CodeTypeReference(i.Name);
 					break;
 				// TODO same as basic?
 				case ItemType.CONSTANT:
 					ret = null;
 					break;
-				// TODO Check the processed for the enum name
 				case ItemType.ENUM:
-					ret = null;
+					// if the created object is actually an enum (it can be a class in
+					// case it has methods) use it, otherwise the inner enum
+					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateItem(i);
+					if (ce.IsEnum)
+					{
+						ret = new CodeParameterDeclarationExpression();
+						ret.Type = new CodeTypeReference(i.Name);
+					}
+					else
+					{
+						ret = new CodeParameterDeclarationExpression();
+						ret.Type = new CodeTypeReference(i.Name + ".Enum");
+					}
 					break;
 				case ItemType.DEF:
-					ret = null;
-					break;
+					Def d = (Def)i;
+					return GenerateArgFull(d.DefType, name, direction, transfer);
 				default:
-					ret = null;
+					ret = new CodeParameterDeclarationExpression();
+					ret.Type = new CodeTypeReference("System.IntPtr");
 					break;
 			}
 
 			if (ret == null)
 				return ret;
-			if (arg.Direction == ArgDirection.OUT)
+			if (direction == ArgDirection.OUT)
 				ret.Direction = FieldDirection.Out;
-			ret.Name = provider.CreateValidIdentifier(arg.Name);
+			ret.Name = provider.CreateValidIdentifier(name);
+			return ret;
+
+		}
+
+		private CodeParameterDeclarationExpression GenerateArg(Arg arg)
+		{
+			Item i = arg.ArgType;
+
+			if (i == null)
+			{
+				Console.WriteLine("[ERR] Arg '" + arg.Name + "' without a type?");
+				CodeParameterDeclarationExpression ret = new CodeParameterDeclarationExpression();
+				ret.Type = new CodeTypeReference("System.IntPtr");
+				ret.Name = provider.CreateValidIdentifier(arg.Name);
+				return ret;
+			}
+			return GenerateArgFull(i, arg.Name, arg.Direction, arg.Transfer);
+		}
+
+		private CodeStatement GenerateRetStatement(Arg arg)
+		{
+			if (arg == null)
+				return null;
+
+			Item i = arg.ArgType;
+			if (i == null)
+				return null;
+
+			CodeStatement ret = null;
+			switch (i.Type)
+			{
+				// Impossible cases
+				case ItemType.INVALID:
+				case ItemType.ATTR:
+				case ItemType.ARG:
+					ret = null;
+					break;
+				case ItemType.BASIC:
+					Basic b = (Basic)i;
+					// The special case for const char *: Marshal.PtrToStringAnsi(ret)
+					if (b.ValueType == ValueType.STRING && arg.Transfer == ItemTransfer.NONE)
+						ret = new CodeMethodReturnStatement(
+								new CodeMethodInvokeExpression(new CodeTypeReferenceExpression("Marshal"),
+								"PtrToStringAnsi", new CodeVariableReferenceExpression("ret")));
+					else
+						ret = new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret"));
+					break;
+				case ItemType.ENUM:
+					ret = new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret"));
+					break;
+				case ItemType.OBJECT:
+					// Call the constructor
+					// return new identifier(ret, false/true);
+					ret = new CodeMethodReturnStatement(new CodeObjectCreateExpression(
+							new CodeTypeReference(i.Identifier),
+							new CodeVariableReferenceExpression("ret"),
+							new CodePrimitiveExpression(false)));
+					break;
+				default:
+					ret = new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret"));
+					break;
+			}
 			return ret;
 		}
 
@@ -448,7 +623,10 @@ namespace Ender
 
 			Item i = arg.ArgType;
 			if (i == null)
-				return null;
+			{
+				Console.WriteLine("[ERR] Arg '" + arg.Name + "' without a type?");
+				return new CodeTypeReference("System.IntPtr");
+			}
 
 			CodeTypeReference ret = null;
 			switch (i.Type)
@@ -495,8 +673,6 @@ namespace Ender
 			// We for sure invoke a function
 			CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
 			ci.Method = new CodeMethodReferenceExpression(null, GenerateNamePinvoke(f));
-			// The default statement will be the invoke, unless we have a return value
-			CodeStatement cs = new CodeExpressionStatement(ci);
 			// To know if we must skip the first arg
 			bool skipFirst = false;
 
@@ -532,31 +708,85 @@ namespace Ender
 					CodeParameterDeclarationExpression cp = GenerateArg(a);
 					if (cp != null)
 					{
-						// TODO Add any conversion we might need
-						// Add the invoke function
+						// Add any conversion we might need
+						CodeStatement cs = GenerateArgStatement(a);
+						if (cs != null)
+							cm.Statements.Add(cs);
+						// Add the expression to the invoke function
+						CodeExpression ce = GenerateArgExpression(a);
+						if (ce != null)
+							ci.Parameters.Add(ce);
 						// Add the parameter
-						ci.Parameters.Add(new CodeVariableReferenceExpression(cp.Name));
-						cm.Parameters.Add(cp);
+						if (cm != null)
+							cm.Parameters.Add(cp);
 					}
 				}
 			}
-			// Now the return value
-			if ((f.Flags & FunctionFlag.CTOR) != FunctionFlag.CTOR)
+			// Now the return value prototype
+			CodeTypeReference ret = GenerateRet(f.Ret);
+			if (ret != null)
 			{
-				CodeTypeReference ret = GenerateRet(f.Ret);
-				if (ret != null)
+				// Do not set a return value on ctors
+				if ((f.Flags & FunctionFlag.CTOR) != FunctionFlag.CTOR)
 				{
-					// Check if we need to generate more statements to transform the return value
-					cs = new CodeMethodReturnStatement(ci);
 					if (cm != null)
+					{
 						cm.ReturnType = ret;
+					}
+				}
+
+				if (cm != null)
+				{
+					CodeVariableDeclarationStatement cvs;
+					// Add the return value
+					string sret = GenerateRetPinvoke(f.Ret);
+					System.Type type = GenerateType(sret);
+					if (type != null)
+					{
+						cvs = new CodeVariableDeclarationStatement(type, "ret", ci);
+					}
+					else
+					{
+						cvs = new CodeVariableDeclarationStatement(sret, "ret", ci);
+
+					}
+					cm.Statements.Add(cvs);
+				}
+			}
+			// Call the real function
+			else
+			{
+				if (cm != null)
+				{
+					// Just call the method
+					CodeStatement cs = new CodeExpressionStatement(ci);
+					cm.Statements.Add(cs);
 				}
 			}
 
-
-			// The body
-			if (cm != null)
-				cm.Statements.Add(cs);
+			// Finally the return value
+			if (ret != null)
+			{
+				if (cm != null)
+				{
+					if ((f.Flags & FunctionFlag.CTOR) != FunctionFlag.CTOR)
+					{
+						CodeStatement cs = GenerateRetStatement(f.Ret);
+						if (cs != null)
+							cm.Statements.Add(cs);
+					}
+					// Initialize the raw type for ctors
+					else
+					{
+						ci = new CodeMethodInvokeExpression();
+						ci.Method = new CodeMethodReferenceExpression(null, "Initialize");
+						ci.Parameters.Add(new CodeVariableReferenceExpression("ret"));
+						ci.Parameters.Add(new CodePrimitiveExpression(false));
+						CodeStatement cs = new CodeExpressionStatement(ci);
+						cm.Statements.Add(cs);
+					}
+				}
+			}
 
 			return cm;
 		}
@@ -583,6 +813,36 @@ namespace Ender
 			CodeMemberField rawField = new CodeMemberField("IntPtr", "raw");
 			rawField.Attributes = MemberAttributes.Family;
 			co.Members.Add(rawField);
+			// Add the getter
+			CodeMemberProperty rawProp = new CodeMemberProperty();
+			rawProp.Name = "Raw";
+			rawProp.Type = new CodeTypeReference("System.IntPtr");
+			rawProp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+			// Declares a property get statement to return the value of the raw IntPtr
+			rawProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "raw")));
+			co.Members.Add(rawProp);
+			// Add the inner struct
+			CodeTypeDeclaration cs = new CodeTypeDeclaration(s.Identifier + "Struct");
+			cs.Attributes = MemberAttributes.Private;
+			cs.IsStruct = true;
+			// Add the custom attributes [StructLayout(LayoutKind.Sequential)]
+			cs.CustomAttributes.Add(new CodeAttributeDeclaration("StructLayout",
+					new CodeAttributeArgument(new CodeFieldReferenceExpression(
+					new CodeTypeReferenceExpression(typeof(LayoutKind)), "Explicit"))));
+			co.Members.Add(cs);
+			// TODO Add the fields
+			// Add the contructor which will allocate the raw pointer memory
+			CodeConstructor cc = new CodeConstructor();
+			cc.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+			// raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(p)))
+			CodeMethodInvokeExpression cms = new CodeMethodInvokeExpression(
+					new CodeTypeReferenceExpression("Marshal"), "SizeOf", new CodeTypeOfExpression(new CodeTypeReference(s.Identifier + "Struct")));
+			CodeMethodInvokeExpression cma = new CodeMethodInvokeExpression(
+					new CodeTypeReferenceExpression("Marshal"), "AllocHGlobal", cms);
+			CodeAssignStatement cas = new CodeAssignStatement(new CodeVariableReferenceExpression("raw"), cma);
+			cc.Statements.Add(cas);
+			co.Members.Add(cc);
+			// Make it disposable to remove the allocated memory
 			return co;
 		}
 
@@ -628,14 +888,54 @@ namespace Ender
 			CodeTypeDeclaration co = new CodeTypeDeclaration(o.Identifier);
 			// Add the generated type into our hash
 			processed[o.Name] = co;
-			// In case it does no inherit from anything, add the raw pointer
+
+			// Create every pinvoke
+			functions = o.Functions;
+			if (functions != null)
+			{
+				foreach (Function f in functions)
+				{
+					Console.WriteLine("Processing function " + f.Name);
+					co.Members.Add(GeneratePinvoke(f));
+				}
+
+			}
+			// In case it does no inherit from anything:
 			Object inherit = o.Inherit;
 			if (inherit == null)
 			{
+				// Add the raw pointer: IntPtr raw;
 				CodeMemberField rawField = new CodeMemberField("IntPtr", "raw");
 				rawField.Attributes = MemberAttributes.Family;
 				co.Members.Add(rawField);
 				GenerateDisposable(co, unrefFunc);
+				// Add the getter
+				CodeMemberProperty rawProp = new CodeMemberProperty();
+				rawProp.Name = "Raw";
+				rawProp.Type = new CodeTypeReference("System.IntPtr");
+				rawProp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+				// Declares a property get statement to return the value of the raw IntPtr
+				rawProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "raw")));
+				co.Members.Add(rawProp);
+
+				// add the initialize method
+				CodeMemberMethod cm = new CodeMemberMethod();
+				cm.Name = "Initialize";
+				cm.Attributes = MemberAttributes.Family;
+				cm.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IntPtr), "i"));
+				cm.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "owned"));
+				// raw = i;
+				CodeAssignStatement as1 = new CodeAssignStatement(new CodeVariableReferenceExpression("raw"),
+						new CodeVariableReferenceExpression("i"));
+				cm.Statements.Add(as1);
+				// if (owned) ref(i)
+				CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
+				ci.Method = new CodeMethodReferenceExpression(null, GenerateNamePinvoke(refFunc));
+				ci.Parameters.Add(new CodeVariableReferenceExpression("i"));
+				CodeConditionStatement cs = new CodeConditionStatement(new CodeVariableReferenceExpression("owned"),
+						new CodeExpressionStatement(ci));
+				cm.Statements.Add(cs);
+				co.Members.Add(cm);
 			}
 			else
 			{
@@ -648,56 +948,38 @@ namespace Ender
 					co.BaseTypes.Add(cob.Name);
 				}	
 			}
-			// Create every pinvoke
-			functions = o.Functions;
-			if (functions != null)
-			{
-				foreach (Function f in functions)
-				{
-					Console.WriteLine("Processing function " + f.Name);
-					co.Members.Add(GeneratePinvoke(f));
-				}
-
-			}
 			// Get the constructors
 			List ctors = o.Ctors;
-			if (ctors != null)
+			if (ctors == null)
 			{
-				// Create a dummy constructor to handle the owning of a pointer
+				// Make the protected constructor
 				CodeConstructor cc = new CodeConstructor();
-				cc.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IntPtr), "i"));
-				cc.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "owned"));
-				cc.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("i"));
-				cc.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("owned"));
-				// must be protected
 				cc.Attributes = MemberAttributes.Family;
 				co.Members.Add(cc);
 			}
-			else
-			{
-				// Make the prvate constructor
-				CodeConstructor cc = new CodeConstructor();
-				cc.Attributes = MemberAttributes.Private;
-				co.Members.Add(cc);
 
-				// Make the protected constructor
-				cc = new CodeConstructor();
+			// Create a dummy constructor to handle the owning of a pointer
+			{
+				CodeConstructor cc = new CodeConstructor();
 				cc.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IntPtr), "i"));
 				cc.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "owned"));
-				CodeAssignStatement as1 = new CodeAssignStatement(new CodeVariableReferenceExpression("raw"),
-						new CodeVariableReferenceExpression("i"));
-				cc.Statements.Add(as1);
-				CodeMethodInvokeExpression invoke1 = new CodeMethodInvokeExpression(
-						null,
-						GenerateNamePinvoke(refFunc),
-						new CodeVariableReferenceExpression("i"));
-				CodeConditionStatement cs = new CodeConditionStatement(new CodeVariableReferenceExpression("owned"),
-						new CodeExpressionStatement(invoke1));
+				if (inherit != null)
+				{
+					cc.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("i"));
+					cc.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("owned"));
+				}
+				// must be protected
+				cc.Attributes = MemberAttributes.FamilyOrAssembly;
+				// Invoke the Initialize
+				CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
+				ci.Method = new CodeMethodReferenceExpression(null, "Initialize");
+				ci.Parameters.Add(new CodeVariableReferenceExpression("i"));
+				ci.Parameters.Add(new CodeVariableReferenceExpression("owned"));
+				CodeStatement cs = new CodeExpressionStatement(ci);
 				cc.Statements.Add(cs);
-				// FIXME must be protected
-				cc.Attributes = MemberAttributes.Public;
 				co.Members.Add(cc);
 			}
+
 			// in case the object has a ref() method
 			foreach (Function f in o.Functions)
 			{
@@ -723,6 +1005,14 @@ namespace Ender
 			// Our default imports
 			root.Imports.Add(new CodeNamespaceImport("System"));
 			root.Imports.Add(new CodeNamespaceImport("System.Runtime.InteropServices"));
+			List deps = lib.Dependencies;
+			if (deps != null)
+			{
+				foreach (Lib l in deps)
+				{
+					root.Imports.Add(new CodeNamespaceImport(l.Name));
+				}
+			}
 		}
 
 		private CodeObject GenerateItem(Item item)
@@ -801,6 +1091,32 @@ namespace Ender
 				}
 			}
 			return cu;
+		}
+
+		private static System.Type GenerateType(string stype)
+		{
+			if (stype == "bool")
+				return typeof(bool);
+			else if (stype == "byte")
+				return typeof(byte);
+			else if (stype == "sbyte")
+				return typeof(sbyte);
+			else if (stype == "uint")
+				return typeof(uint);
+			else if (stype == "int")
+				return typeof(int);
+			else if (stype == "ulong")
+				return typeof(ulong);
+			else if (stype == "long")
+				return typeof(long);
+			else if (stype == "double")
+				return typeof(double);
+			else if (stype == "string")
+				return typeof(string);
+			else if (stype == "IntPtr")
+				return typeof(System.IntPtr);
+			else
+				return null;
 		}
 	}
 }
