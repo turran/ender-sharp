@@ -818,6 +818,7 @@ namespace Ender
 					ret = new CodeMemberField();
 					ret.Type = GenerateBasic((Basic)i);
 					ret.Name = name;
+					ret.Attributes = MemberAttributes.Public;
 					break;
 				// TODO how to handle a function ptr?
 				case ItemType.FUNCTION:
@@ -828,6 +829,7 @@ namespace Ender
 					ret = new CodeMemberField();
 					ret.Type = new CodeTypeReference(iName);
 					ret.Name = name;
+					ret.Attributes = MemberAttributes.Public;
 					break;
 				// TODO same as basic?
 				case ItemType.CONSTANT:
@@ -887,7 +889,7 @@ namespace Ender
 			// Add the custom attributes [StructLayout(LayoutKind.Sequential)]
 			cs.CustomAttributes.Add(new CodeAttributeDeclaration("StructLayout",
 					new CodeAttributeArgument(new CodeFieldReferenceExpression(
-					new CodeTypeReferenceExpression(typeof(LayoutKind)), "Explicit"))));
+					new CodeTypeReferenceExpression(typeof(LayoutKind)), "Sequential"))));
 			// Add the fields to the struct
 			if (fields != null)
 			{
