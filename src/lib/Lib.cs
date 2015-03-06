@@ -41,7 +41,11 @@ namespace Ender
 		{
 		}
 
-		private Lib(IntPtr p)
+		public Lib(IntPtr p, bool owned) : this(p)
+		{
+		}
+
+		public Lib(IntPtr p)
 		{
 			raw = p;
 		}
@@ -60,6 +64,18 @@ namespace Ender
 			IntPtr i = ender_lib_item_list(raw, type);
 			List ret = new List(i, Item.ItemTypeToSystemType(type), true, true);
 			return ret;
+		}
+
+		public List Dependencies
+		{
+			get {
+				IntPtr l = ender_lib_dependencies_get(raw);
+				if (l == IntPtr.Zero)
+					return null;
+
+				List list = new List(l, typeof(Lib), true, false);
+				return list;
+			}
 		}
 
 		static public Lib Find(string name)
