@@ -802,6 +802,62 @@ namespace Ender
 			return co;
 		}
 
+		private CodeMemberField GenerateInnerFieldFull(Item i, string iName, string name)
+		{
+			CodeMemberField ret = null;
+			switch (i.Type)
+			{
+				// Impossible cases
+				case ItemType.INVALID:
+				case ItemType.ATTR:
+				case ItemType.ARG:
+					ret = null;
+					break;
+				// Basic case
+				case ItemType.BASIC:
+					ret = new CodeMemberField();
+					ret.Type = GenerateBasic((Basic)i);
+					ret.Name = name;
+					break;
+				// TODO how to handle a function ptr?
+				case ItemType.FUNCTION:
+					ret = null;
+					break;
+				case ItemType.STRUCT:
+				case ItemType.OBJECT:
+					ret = new CodeMemberField();
+					ret.Type = new CodeTypeReference(iName);
+					ret.Name = name;
+					break;
+				// TODO same as basic?
+				case ItemType.CONSTANT:
+					ret = null;
+					break;
+				// TODO Check the processed for the enum name
+				case ItemType.ENUM:
+					ret = null;
+					break;
+				case ItemType.DEF:
+					Def def = (Def)i;
+					ret = GenerateInnerFieldFull(def.DefType, iName, name);
+					break;
+				default:
+					break;
+			}
+			return ret;
+		}
+
+		private CodeMemberField GenerateInnerField(Attr a)
+		{
+			Item i = a.AttrType;
+			if (i == null)
+			{
+				Console.WriteLine("[ERR] Field '" + a.Name + "' without type");
+				return null;
+			}
+			return GenerateInnerFieldFull(i, i.Name, a.Name);
+		}
+
 		private CodeTypeDeclaration GenerateStruct(Struct s)
 		{
 			Console.WriteLine("Generating struct " + s.Name);
@@ -821,6 +877,9 @@ namespace Ender
 			// Declares a property get statement to return the value of the raw IntPtr
 			rawProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "raw")));
 			co.Members.Add(rawProp);
+
+			List fields = s.Fields;
+			// TODO add the getters/setters
 			// Add the inner struct
 			CodeTypeDeclaration cs = new CodeTypeDeclaration(s.Identifier + "Struct");
 			cs.Attributes = MemberAttributes.Private;
@@ -829,8 +888,17 @@ namespace Ender
 			cs.CustomAttributes.Add(new CodeAttributeDeclaration("StructLayout",
 					new CodeAttributeArgument(new CodeFieldReferenceExpression(
 					new CodeTypeReferenceExpression(typeof(LayoutKind)), "Explicit"))));
+			// Add the fields to the struct
+			if (fields != null)
+			{
+				foreach (Attr f in fields)
+				{
+					CodeMemberField mf = GenerateInnerField(f);
+					if (mf != null)
+						cs.Members.Add(mf);
+				}
+			}
 			co.Members.Add(cs);
-			// TODO Add the fields
 			// Add the contructor which will allocate the raw pointer memory
 			CodeConstructor cc = new CodeConstructor();
 			cc.Attributes = MemberAttributes.Public | MemberAttributes.Final;

@@ -7,7 +7,7 @@ namespace Ender
 	[Flags]
 	public enum AttrFlag
 	{
-		VALUE_OF= 1,
+		VALUE_OF = 1,
 		DOWNCAST = 2,
 	}
 
