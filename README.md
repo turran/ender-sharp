@@ -1,38 +1,26 @@
-To use ender dynamically you can do:
-using Ender;
+What is it?
+===========
+Ender-Sharp lets you create automatic bindings for C# for any library described with [Ender](https://github.com/turran/ender).
 
-public class Test01
-{
-	public static void Main()
-	{
-		// use ender to get the class/namespace??
-		dynamic rendererClass = Ender.getClass("enesim.renderer");
-		// use ender to create a new object based on the ns.type tuple
-                dynamic renderer = new EnderObject("enesim.renderer");
-		// use the class new() method to create a new object
-		dynamic renderer = renderClass.new();
-	}
-}
+Dependencies
+============
++ [Ender](https://github.com/turran/ender)
++ [Mono](http://www.mono-project.com/)
 
-To use ender statically you can do:
-using Ender;
-using System.CodeDom;
+Building and Installation
+=========================
+```bash
+./configure
+make
+make install
+```
 
-public class Test02
-{
-	public static void Main()
-	{
-		CompilerParameters cp;
-		CodeCompilerUnit cu = Ender.generate("enesim");
-		codeprovider.CompileAssemblyFromDom (cp, cu);
-		// finally deploy the dll into the system
-	}
-}
+How it works?
+=============
+First you need to have a [XML Ender file](https://github.com/turran/ender/wiki/XML-File-Format) for your library.
 
-To use the ender -> csharp automatic generator you can do
-ender-csharp <namespace> outdir
-which will generate:
-
-namespace.dll
-namespace-dll.config
-namespace-sharp.pc
+Example
+=======
+```bash
+./ender2sharp.exe NAME
+```
