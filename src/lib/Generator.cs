@@ -860,6 +860,12 @@ namespace Ender
 			return GenerateInnerFieldFull(i, i.Name, a.Name);
 		}
 
+		// TODO The struct should have every field on the inner
+		// struct repeated. And a constructor based on a raw and a constructor
+		// generic. In case of an out param being a struct, allocate the
+		// unmanaged memory, call the function and then set the class members
+		// Another option is at is right now, always have an unmanaged memory
+		// and use that
 		private CodeTypeDeclaration GenerateStruct(Struct s)
 		{
 			Console.WriteLine("Generating struct " + s.Name);
