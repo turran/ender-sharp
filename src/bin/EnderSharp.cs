@@ -13,6 +13,7 @@ using Microsoft.CSharp;
  *   searched as enesim.renderer.shape.foo_get, then enesim.renderer.shape + foo_get
  *   then and if found, pass the blacklisted items to the Generator. Once an item
  *   needs to be generated skip it
+ *   Pass the package version name that will be written on the assemblyinfo.cs and the pkg-config file
  * - Generate the .pc file, which will generate the pkg-config file of the generated lib
  * - Generate the .dll.config to make it independent of the OS
  */
