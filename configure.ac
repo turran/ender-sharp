@@ -92,6 +92,16 @@ CS="C#"
 if test "x$CSC" = "xno" ; then
     AC_MSG_ERROR([No $CS compiler found])
 fi
+
+AC_PATH_PROG(GACUTIL, gacutil, no)
+if test "x$GACUTIL" = "xno" ; then
+	AC_MSG_ERROR([No gacutil tool found])
+fi
+
+AC_SUBST(RUNTIME)
+AC_SUBST(CSC)
+AC_SUBST(GACUTIL)
+
 ## Make the debug preprocessor configurable
 
 AC_CONFIG_FILES([
