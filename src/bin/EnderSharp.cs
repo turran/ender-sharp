@@ -1,4 +1,5 @@
 using Ender;
+using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.IO;
@@ -27,9 +28,22 @@ public class EnderSharp
 	}
 
 	// The idea is to generate the .pc files
-	public static string GeneratePcFile(Lib lib)
+	public static string GeneratePcFile(Lib lib, string outfile)
 	{
-		return null;
+		string toReplace = @"
+		prefix=${pcfiledir}/../..
+		exec_prefix=${prefix}
+		libdir=${exec_prefix}/lib
+
+		Name: Gtk#
+		Description: Gtk# - GNOME .NET Binding
+		Version: 2.12.10
+		Libs: -r:${libdir}/cli/{0}.dll
+		Requires: {1}";
+
+		string pcFile = String.Format(toReplace, lib.Name, null);
+		File.WriteAllText(outfile, pcFile);
+		return pcFile;
 	}
 
 	public static string GenerateCode(CodeDomProvider provider, CodeCompileUnit cu, string outfile)
@@ -70,7 +84,10 @@ public class EnderSharp
 		CSharpCodeProvider provider = new CSharpCodeProvider();
 		Generator eg = new Generator(lib, provider);
 		CodeCompileUnit cu = eg.Generate();
+
 		GenerateCode(provider, cu, args[0]);
+		GeneratePcFile(lib, args[0] + ".pc");
+
 		Ender.Main.Shutdown();
 	}
 }
