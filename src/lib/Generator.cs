@@ -31,6 +31,12 @@ namespace Ender
 			this.provider = provider;
 		}
 
+		private string ConvertName(string id)
+		{
+			return Utils.Convert(id, Utils.Case.UNDERSCORE, lib.Notation,
+					Utils.Case.PASCAL, Utils.Notation.ENGLISH);
+		}
+
 		/* for a given item, generate all the namespaces and items
 		 * on the name hierarchy
 		 * foo.bar.myobject => ns(foo) -> ns(bar) -> object(MyObject)
@@ -684,7 +690,7 @@ namespace Ender
 			else if ((f.Flags & FunctionFlag.IS_METHOD) == FunctionFlag.IS_METHOD)
 			{
 				cm = new CodeMemberMethod();
-				cm.Name = f.Identifier;
+				cm.Name = ConvertName(f.Identifier);
 				cm.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 				// Add the raw
 				ci.Parameters.Add(new CodeVariableReferenceExpression("raw"));
@@ -795,7 +801,7 @@ namespace Ender
 		{
 			Console.WriteLine("Generating enum " + e.Name);
 			// Get the real item name
-			CodeTypeDeclaration co = new CodeTypeDeclaration(e.Identifier);
+			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(e.Identifier));
 			// Add the generated type into our hash
 			processed[e.Name] = co;
 			co.IsEnum = true;
@@ -961,7 +967,7 @@ namespace Ender
 			}
 
 			// Get the real item name
-			CodeTypeDeclaration co = new CodeTypeDeclaration(o.Identifier);
+			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(o.Identifier));
 			// Add the generated type into our hash
 			processed[o.Name] = co;
 

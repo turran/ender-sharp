@@ -23,7 +23,7 @@ namespace Ender
 			LATIN,
 		}
 
-		private static string Convert(string s, Case scase, Notation snot,
+		public static string Convert(string s, Case scase, Notation snot,
 				Case dcase, Notation dnot)
 		{
 			return ender_utils_name_convert(s, scase, snot, dcase, dnot);
