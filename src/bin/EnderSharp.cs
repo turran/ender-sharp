@@ -26,6 +26,12 @@ public class EnderSharp
 		// of generating
 	}
 
+	// The idea is to generate the .pc files
+	public static string GeneratePcFile(Lib lib)
+	{
+		return null;
+	}
+
 	public static string GenerateCode(CodeDomProvider provider, CodeCompileUnit cu, string outfile)
 	{
 		// Build the output file name. 
@@ -54,9 +60,15 @@ public class EnderSharp
 		// TODO do the args processing
 		// initialize ender before we do anything
 		Ender.Main.Init();
+		// Find the ender library
+		Lib lib = Lib.Find(args[0]);
+		if (lib == null)
+		{
+			return;
+		}
 		// Generate the code with the C# code provider.
 		CSharpCodeProvider provider = new CSharpCodeProvider();
-		Generator eg = new Generator(args[0], provider);
+		Generator eg = new Generator(lib, provider);
 		CodeCompileUnit cu = eg.Generate();
 		GenerateCode(provider, cu, args[0]);
 		Ender.Main.Shutdown();

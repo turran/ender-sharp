@@ -15,16 +15,11 @@ namespace Ender
 		private Dictionary<string, CodeObject> processed;
 		private CodeDomProvider provider;
 
-		private Generator()
+		public Generator(Lib lib, CodeDomProvider provider)
 		{
-		}
-
-		public Generator(string name, CodeDomProvider provider)
-		{
+			this.lib = lib;
 			// Create our empty compilation unit
 			cu = new CodeCompileUnit();
-			// Find the ender library
-			lib = Lib.Find(name);
 			// Our dictionary to keep processed items in sync
  			processed = new Dictionary<string, CodeObject>();
 			// Our code provider to identify keywords
