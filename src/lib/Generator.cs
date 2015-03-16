@@ -611,7 +611,7 @@ namespace Ender
 					// Call the constructor
 					// return new identifier(ret, false/true);
 					ret = new CodeMethodReturnStatement(new CodeObjectCreateExpression(
-							new CodeTypeReference(i.Identifier),
+							new CodeTypeReference(ConvertName(i.Identifier)),
 							new CodeVariableReferenceExpression("ret"),
 							new CodePrimitiveExpression(false)));
 					break;
@@ -876,7 +876,7 @@ namespace Ender
 		{
 			Console.WriteLine("Generating struct " + s.Name);
 			// Get the real item name
-			CodeTypeDeclaration co = new CodeTypeDeclaration(s.Identifier);
+			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(s.Identifier));
 			// Add the generated type into our hash
 			processed[s.Name] = co;
 			// Generate the raw field
