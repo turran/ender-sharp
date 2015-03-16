@@ -23,6 +23,12 @@ namespace Ender
 			LATIN,
 		}
 
+		private static string Convert(string s, Case scase, Notation snot,
+				Case dcase, Notation dnot)
+		{
+			return ender_utils_name_convert(s, scase, snot, dcase, dnot);
+		}
+
 		private static string camelize(string str)
 		{
 			string[] splitByPt = str.Split('.');

@@ -15,6 +15,10 @@ namespace Ender
 		[DllImport("libender.dll")]
 		static extern IntPtr ender_lib_name_get(IntPtr lib);
 		[DllImport("libender.dll")]
+		static extern Utils.Notation ender_lib_notation_get(IntPtr lib);
+		[DllImport("libender.dll")]
+		static extern Utils.Case ender_lib_case_get(IntPtr lib);
+		[DllImport("libender.dll")]
 		static extern IntPtr ender_lib_item_list(IntPtr lib, ItemType type);
 		[DllImport("libender.dll")]
 		static extern IntPtr ender_lib_dependencies_get(IntPtr lib);
@@ -34,6 +38,20 @@ namespace Ender
 				IntPtr uname = ender_lib_name_get(raw);
 				string s = Marshal.PtrToStringAnsi(uname);
 				return s;
+			}
+		}
+
+		public Utils.Case Case
+		{
+			get {
+				return ender_lib_case_get(raw);
+			}
+		}
+
+		public Utils.Notation Notation
+		{
+			get {
+				return ender_lib_notation_get(raw);
 			}
 		}
 
