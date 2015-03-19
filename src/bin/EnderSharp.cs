@@ -3,6 +3,7 @@ using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.IO;
+using System.Text;
 using Microsoft.CSharp;
 
 /**
@@ -30,18 +31,33 @@ public class EnderSharp
 	// The idea is to generate the .pc files
 	public static string GeneratePcFile(Lib lib, string outfile)
 	{
-		string toReplace = @"
-		prefix=${pcfiledir}/../..
+		string toReplace = @"prefix=${pcfiledir}/../..
 		exec_prefix=${prefix}
 		libdir=${exec_prefix}/lib
 
-		Name: Gtk#
-		Description: Gtk# - GNOME .NET Binding
-		Version: 2.12.10
-		Libs: -r:${libdir}/cli/{0}.dll
-		Requires: {1}";
+		Name: {LIB}-sharp
+		Description: {LIB} .NET Binding
+		Version: {VERSION}
+		Libs: -r:${libdir}/cli/{LIB}.dll
+		Requires: {DEPS}";
 
-		string pcFile = String.Format(toReplace, lib.Name, null);
+		string pcFile = toReplace.Replace("\t", "");
+		pcFile = pcFile.Replace("{LIB}", lib.Name);
+		pcFile = pcFile.Replace("{VERSION}", lib.Version.ToString());
+		List deps = lib.Dependencies;
+		if (deps != null)
+		{
+			StringBuilder builder = new StringBuilder();
+			foreach (Lib l in deps)
+			{
+				builder.Append(l.Name + "-sharp").Append(",");
+			}
+			pcFile = pcFile.Replace("{DEPS}", builder.ToString().TrimEnd(','));
+		}
+		else
+		{
+			pcFile = pcFile.Replace("{DEPS}", "");
+		}
 		File.WriteAllText(outfile, pcFile);
 		return pcFile;
 	}
