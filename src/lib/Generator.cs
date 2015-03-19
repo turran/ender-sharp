@@ -26,6 +26,19 @@ namespace Ender
 			this.provider = provider;
 		}
 
+		private string ConvertFullName(string name)
+		{
+			string[] values = name.Split('.');
+			string[] retValues = new string[values.Length];
+
+			for (int i = 0; i < values.Length; i++)
+			{
+				retValues[i] = Utils.Convert(values[i], Utils.Case.UNDERSCORE,
+						lib.Notation, Utils.Case.PASCAL, Utils.Notation.ENGLISH);
+			}
+			return String.Join(".", retValues);
+		}
+
 		private string ConvertName(string id)
 		{
 			return Utils.Convert(id, Utils.Case.UNDERSCORE, lib.Notation,
@@ -60,7 +73,7 @@ namespace Ender
 						// No parent, namespace for sure
 						if (parent == null)
 						{
-							CodeNamespace cns = new CodeNamespace(name);
+							CodeNamespace cns = new CodeNamespace(ConvertFullName(name));
 							cu.Namespaces.Add(cns);
 							parent = cns;
 							// Add it to the dict of processed
@@ -70,7 +83,7 @@ namespace Ender
 						// to mark a sub namespace
 						else if (parent.GetType() == typeof(CodeNamespace))
 						{
-							CodeNamespace cns = new CodeNamespace(name);
+							CodeNamespace cns = new CodeNamespace(ConvertFullName(name));
 							cu.Namespaces.Add(cns);
 							parent = cns;
 							// Add it to the dict of processed
@@ -79,7 +92,7 @@ namespace Ender
 						// We do support sub classes
 						else
 						{
-							CodeTypeDeclaration ty = new CodeTypeDeclaration(ns);
+							CodeTypeDeclaration ty = new CodeTypeDeclaration(ConvertName(ns));
 							parent = ty;
 							// Add it to the dict of processed
 							processed[name] = ty;
@@ -128,11 +141,11 @@ namespace Ender
 					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateItem(i);
 					if (ce.IsEnum)
 					{
-						return i.Name;
+						return ConvertFullName(i.Name);
 					}
 					else
 					{
-						return i.Name + ".Enum";
+						return ConvertFullName(i.Name) + ".Enum";
 					}
 				case ItemType.DEF:
 					Def def = (Def)i;
@@ -229,11 +242,11 @@ namespace Ender
 					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateItem(i);
 					if (ce.IsEnum)
 					{
-						ret = i.Name;
+						ret = ConvertFullName(i.Name);
 					}
 					else
 					{
-						ret = i.Name + ".Enum";
+						ret = ConvertFullName(i.Name) + ".Enum";
 					}
 					break;
 				case ItemType.DEF:
@@ -414,7 +427,7 @@ namespace Ender
 					// For out structs, we need to create the struct first before passing the raw arg
 					if (direction == ArgDirection.OUT)
 						return new CodeAssignStatement(new CodeVariableReferenceExpression(name), new CodeObjectCreateExpression(
-							new CodeTypeReference(i.Name)));
+							new CodeTypeReference(ConvertFullName(i.Name))));
 					return null;
 				default:
 					return null;
@@ -517,7 +530,7 @@ namespace Ender
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
 					ret = new CodeParameterDeclarationExpression();
-					ret.Type = new CodeTypeReference(i.Name);
+					ret.Type = new CodeTypeReference(ConvertFullName(i.Name));
 					break;
 				// TODO same as basic?
 				case ItemType.CONSTANT:
@@ -530,12 +543,12 @@ namespace Ender
 					if (ce.IsEnum)
 					{
 						ret = new CodeParameterDeclarationExpression();
-						ret.Type = new CodeTypeReference(i.Name);
+						ret.Type = new CodeTypeReference(ConvertFullName(i.Name));
 					}
 					else
 					{
 						ret = new CodeParameterDeclarationExpression();
-						ret.Type = new CodeTypeReference(i.Name + ".Enum");
+						ret.Type = new CodeTypeReference(ConvertFullName(i.Name) + ".Enum");
 					}
 					break;
 				case ItemType.DEF:
@@ -648,7 +661,7 @@ namespace Ender
 					break;
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
-					ret = new CodeTypeReference(i.Identifier);
+					ret = new CodeTypeReference(ConvertFullName(i.Name));
 					break;
 				// TODO same as basic?
 				case ItemType.CONSTANT:
@@ -828,7 +841,7 @@ namespace Ender
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
 					ret = new CodeMemberField();
-					ret.Type = new CodeTypeReference(iName);
+					ret.Type = new CodeTypeReference(ConvertFullName(iName));
 					ret.Name = name;
 					ret.Attributes = MemberAttributes.Public;
 					break;
@@ -890,7 +903,7 @@ namespace Ender
 			List fields = s.Fields;
 			// TODO add the getters/setters
 			// Add the inner struct
-			CodeTypeDeclaration cs = new CodeTypeDeclaration(s.Identifier + "Struct");
+			CodeTypeDeclaration cs = new CodeTypeDeclaration(ConvertName(s.Identifier) + "Struct");
 			cs.Attributes = MemberAttributes.Private;
 			cs.IsStruct = true;
 			// Add the custom attributes [StructLayout(LayoutKind.Sequential)]
@@ -913,7 +926,7 @@ namespace Ender
 			cc.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 			// raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(p)))
 			CodeMethodInvokeExpression cms = new CodeMethodInvokeExpression(
-					new CodeTypeReferenceExpression("Marshal"), "SizeOf", new CodeTypeOfExpression(new CodeTypeReference(s.Identifier + "Struct")));
+					new CodeTypeReferenceExpression("Marshal"), "SizeOf", new CodeTypeOfExpression(new CodeTypeReference(ConvertName(s.Identifier) + "Struct")));
 			CodeMethodInvokeExpression cma = new CodeMethodInvokeExpression(
 					new CodeTypeReferenceExpression("Marshal"), "AllocHGlobal", cms);
 			CodeAssignStatement cas = new CodeAssignStatement(new CodeVariableReferenceExpression("raw"), cma);
@@ -1087,7 +1100,7 @@ namespace Ender
 			{
 				foreach (Lib l in deps)
 				{
-					root.Imports.Add(new CodeNamespaceImport(l.Name));
+					root.Imports.Add(new CodeNamespaceImport(ConvertName(l.Name)));
 				}
 			}
 		}
