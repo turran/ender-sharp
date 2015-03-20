@@ -667,9 +667,18 @@ namespace Ender
 				case ItemType.CONSTANT:
 					ret = null;
 					break;
-				// TODO Check the processed for the enum name
 				case ItemType.ENUM:
-					ret = null;
+					// if the created object is actually an enum (it can be a class in
+					// case it has methods) use it, otherwise the inner enum
+					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateItem(i);
+					if (ce.IsEnum)
+					{
+						ret = new CodeTypeReference(ConvertFullName(i.Name));
+					}
+					else
+					{
+						ret = new CodeTypeReference(ConvertFullName(i.Name) + ".Enum");
+					}
 					break;
 				case ItemType.DEF:
 					ret = null;
@@ -810,6 +819,19 @@ namespace Ender
 			Console.WriteLine("Generating enum " + e.Name);
 			// Get the real item name
 			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(e.Identifier));
+			// Get the values
+			List values = e.Values;
+			if (values != null)
+			{
+				foreach (Constant c in values)
+				{
+					CodeMemberField f = new CodeMemberField ();
+					f.Name = ConvertName(c.Identifier);
+					// TODO add the value
+					//  InitExpression = new CodePrimitiveExpression(enumNameAndValue.Key);
+         				co.Members.Add(f);
+				}
+			}
 			// Add the generated type into our hash
 			processed[e.Name] = co;
 			co.IsEnum = true;
