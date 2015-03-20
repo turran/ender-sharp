@@ -102,7 +102,7 @@ public class EnderSharp
 		CodeCompileUnit cu = eg.Generate();
 
 		GenerateCode(provider, cu, args[0]);
-		GeneratePcFile(lib, args[0] + ".pc");
+		GeneratePcFile(lib, args[0] + "-sharp.pc");
 
 		Ender.Main.Shutdown();
 	}
