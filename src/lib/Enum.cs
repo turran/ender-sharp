@@ -29,7 +29,7 @@ namespace Ender
 				if (l == IntPtr.Zero)
 					return null;
 
-				List list = new List(l, typeof(Item), true, true);
+				List list = new List(l, typeof(Constant), true, true);
 				return list;
 			}
 		}

@@ -3,6 +3,7 @@ lib_SRC = \
 src/lib/Basic.cs \
 src/lib/Arg.cs \
 src/lib/Attr.cs \
+src/lib/Constant.cs \
 src/lib/Def.cs \
 src/lib/Enum.cs \
 src/lib/Function.cs \

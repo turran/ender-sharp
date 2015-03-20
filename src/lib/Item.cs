@@ -132,7 +132,7 @@ namespace Ender
 					return typeof(Struct);
 
 				case ItemType.CONSTANT:
-					return typeof(Item);
+					return typeof(Constant);
 
 				case ItemType.ENUM:
 					return typeof(Enum);
@@ -173,7 +173,7 @@ namespace Ender
 					return new Struct(p);
 
 				case ItemType.CONSTANT:
-				break;
+					return new Constant(p);
 
 				case ItemType.ENUM:
 					return new Enum(p);
