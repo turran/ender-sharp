@@ -1,3 +1,5 @@
++ Add support for functions, not only methods, useful to initialize the libs
++ Add support for out args
 References:
 + http://programmers.stackexchange.com/questions/93322/generating-a-class-dynamically-from-types-that-are-fetched-at-runtime
 + https://msdn.microsoft.com/en-us/library/hh156524(v=vs.110).aspx
