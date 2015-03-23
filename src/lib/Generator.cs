@@ -67,7 +67,7 @@ namespace Ender
 				}
 				else
 				{
-					// We create or either a namespace or what the GenerateItem returns
+					// We create or either a namespace or what the GenerateComplexItem returns
 					if (i == null)
 					{
 						// No parent, namespace for sure
@@ -100,7 +100,7 @@ namespace Ender
 					}
 					else
 					{
-						parent = GenerateItem(i);
+						parent = GenerateComplexItem(i);
 					}
 				}
 				count++;				
@@ -138,7 +138,7 @@ namespace Ender
 				case ItemType.ENUM:
 					// if the created object is actually an enum (it can be a class in
 					// case it has methods) use it, otherwise the inner enum
-					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateItem(i);
+					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateComplexItem(i);
 					if (ce.IsEnum)
 					{
 						return ConvertFullName(i.Name);
@@ -239,7 +239,7 @@ namespace Ender
 				case ItemType.ENUM:
 					// if the created object is actually an enum (it can be a class in
 					// case it has methods) use it, otherwise the inner enum
-					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateItem(i);
+					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateComplexItem(i);
 					if (ce.IsEnum)
 					{
 						ret = ConvertFullName(i.Name);
@@ -539,7 +539,7 @@ namespace Ender
 				case ItemType.ENUM:
 					// if the created object is actually an enum (it can be a class in
 					// case it has methods) use it, otherwise the inner enum
-					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateItem(i);
+					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateComplexItem(i);
 					if (ce.IsEnum)
 					{
 						ret = new CodeParameterDeclarationExpression();
@@ -670,7 +670,7 @@ namespace Ender
 				case ItemType.ENUM:
 					// if the created object is actually an enum (it can be a class in
 					// case it has methods) use it, otherwise the inner enum
-					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateItem(i);
+					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateComplexItem(i);
 					if (ce.IsEnum)
 					{
 						ret = new CodeTypeReference(ConvertFullName(i.Name));
@@ -712,6 +712,12 @@ namespace Ender
 				// Add the raw
 				ci.Parameters.Add(new CodeVariableReferenceExpression("raw"));
 				skipFirst = true;
+			}
+			else
+			{
+				cm = new CodeMemberMethod();
+				cm.Name = ConvertName(f.Identifier);
+				cm.Attributes = MemberAttributes.Public | MemberAttributes.Final | MemberAttributes.Static;
 			}
 
 			// Now the args
@@ -1053,7 +1059,7 @@ namespace Ender
 			{
 				// add the inheritance on the type
 				if (!processed.ContainsKey(inherit.Name))
-					GenerateItem(inherit);
+					GenerateComplexItem(inherit);
 				if (processed.ContainsKey(inherit.Name))
 				{
 					CodeTypeDeclaration cob = (CodeTypeDeclaration)processed[inherit.Name];
@@ -1127,7 +1133,7 @@ namespace Ender
 			}
 		}
 
-		private CodeObject GenerateItem(Item item)
+		private CodeObject GenerateComplexItem(Item item)
 		{
 			CodeObject ret = null;
 			CodeObject parent;
@@ -1188,18 +1194,53 @@ namespace Ender
 
 		public CodeCompileUnit Generate()
 		{
+			List items;
 			if (lib == null)
 				return cu;
 
 			// First set the information from the library itself
 			GenerateLib();
-			// Iterate over every type and generate it
-			foreach (ItemType type in System.Enum.GetValues(typeof(ItemType)))
+			// Generate very complex type (object, structs, enum and defs)
+			ItemType[] complexTypes = { ItemType.OBJECT, ItemType.ENUM, ItemType.STRUCT, ItemType.DEF };
+			foreach (ItemType type in complexTypes)
 			{
-				List items = lib.List(type);
+				items = lib.List(type);
 				foreach (Item item in items)
 				{
-					GenerateItem(item);
+					GenerateComplexItem(item);
+				}
+			}
+			// Generate every function, all the global functions are added to the 'Main' class
+			items = lib.List(ItemType.FUNCTION);
+			// Get the parent namespace
+			foreach (Function f in items)
+			{
+				string mainName;
+				CodeTypeDeclaration main;
+				CodeNamespace parent;
+
+				Console.WriteLine("Generating function '" + f.Name + "'");
+				parent = (CodeNamespace)GenerateParentObjects(f);
+				if (parent == null)
+				{
+					Console.WriteLine("[ERR] Impossible to generate parent for '" + f.Name + "'");
+				}
+				else
+				{
+					mainName = parent.Name + ".Main";
+
+					// Create our Main class
+					if (processed.ContainsKey(mainName))
+						main = (CodeTypeDeclaration)processed[mainName];
+					else
+					{
+						main = new CodeTypeDeclaration("Main");
+						processed[mainName] = main;
+						parent.Types.Add(main);
+					}
+
+					CodeMemberMethod ret = GenerateFunction(f);
+					main.Members.Add(ret);
 				}
 			}
 			return cu;

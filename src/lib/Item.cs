@@ -117,7 +117,7 @@ namespace Ender
 					return typeof(Basic);
 
 				case ItemType.FUNCTION:
-					return typeof(Object);
+					return typeof(Function);
 
 				case ItemType.ATTR:
 					return typeof(Item);
