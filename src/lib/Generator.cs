@@ -1042,62 +1042,11 @@ namespace Ender
 			return co;
 		}
 
-		private CodeTypeDeclaration GenerateObject(Object o)
+		private void GenerateIntantiableObject(Object o, CodeTypeDeclaration co, Function refFunc, Function unrefFunc)
 		{
-			Function refFunc = null;
-			Function unrefFunc = null;
-			List functions;
-			bool hasRef = false;
-			bool hasUnref = false;
-
-			Console.WriteLine("Generating object " + o.Name);
-			// Do nothing if cannot ref an object
-			Object tmp = o;
-			while (tmp != null && !hasRef && !hasUnref)
-			{
-				functions = tmp.Functions;
-				if (functions != null)
-				{
-					foreach (Function f in functions)
-					{
-						if ((f.Flags & FunctionFlag.REF) == FunctionFlag.REF)
-						{
-							refFunc = f;
-							hasRef = true;
-						}
-						if ((f.Flags & FunctionFlag.UNREF) == FunctionFlag.UNREF)
-						{
-							unrefFunc = f;
-							hasUnref = true;
-						}
-					}
-				}
-				tmp = tmp.Inherit;
-			}
-			if (!hasRef || !hasUnref)
-			{
-				Console.WriteLine("[ERR] Skipping object " + o.Name + ", it does not have a ref/unref function");
-				return null;
-			}
-
-			// Get the real item name
-			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(o.Identifier));
-			// Add the generated type into our hash
-			processed[o.Name] = co;
-
-			// Create every pinvoke
-			functions = o.Functions;
-			if (functions != null)
-			{
-				foreach (Function f in functions)
-				{
-					Console.WriteLine("Processing function " + f.Name);
-					co.Members.Add(GeneratePinvoke(f));
-				}
-
-			}
 			// In case it does no inherit from anything:
 			Object inherit = o.Inherit;
+
 			if (inherit == null)
 			{
 				// Add the raw pointer: IntPtr raw;
@@ -1176,19 +1125,154 @@ namespace Ender
 				co.Members.Add(cc);
 			}
 
-			// in case the object has a ref() method
-			foreach (Function f in o.Functions)
+			// Create the properties
+			List props = o.Props;
+			if (props != null)
 			{
-				// Skip the ref/unref
-				if ((f.Flags & FunctionFlag.REF) == FunctionFlag.REF)
-					continue;
-				if ((f.Flags & FunctionFlag.UNREF) == FunctionFlag.UNREF)
-					continue;
+				foreach (Attr a in props)
+				{
+					Function f;
 
-				Console.WriteLine("Generating function " + f.Name);
-				CodeMemberMethod cm = GenerateFunction(f);
-				if (cm != null)
-					co.Members.Add(cm);
+					CodeMemberProperty cmp = new CodeMemberProperty();
+					cmp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+					cmp.Name = ConvertName(a.Name);
+					f = a.Getter;
+					if (f != null)
+					{
+						cmp.HasGet = true;
+						//cmp.GetStatements.Add(new CodeMethodReturnStatement(
+								//new CodeFieldReferenceExpression(
+								//new CodeThisReferenceExpression(), "widthValue")));
+					}
+					f = a.Setter;
+					if (f != null)
+					{
+						cmp.HasSet = true;
+					}
+					cmp.Type = new CodeTypeReference(typeof(System.Double));
+					co.Members.Add(cmp);
+				}
+			}
+		}
+
+		private CodeTypeDeclaration GenerateObject(Object o)
+		{
+			Function refFunc = null;
+			Function unrefFunc = null;
+			List functions;
+			bool hasRef = false;
+			bool hasUnref = false;
+			bool hasCtor = false;
+			bool hasMethod = false;
+			bool isStaticClass = false;
+
+			Console.WriteLine("Generating object " + o.Name);
+			// Do nothing if cannot ref an object
+			Object tmp = o;
+			while (tmp != null && !hasRef && !hasUnref)
+			{
+				functions = tmp.Functions;
+				if (functions != null)
+				{
+					foreach (Function f in functions)
+					{
+						if ((f.Flags & FunctionFlag.REF) == FunctionFlag.REF)
+						{
+							refFunc = f;
+							hasRef = true;
+						}
+						if ((f.Flags & FunctionFlag.UNREF) == FunctionFlag.UNREF)
+						{
+							unrefFunc = f;
+							hasUnref = true;
+						}
+						if ((f.Flags & FunctionFlag.CTOR) == FunctionFlag.CTOR)
+						{
+							hasCtor = true;
+						}
+						if ((f.Flags & FunctionFlag.IS_METHOD) == FunctionFlag.IS_METHOD)
+						{
+							hasMethod = true;
+						}
+					}
+				}
+				tmp = tmp.Inherit;
+			}
+
+			// A static class does not have constructors, methods or inherits from anything else
+			if (!hasCtor && !hasMethod && o.Inherit == null)
+				isStaticClass = true;
+
+			// For objects that can be instantiables, if it does not have ref/unrefs, send an error
+			if (!isStaticClass)
+			{
+				if (!hasRef || !hasUnref)
+				{
+					Console.WriteLine("[ERR] Skipping object " + o.Name + ", it does not have a ref/unref function");
+					return null;
+				}
+			}
+
+			// Get the real item name
+			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(o.Identifier));
+			// Add the generated type into our hash
+			processed[o.Name] = co;
+
+			// Create every pinvoke for functions
+			List funcs = o.Functions;
+			if (funcs != null)
+			{
+				foreach (Function f in funcs)
+				{
+					Console.WriteLine("Processing PInvoke function " + f.Name);
+					co.Members.Add(GeneratePinvoke(f));
+				}
+			}
+
+			// Create every pinvoke for props
+			List props = o.Props;
+			if (props != null)
+			{
+				foreach (Attr a in props)
+				{
+					Function f;
+
+					f = a.Getter;
+					if (f != null)
+					{
+						Console.WriteLine("Processing Getter PInvoke function " + f.Name);
+						co.Members.Add(GeneratePinvoke(f));
+					}
+
+					f = a.Setter;
+					if (f != null)
+					{
+						Console.WriteLine("Processing Setter PInvoke function " + f.Name);
+						co.Members.Add(GeneratePinvoke(f));
+					}
+				}
+			}
+
+			if (!isStaticClass)
+				GenerateIntantiableObject(o, co, refFunc, unrefFunc);
+
+
+			// in case the object has a ref() method
+			if (funcs != null)
+			{
+				foreach (Function f in funcs)
+				{
+					// Skip the ref/unref
+					if ((f.Flags & FunctionFlag.REF) == FunctionFlag.REF)
+						continue;
+					if ((f.Flags & FunctionFlag.UNREF) == FunctionFlag.UNREF)
+						continue;
+
+					Console.WriteLine("Generating function " + f.Name);
+					CodeMemberMethod cm = GenerateFunction(f);
+					if (cm != null)
+						co.Members.Add(cm);
+				}
 			}
 
 			return co;
@@ -1320,7 +1404,7 @@ namespace Ender
 						processed[mainName] = main;
 						parent.Types.Add(main);
 					}
-
+					main.Members.Add(GeneratePinvoke(f));
 					CodeMemberMethod ret = GenerateFunction(f);
 					main.Members.Add(ret);
 				}
