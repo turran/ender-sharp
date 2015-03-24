@@ -13,6 +13,8 @@ namespace Ender
 		static extern IntPtr ender_item_object_ctor_get(IntPtr i);
 		[DllImport("libender.dll")]
 		static extern IntPtr ender_item_object_functions_get(IntPtr i);
+		[DllImport("libender.dll")]
+		static extern IntPtr ender_item_object_props_get(IntPtr i);
 
 		internal Object()
 		{
@@ -56,6 +58,19 @@ namespace Ender
 
 				List list = new List(l, typeof(Function), true, true);
 				return list;
+			}
+		}
+
+		public List Props
+		{
+			get {
+				IntPtr l = ender_item_object_props_get(raw);
+				if (l == IntPtr.Zero)
+					return null;
+
+				List list = new List(l, typeof(Attr), true, true);
+				return list;
+
 			}
 		}
 	}
