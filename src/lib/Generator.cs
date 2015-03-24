@@ -775,7 +775,7 @@ namespace Ender
 				cm.Attributes = MemberAttributes.Public | MemberAttributes.Final | MemberAttributes.Static;
 			}
 
-			// Now the args
+			// Now the args of the method and the pinvoke args
 			List args = f.Args;
 			if (args != null)
 			{
@@ -789,21 +789,37 @@ namespace Ender
 						continue;
 					}
 
+					// Add the method arg
 					CodeParameterDeclarationExpression cp = GenerateArg(a);
 					if (cp != null)
 					{
-						// Add any pre statement we might need
-						CodeStatement cs = GenerateArgPreStatement(a);
-						if (cs != null)
-							cm.Statements.Add(cs);
-						// Add the expression to the invoke function
-						CodeExpression ce = GenerateArgExpression(a);
-						if (ce != null)
-							ci.Parameters.Add(ce);
 						// Add the parameter
 						if (cm != null)
 							cm.Parameters.Add(cp);
 					}
+					// Add the expression to the invoke function
+					CodeExpression ce = GenerateArgExpression(a);
+					if (ce != null)
+						ci.Parameters.Add(ce);
+				}
+			}
+			// Now the pre return statements
+			if (args != null)
+			{
+				// If it is a method, skip the first Arg, it will be self
+				int count = 0;
+				foreach (Arg a in args)
+				{
+					if (count == 0 && skipFirst)
+					{
+						count++;
+						continue;
+					}
+
+					// Add any pre statement we might need
+					CodeStatement cs = GenerateArgPreStatement(a);
+					if (cs != null)
+						cm.Statements.Add(cs);
 				}
 			}
 			// Now the return value prototype
