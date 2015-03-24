@@ -287,8 +287,17 @@ namespace Ender
 			}
 			else
 			{
+				string fName;
 				// TODO use the correct replacement to support case/notation
-				string fName = parent.Namespace.Replace(".", "_") + "_" + parent.Identifier + "_" + f.Identifier;
+				// in case the parent is an attribute, we will have another parent
+				if (parent.Type == ItemType.ATTR)
+				{
+					fName = parent.Parent.Name.Replace(".", "_") + "_" + parent.Name + "_" + f.Identifier;
+				}
+				else
+				{
+					fName = parent.Namespace.Replace(".", "_") + "_" + parent.Identifier + "_" + f.Identifier;
+				}
 				return fName;
 			}
 		}
