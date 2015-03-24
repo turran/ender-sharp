@@ -20,6 +20,10 @@ namespace Ender
 		static extern IntPtr ender_item_attr_type_get(IntPtr i);
 		[DllImport("libender.dll")]
 		static extern AttrFlag ender_item_attr_flags_get(IntPtr i);
+		[DllImport("libender.dll")]
+		static extern IntPtr ender_item_attr_getter_get(IntPtr i);
+		[DllImport("libender.dll")]
+		static extern IntPtr ender_item_attr_setter_get(IntPtr i);
 
 		internal Attr()
 		{
@@ -57,6 +61,28 @@ namespace Ender
 					else
 						return i.ToInt64();
 				}
+			}
+		}
+
+		public Function Getter
+		{
+			get {
+				IntPtr i = ender_item_attr_getter_get(raw);
+				if (i != IntPtr.Zero)
+					return new Function(i, false);
+				else
+					return null;
+			}
+		}
+
+		public Function Setter
+		{
+			get {
+				IntPtr i = ender_item_attr_setter_get(raw);
+				if (i != IntPtr.Zero)
+					return new Function(i, false);
+				else
+					return null;
 			}
 		}
 	}
