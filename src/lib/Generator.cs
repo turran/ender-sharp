@@ -141,11 +141,11 @@ namespace Ender
 					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateComplexItem(i);
 					if (ce.IsEnum)
 					{
-						return ConvertFullName(i.Name);
+						return ConvertFullName(i.Name) + "Enum";
 					}
 					else
 					{
-						return ConvertFullName(i.Name) + ".Enum";
+						return ConvertFullName(i.Name) + "Enum" + ".Enum";
 					}
 				case ItemType.DEF:
 					Def def = (Def)i;
@@ -242,11 +242,11 @@ namespace Ender
 					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateComplexItem(i);
 					if (ce.IsEnum)
 					{
-						ret = ConvertFullName(i.Name);
+						ret = ConvertFullName(i.Name) + "Enum";
 					}
 					else
 					{
-						ret = ConvertFullName(i.Name) + ".Enum";
+						ret = ConvertFullName(i.Name) + "Enum" + ".Enum";
 					}
 					break;
 				case ItemType.DEF:
@@ -589,12 +589,12 @@ namespace Ender
 					if (ce.IsEnum)
 					{
 						ret = new CodeParameterDeclarationExpression();
-						ret.Type = new CodeTypeReference(ConvertFullName(i.Name));
+						ret.Type = new CodeTypeReference(ConvertFullName(i.Name) + "Enum");
 					}
 					else
 					{
 						ret = new CodeParameterDeclarationExpression();
-						ret.Type = new CodeTypeReference(ConvertFullName(i.Name) + ".Enum");
+						ret.Type = new CodeTypeReference(ConvertFullName(i.Name) + "Enum" + ".Enum");
 					}
 					break;
 				case ItemType.DEF:
@@ -719,11 +719,11 @@ namespace Ender
 					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateComplexItem(i);
 					if (ce.IsEnum)
 					{
-						ret = new CodeTypeReference(ConvertFullName(i.Name));
+						ret = new CodeTypeReference(ConvertFullName(i.Name) + "Enum");
 					}
 					else
 					{
-						ret = new CodeTypeReference(ConvertFullName(i.Name) + ".Enum");
+						ret = new CodeTypeReference(ConvertFullName(i.Name) + "Enum" + ".Enum");
 					}
 					break;
 				case ItemType.DEF:
@@ -893,7 +893,7 @@ namespace Ender
 		{
 			Console.WriteLine("Generating enum " + e.Name);
 			// Get the real item name
-			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(e.Identifier));
+			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(e.Identifier) + "Enum");
 			// Get the values
 			List values = e.Values;
 			if (values != null)
