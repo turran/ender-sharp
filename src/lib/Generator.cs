@@ -415,19 +415,53 @@ namespace Ender
 			return new CodeTypeReference(st);
 		}
 
+		// The statements needed to convert an arg from Pinvoke to C#
+		private CodeStatement GenerateArgPostStatementFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
+		{
+			switch (i.Type)
+			{
+				case ItemType.OBJECT:
+					// For out objects, create a new object based on the raw
+					if (direction == ArgDirection.OUT)
+						return new CodeAssignStatement(new CodeVariableReferenceExpression(name), new CodeObjectCreateExpression(
+							new CodeTypeReference(ConvertFullName(i.Name)), new CodeExpression[] {
+							new CodeVariableReferenceExpression(name + "Raw"),
+							new CodePrimitiveExpression(false)
+							}));
+					return null;
+				default:
+					return null;
+			}
+		}
+
+		// The statements needed to convert an arg from Pinvoke to C#
+		private CodeStatement GenerateArgPostStatement(Arg arg)
+		{
+			Item i = arg.ArgType;
+
+			if (i == null)
+				return null;
+			return GenerateArgPostStatementFull(i, arg.Name, arg.Direction, arg.Transfer);
+		}
+
 		// The statements needed to convert an arg from C# to Pinvoke
-		private CodeStatement GenerateArgStatementFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
+		private CodeStatement GenerateArgPreStatementFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
 		{
 			switch (i.Type)
 			{
 				case ItemType.DEF:
 					Def d = (Def)i;
-					return GenerateArgStatementFull(d.DefType, name, direction, transfer);
+					return GenerateArgPreStatementFull(d.DefType, name, direction, transfer);
 				case ItemType.STRUCT:
 					// For out structs, we need to create the struct first before passing the raw arg
 					if (direction == ArgDirection.OUT)
 						return new CodeAssignStatement(new CodeVariableReferenceExpression(name), new CodeObjectCreateExpression(
 							new CodeTypeReference(ConvertFullName(i.Name))));
+					return null;
+				case ItemType.OBJECT:
+					// For out objects, just pass an IntPtr
+					if (direction == ArgDirection.OUT)
+						return new CodeVariableDeclarationStatement(typeof(IntPtr), name + "Raw");
 					return null;
 				default:
 					return null;
@@ -435,13 +469,13 @@ namespace Ender
 		}
 
 		// The statements needed to convert an arg from C# to Pinvoke
-		private CodeStatement GenerateArgStatement(Arg arg)
+		private CodeStatement GenerateArgPreStatement(Arg arg)
 		{
 			Item i = arg.ArgType;
 
 			if (i == null)
 				return null;
-			return GenerateArgStatementFull(i, arg.Name, arg.Direction, arg.Transfer);
+			return GenerateArgPreStatementFull(i, arg.Name, arg.Direction, arg.Transfer);
 		}
 
 		// The expression to pass into the Pinvoke method for this arg
@@ -473,10 +507,22 @@ namespace Ender
 					ret = cvr;
 					break;
 				case ItemType.STRUCT:
-				case ItemType.OBJECT:
 					cvr = new CodeVariableReferenceExpression();
 					cvr.VariableName = provider.CreateValidIdentifier(name);
 					ret = new CodePropertyReferenceExpression(cvr, "Raw");
+					break;
+				case ItemType.OBJECT:
+					if (direction == ArgDirection.OUT)
+					{
+						ret = new CodeVariableReferenceExpression(name + "Raw");
+
+					}
+					else
+					{
+						cvr = new CodeVariableReferenceExpression();
+						cvr.VariableName = provider.CreateValidIdentifier(name);
+						ret = new CodePropertyReferenceExpression(cvr, "Raw");
+					}
 					break;
 				default:
 					break;
@@ -737,8 +783,8 @@ namespace Ender
 					CodeParameterDeclarationExpression cp = GenerateArg(a);
 					if (cp != null)
 					{
-						// Add any conversion we might need
-						CodeStatement cs = GenerateArgStatement(a);
+						// Add any pre statement we might need
+						CodeStatement cs = GenerateArgPreStatement(a);
 						if (cs != null)
 							cm.Statements.Add(cs);
 						// Add the expression to the invoke function
@@ -790,6 +836,29 @@ namespace Ender
 					// Just call the method
 					CodeStatement cs = new CodeExpressionStatement(ci);
 					cm.Statements.Add(cs);
+				}
+			}
+
+			// Now the post statements
+			if (args != null)
+			{
+				// If it is a method, skip the first Arg, it will be self
+				int count = 0;
+				foreach (Arg a in args)
+				{
+					if (count == 0 && skipFirst)
+					{
+						count++;
+						continue;
+					}
+
+					if (cm != null)
+					{
+						// Add any pre statement we might need
+						CodeStatement cs = GenerateArgPostStatement(a);
+						if (cs != null)
+							cm.Statements.Add(cs);
+					}
 				}
 			}
 
