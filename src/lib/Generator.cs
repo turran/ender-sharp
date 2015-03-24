@@ -1219,6 +1219,10 @@ namespace Ender
 				return null;
 			}
 
+			// It might be possible that generating parent objects creates the ourselves
+			if (processed.ContainsKey(item.Name))
+				return processed[item.Name];
+
 			Console.WriteLine("Generating item '" + item.Name + "'");
 			// Finally generate the particular item
 			switch (item.Type)
