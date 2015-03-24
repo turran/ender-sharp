@@ -775,7 +775,7 @@ namespace Ender
 				cm.Attributes = MemberAttributes.Public | MemberAttributes.Final | MemberAttributes.Static;
 			}
 
-			// Now the args of the method and the pinvoke args
+			// Now the args of the method itself
 			List args = f.Args;
 			if (args != null)
 			{
@@ -797,6 +797,21 @@ namespace Ender
 						if (cm != null)
 							cm.Parameters.Add(cp);
 					}
+				}
+			}
+			// Now generate the pinvoke args
+			if (args != null)
+			{
+				// If it is a method, skip the first Arg, it will be self
+				int count = 0;
+				foreach (Arg a in args)
+				{
+					if (count == 0 && skipFirst)
+					{
+						count++;
+						continue;
+					}
+
 					// Add the expression to the invoke function
 					CodeExpression ce = GenerateArgExpression(a);
 					if (ce != null)
