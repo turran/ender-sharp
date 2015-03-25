@@ -1218,16 +1218,19 @@ namespace Ender
 					f = a.Getter;
 					if (f != null)
 					{
-						// type retValue;
 						cmp.GetStatements.AddRange(GenerateFunctionBody(f));
-						//cmp.GetStatements.Add(new CodeMethodReturnStatement(
-								//new CodeFieldReferenceExpression(
-								//new CodeThisReferenceExpression(), "widthValue")));
 						cmp.HasGet = true;
 					}
 					f = a.Setter;
 					if (f != null)
 					{
+						// Add the second parameter as a variable based on value
+						// type arg1.Name
+						Arg arg1 = (Arg)f.Args.Nth(1);
+						cmp.SetStatements.Add(new CodeVariableDeclarationStatement(cmp.Type, arg1.Name));
+						// arg1.Name = value
+						cmp.SetStatements.Add(new CodeAssignStatement(new CodeVariableReferenceExpression(arg1.Name), new CodePropertySetValueReferenceExpression()));
+						cmp.SetStatements.AddRange(GenerateFunctionBody(f));
 						cmp.HasSet = true;
 					}
 					co.Members.Add(cmp);
