@@ -424,6 +424,73 @@ namespace Ender
 			return new CodeTypeReference(st);
 		}
 
+		private CodeTypeReference GenerateType(Item i)
+		{
+			CodeTypeReference ret = null;
+			switch (i.Type)
+			{
+				// Impossible cases
+				case ItemType.INVALID:
+				case ItemType.ATTR:
+				case ItemType.ARG:
+					ret = null;
+					break;
+				// Basic case
+				case ItemType.BASIC:
+					ret = GenerateBasic((Basic)i);
+					break;
+				// TODO how to handle a function ptr?
+				case ItemType.FUNCTION:
+					ret = null;
+					break;
+				case ItemType.STRUCT:
+				case ItemType.OBJECT:
+					ret = new CodeTypeReference(ConvertFullName(i.Name));
+					break;
+				// TODO same as basic?
+				case ItemType.CONSTANT:
+					ret = null;
+					break;
+				case ItemType.ENUM:
+					// if the created object is actually an enum (it can be a class in
+					// case it has methods) use it, otherwise the inner enum
+					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateComplexItem(i);
+					if (ce.IsEnum)
+					{
+						ret = new CodeTypeReference(ConvertFullName(i.Name) + "Enum");
+					}
+					else
+					{
+						ret = new CodeTypeReference(ConvertFullName(i.Name) + "Enum" + ".Enum");
+					}
+					break;
+				case ItemType.DEF:
+					Def def = (Def)i;
+					ret = GenerateType(def.DefType);
+					break;
+				default:
+					ret = null;
+					break;
+			}
+			return ret;
+		}
+
+		private CodeTypeReference GenerateProp(Attr attr)
+		{
+			if (attr == null)
+				return null;
+
+			Item i = attr.AttrType;
+			if (i == null)
+			{
+				Console.WriteLine("[ERR] Arg '" + attr.Name + "' without a type?");
+				return new CodeTypeReference("System.IntPtr");
+			}
+
+			return GenerateType(i);
+		}
+
+
 		// The statements needed to convert an arg from Pinvoke to C#
 		private CodeStatement GenerateArgPostStatementFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
 		{
@@ -697,60 +764,49 @@ namespace Ender
 				return new CodeTypeReference("System.IntPtr");
 			}
 
-			CodeTypeReference ret = null;
-			switch (i.Type)
+			return GenerateType(i);
+		}
+
+		private CodeMethodInvokeExpression GenerateFunctionCall(Function f)
+		{
+			// To know if we must skip the first arg
+			bool skipFirst = false;
+
+			CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
+			ci.Method = new CodeMethodReferenceExpression(null, GenerateNamePinvoke(f));
+
+			if ((f.Flags & FunctionFlag.IS_METHOD) == FunctionFlag.IS_METHOD)
 			{
-				// Impossible cases
-				case ItemType.INVALID:
-				case ItemType.ATTR:
-				case ItemType.ARG:
-					ret = null;
-					break;
-				// Basic case
-				case ItemType.BASIC:
-					ret = GenerateBasic((Basic)i);
-					break;
-				// TODO how to handle a function ptr?
-				case ItemType.FUNCTION:
-					ret = null;
-					break;
-				case ItemType.STRUCT:
-				case ItemType.OBJECT:
-					ret = new CodeTypeReference(ConvertFullName(i.Name));
-					break;
-				// TODO same as basic?
-				case ItemType.CONSTANT:
-					ret = null;
-					break;
-				case ItemType.ENUM:
-					// if the created object is actually an enum (it can be a class in
-					// case it has methods) use it, otherwise the inner enum
-					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateComplexItem(i);
-					if (ce.IsEnum)
-					{
-						ret = new CodeTypeReference(ConvertFullName(i.Name) + "Enum");
-					}
-					else
-					{
-						ret = new CodeTypeReference(ConvertFullName(i.Name) + "Enum" + ".Enum");
-					}
-					break;
-				case ItemType.DEF:
-					ret = null;
-					break;
-				default:
-					ret = null;
-					break;
+				// Add the raw
+				ci.Parameters.Add(new CodeVariableReferenceExpression("raw"));
 			}
-			return ret;
+
+			// Now generate the pinvoke args
+			List args = f.Args;
+			if (args != null)
+			{
+				// If it is a method, skip the first Arg, it will be self
+				int count = 0;
+				foreach (Arg a in args)
+				{
+					if (count == 0 && skipFirst)
+					{
+						count++;
+						continue;
+					}
+
+					// Add the expression to the invoke function
+					CodeExpression ce = GenerateArgExpression(a);
+					if (ce != null)
+						ci.Parameters.Add(ce);
+				}
+			}
+			return ci;
 		}
 
 		private CodeMemberMethod GenerateFunction(Function f)
 		{
 			CodeMemberMethod cm = null;
-			// We for sure invoke a function
-			CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
-			ci.Method = new CodeMethodReferenceExpression(null, GenerateNamePinvoke(f));
 			// To know if we must skip the first arg
 			bool skipFirst = false;
 
@@ -764,8 +820,6 @@ namespace Ender
 				cm = new CodeMemberMethod();
 				cm.Name = ConvertName(f.Identifier);
 				cm.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-				// Add the raw
-				ci.Parameters.Add(new CodeVariableReferenceExpression("raw"));
 				skipFirst = true;
 			}
 			else
@@ -774,6 +828,9 @@ namespace Ender
 				cm.Name = ConvertName(f.Identifier);
 				cm.Attributes = MemberAttributes.Public | MemberAttributes.Final | MemberAttributes.Static;
 			}
+
+			// We for sure invoke a function
+			CodeMethodInvokeExpression ci = GenerateFunctionCall(f);
 
 			// Now the args of the method itself
 			List args = f.Args;
@@ -797,25 +854,6 @@ namespace Ender
 						if (cm != null)
 							cm.Parameters.Add(cp);
 					}
-				}
-			}
-			// Now generate the pinvoke args
-			if (args != null)
-			{
-				// If it is a method, skip the first Arg, it will be self
-				int count = 0;
-				foreach (Arg a in args)
-				{
-					if (count == 0 && skipFirst)
-					{
-						count++;
-						continue;
-					}
-
-					// Add the expression to the invoke function
-					CodeExpression ce = GenerateArgExpression(a);
-					if (ce != null)
-						ci.Parameters.Add(ce);
 				}
 			}
 			// Now the pre return statements
@@ -1180,7 +1218,7 @@ namespace Ender
 					{
 						cmp.HasSet = true;
 					}
-					cmp.Type = new CodeTypeReference(typeof(System.Double));
+					cmp.Type = GenerateProp(a);
 					co.Members.Add(cmp);
 				}
 			}
