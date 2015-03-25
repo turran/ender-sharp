@@ -16,6 +16,7 @@ namespace Ender
 	{
 		RETURN = 1,
 		CLOSURE = 2,
+		NULLABLE = 4,
 	}
 
 	public class Arg : Item

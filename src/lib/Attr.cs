@@ -9,6 +9,7 @@ namespace Ender
 	{
 		VALUE_OF = 1,
 		DOWNCAST = 2,
+		NULLABLE = 4,
 	}
 
 	public class Attr : Item
