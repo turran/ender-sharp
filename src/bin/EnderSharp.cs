@@ -5,6 +5,7 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Text;
 using Microsoft.CSharp;
+using Mono.Options;
 
 /**
  * TODO:
@@ -22,12 +23,6 @@ using Microsoft.CSharp;
 
 public class EnderSharp
 {
-	private static void Help()
-	{
-		// TODO we should add also a list of types that we want to skip
-		// of generating
-	}
-
 	// The idea is to generate the .pc files
 	public static string GeneratePcFile(Lib lib, string outfile)
 	{
@@ -62,47 +57,77 @@ public class EnderSharp
 		return pcFile;
 	}
 
-	public static string GenerateCode(CodeDomProvider provider, CodeCompileUnit cu, string outfile)
+	public static void GenerateCode(CodeDomProvider provider, CodeCompileUnit cu, string sourceFile)
 	{
-		// Build the output file name. 
-		string sourceFile;
-		if (provider.FileExtension[0] == '.')
-		{
-			sourceFile = outfile + provider.FileExtension;
-		}
-		else
-		{
-			sourceFile = outfile + "." + provider.FileExtension;
-		}
-
 		StreamWriter sw = new StreamWriter(sourceFile, false);
 		IndentedTextWriter tw = new IndentedTextWriter(sw, "    ");
 		provider.GenerateCodeFromCompileUnit(cu, tw,
 				new CodeGeneratorOptions());
 		tw.Close();
-
-		return sourceFile;
 	}
 
 
 	public static void Main(string[] args)
 	{
-		// TODO do the args processing
-		// initialize ender before we do anything
-		Ender.Main.Init();
-		// Find the ender library
-		Lib lib = Lib.Find(args[0]);
-		if (lib == null)
-		{
+		System.Collections.Generic.List<string> extra;
+		System.Collections.Generic.List<string> skip = new System.Collections.Generic.List<string> ();
+		bool show_help = false;
+		string outputDir = Directory.GetCurrentDirectory();
+
+		// Args processing
+		var p = new OptionSet () {
+			{ "s|skip=", "the {NAME} of the items to skip.",
+					v => skip.Add (v) },
+			{ "o|output=", "the {OUTPUT DIR} to use for the generated files.",
+					v => outputDir = v },
+			{ "h|help",  "show this message and exit", 
+					v => show_help = v != null },
+		};
+
+		try {
+			extra = p.Parse (args);
+		} catch (OptionException e) {
+			Console.Write ("ender2sharp: ");
+			Console.WriteLine (e.Message);
+			Console.WriteLine ("Try `ender2sharp --help' for more information.");
 			return;
 		}
+
+		if (extra.Count == 0)
+			show_help = true;
+
+		if (show_help)
+		{
+			Console.WriteLine ("Help");
+			return;
+		}
+
+		// Initialize ender before we do anything
+		Ender.Main.Init();
+		// Find the ender library
+		Lib lib = Lib.Find(extra[0]);
+		if (lib == null)
+		{
+			Console.WriteLine ("Library '" + extra[0] + "' not found");
+			return;
+		}
+
 		// Generate the code with the C# code provider.
 		CSharpCodeProvider provider = new CSharpCodeProvider();
 		Generator eg = new Generator(lib, provider);
 		CodeCompileUnit cu = eg.Generate();
 
-		GenerateCode(provider, cu, args[0]);
-		GeneratePcFile(lib, args[0] + "-sharp.pc");
+		// Generate the source file
+		string sourceFile;
+		if (provider.FileExtension[0] == '.')
+			sourceFile = extra[0] + "-sharp" + provider.FileExtension;
+		else
+			sourceFile = extra[0] + "-sharp" + "." + provider.FileExtension;
+		GenerateCode(provider, cu, Path.Combine(outputDir, sourceFile));
+
+		// Generate the pc file
+		string pcFile = extra[0] + "-sharp.pc";
+		GeneratePcFile(lib, Path.Combine(outputDir, pcFile));
 
 		Ender.Main.Shutdown();
 	}
