@@ -1,0 +1,9 @@
+prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+
+Name: enesim-sharp
+Description: enesim .NET Binding
+Version: 0
+Libs: -r:${libdir}/cli/enesim.dll
+Requires: eina-sharp

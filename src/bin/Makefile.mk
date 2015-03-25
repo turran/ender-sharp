@@ -5,6 +5,9 @@ src/bin/Options.cs
 
 noinst_DATA += $(bin_BIN)
 
-$(bin_BIN): $(bin_SRC)
+src/bin/Options.cs:
+	cp `pkg-config --variable=Sources mono-options` $(top_srcdir)/src/bin/
+
+$(bin_BIN): $(bin_SRC) $(output_DIR)
 	$(CSC) -nowarn:169 -unsafe -target:exe $(bin_SRC) \
-		-out:$(bin_BIN) -r:$(top_builddir)/$(PACKAGE).dll
+		-out:$(output_DIR)/$(bin_BIN) -r:$(output_DIR)/$(PACKAGE).dll

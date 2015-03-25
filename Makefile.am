@@ -28,10 +28,14 @@ m4/ltoptions.m4 \
 m4/ltsugar.m4 \
 m4/ltversion.m4
 
+output_DIR = $(top_builddir)/bin
 lib_LTLIBRARIES =
 check_PROGRAMS =
 EXTRA_DIST =
 noinst_DATA =
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA =
 
 ### Library
 
@@ -40,6 +44,10 @@ include src/lib/Makefile.mk
 ### Binary
 
 include src/bin/Makefile.mk
+
+### The generated bindings
+include eina/Makefile.mk
+include enesim/Makefile.mk
 
 EXTRA_DIST += \
 AUTHORS \
@@ -59,8 +67,8 @@ $(SED) \
 -e 's,@includedir\@,$(includedir),g' \
 -e 's,@pkgincludedir\@,$(pkgincludedir),g' \
 -e 's,@pkglibdir\@,$(pkglibdir),g' \
--e 's,@ender_js_sm_requirements_private\@,$(ender_js_sm_requirements_private),g' \
--e 's,@ender_js_sm_requirements\@,$(ender_js_sm_requirements),g' \
+-e 's,@ender_sharp_requirements_private\@,$(ender_sharp_requirements_private),g' \
+-e 's,@ender_sharp_requirements\@,$(ender_sharp_requirements),g' \
 < $< > $@ || rm $@
 
 pc_verbose = $(pc_verbose_@AM_V@)
@@ -71,9 +79,8 @@ pc_verbose_0 = @echo "  PC      " $@;
 	@rm -f $@
 	$(pc_verbose)$(sed_process)
 
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA =
 
 pkgconfig_DATA += ender-sharp.pc
 
-
+$(output_DIR):
+	@mkdir $(output_DIR)

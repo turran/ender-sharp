@@ -1,0 +1,9 @@
+prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+
+Name: eina-sharp
+Description: eina .NET Binding
+Version: 1
+Libs: -r:${libdir}/cli/eina.dll
+Requires: 

@@ -19,9 +19,9 @@ src/lib/Generator.cs
 
 noinst_DATA += $(lib_BIN)
 
-$(lib_BIN): $(lib_SRC)
+$(lib_BIN): $(lib_SRC) $(output_DIR)
 	$(CSC) -nowarn:169 -unsafe -target:library -debug $(lib_SRC) \
-		-out:$(lib_BIN)
+		-out:$(output_DIR)/$(lib_BIN)
 
 install-data-local:
 	echo "$(GACUTIL) /i $(lib_BIN) /f $(GACUTIL_FLAGS)";  \
