@@ -804,6 +804,13 @@ namespace Ender
 			return ci;
 		}
 
+		// creates the member method in the form of:
+		//  public int MyMethod(int i1, string s2)
+		//  {
+		//    int ret;
+		//    ret = my_method(i1, s2);
+		//    return ret;
+		//
 		private CodeMemberMethod GenerateFunction(Function f)
 		{
 			CodeMemberMethod cm = null;
@@ -829,9 +836,6 @@ namespace Ender
 				cm.Attributes = MemberAttributes.Public | MemberAttributes.Final | MemberAttributes.Static;
 			}
 
-			// We for sure invoke a function
-			CodeMethodInvokeExpression ci = GenerateFunctionCall(f);
-
 			// Now the args of the method itself
 			List args = f.Args;
 			if (args != null)
@@ -856,6 +860,10 @@ namespace Ender
 					}
 				}
 			}
+
+			// We for sure call the pinvoke function
+			CodeMethodInvokeExpression ci = GenerateFunctionCall(f);
+
 			// Now the pre return statements
 			if (args != null)
 			{
