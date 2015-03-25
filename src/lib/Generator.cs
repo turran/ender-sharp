@@ -767,22 +767,50 @@ namespace Ender
 			return GenerateType(i);
 		}
 
-		private CodeMethodInvokeExpression GenerateFunctionCall(Function f)
+		//    int ret;
+		//    ret = my_method(i1, s2);
+		//    return ret;
+		private CodeStatementCollection GenerateFunctionBody(Function f)
 		{
+			CodeStatementCollection csc = new CodeStatementCollection();
 			// To know if we must skip the first arg
 			bool skipFirst = false;
 
+			if ((f.Flags & FunctionFlag.IS_METHOD) == FunctionFlag.IS_METHOD)
+				skipFirst = true;
+
+			List args = f.Args;
+			// Now the pre return statements
+			if (args != null)
+			{
+				// If it is a method, skip the first Arg, it will be self
+				int count = 0;
+				foreach (Arg a in args)
+				{
+					if (count == 0 && skipFirst)
+					{
+						count++;
+						continue;
+					}
+
+					// Add any pre statement we might need
+					CodeStatement cs = GenerateArgPreStatement(a);
+					if (cs != null)
+						csc.Add(cs);
+				}
+			}
+
+			// We for sure call the pinvoke function
 			CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
 			ci.Method = new CodeMethodReferenceExpression(null, GenerateNamePinvoke(f));
 
-			if ((f.Flags & FunctionFlag.IS_METHOD) == FunctionFlag.IS_METHOD)
+			if (skipFirst)
 			{
 				// Add the raw
 				ci.Parameters.Add(new CodeVariableReferenceExpression("raw"));
 			}
 
 			// Now generate the pinvoke args
-			List args = f.Args;
 			if (args != null)
 			{
 				// If it is a method, skip the first Arg, it will be self
@@ -801,7 +829,74 @@ namespace Ender
 						ci.Parameters.Add(ce);
 				}
 			}
-			return ci;
+
+			// Now the return value prototype
+			CodeTypeReference ret = GenerateRet(f.Ret);
+			if (ret != null)
+			{
+				CodeVariableDeclarationStatement cvs;
+				// Add the return value
+				string sret = GenerateRetPinvoke(f.Ret);
+				System.Type type = GenerateType(sret);
+				if (type != null)
+				{
+					cvs = new CodeVariableDeclarationStatement(type, "ret", ci);
+				}
+				else
+				{
+					cvs = new CodeVariableDeclarationStatement(sret, "ret", ci);
+				}
+				csc.Add(cvs);
+			}
+			else
+			{
+				// Just call the method
+				CodeStatement cs = new CodeExpressionStatement(ci);
+				csc.Add(cs);
+			}
+
+			// Now the post statements
+			if (args != null)
+			{
+				// If it is a method, skip the first Arg, it will be self
+				int count = 0;
+				foreach (Arg a in args)
+				{
+					if (count == 0 && skipFirst)
+					{
+						count++;
+						continue;
+					}
+
+					// Add any pre statement we might need
+					CodeStatement cs = GenerateArgPostStatement(a);
+					if (cs != null)
+						csc.Add(cs);
+				}
+			}
+
+			// Finally the return value
+			if (ret != null)
+			{
+				if ((f.Flags & FunctionFlag.CTOR) != FunctionFlag.CTOR)
+				{
+					CodeStatement cs = GenerateRetStatement(f.Ret);
+					if (cs != null)
+						csc.Add(cs);
+				}
+				// Initialize the raw type for ctors
+				else
+				{
+					ci = new CodeMethodInvokeExpression();
+					ci.Method = new CodeMethodReferenceExpression(null, "Initialize");
+					ci.Parameters.Add(new CodeVariableReferenceExpression("ret"));
+					ci.Parameters.Add(new CodePrimitiveExpression(false));
+					CodeStatement cs = new CodeExpressionStatement(ci);
+					csc.Add(cs);
+				}
+			}
+
+			return csc;
 		}
 
 		// creates the member method in the form of:
@@ -861,28 +956,6 @@ namespace Ender
 				}
 			}
 
-			// We for sure call the pinvoke function
-			CodeMethodInvokeExpression ci = GenerateFunctionCall(f);
-
-			// Now the pre return statements
-			if (args != null)
-			{
-				// If it is a method, skip the first Arg, it will be self
-				int count = 0;
-				foreach (Arg a in args)
-				{
-					if (count == 0 && skipFirst)
-					{
-						count++;
-						continue;
-					}
-
-					// Add any pre statement we might need
-					CodeStatement cs = GenerateArgPreStatement(a);
-					if (cs != null)
-						cm.Statements.Add(cs);
-				}
-			}
 			// Now the return value prototype
 			CodeTypeReference ret = GenerateRet(f.Ret);
 			if (ret != null)
@@ -895,82 +968,9 @@ namespace Ender
 						cm.ReturnType = ret;
 					}
 				}
-
-				if (cm != null)
-				{
-					CodeVariableDeclarationStatement cvs;
-					// Add the return value
-					string sret = GenerateRetPinvoke(f.Ret);
-					System.Type type = GenerateType(sret);
-					if (type != null)
-					{
-						cvs = new CodeVariableDeclarationStatement(type, "ret", ci);
-					}
-					else
-					{
-						cvs = new CodeVariableDeclarationStatement(sret, "ret", ci);
-
-					}
-					cm.Statements.Add(cvs);
-				}
-			}
-			// Call the real function
-			else
-			{
-				if (cm != null)
-				{
-					// Just call the method
-					CodeStatement cs = new CodeExpressionStatement(ci);
-					cm.Statements.Add(cs);
-				}
 			}
 
-			// Now the post statements
-			if (args != null)
-			{
-				// If it is a method, skip the first Arg, it will be self
-				int count = 0;
-				foreach (Arg a in args)
-				{
-					if (count == 0 && skipFirst)
-					{
-						count++;
-						continue;
-					}
-
-					if (cm != null)
-					{
-						// Add any pre statement we might need
-						CodeStatement cs = GenerateArgPostStatement(a);
-						if (cs != null)
-							cm.Statements.Add(cs);
-					}
-				}
-			}
-
-			// Finally the return value
-			if (ret != null)
-			{
-				if (cm != null)
-				{
-					if ((f.Flags & FunctionFlag.CTOR) != FunctionFlag.CTOR)
-					{
-						CodeStatement cs = GenerateRetStatement(f.Ret);
-						if (cs != null)
-							cm.Statements.Add(cs);
-					}
-					// Initialize the raw type for ctors
-					else
-					{
-						ci = new CodeMethodInvokeExpression();
-						ci.Method = new CodeMethodReferenceExpression(null, "Initialize");
-						ci.Parameters.Add(new CodeVariableReferenceExpression("ret"));
-						ci.Parameters.Add(new CodePrimitiveExpression(false));
-						CodeStatement cs = new CodeExpressionStatement(ci);
-						cm.Statements.Add(cs);
-					}
-				}
-			}
+			cm.Statements.AddRange(GenerateFunctionBody(f));
 
 			return cm;
 		}
@@ -1213,20 +1213,23 @@ namespace Ender
 					CodeMemberProperty cmp = new CodeMemberProperty();
 					cmp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 					cmp.Name = ConvertName(a.Name);
+					cmp.Type = GenerateProp(a);
+
 					f = a.Getter;
 					if (f != null)
 					{
-						cmp.HasGet = true;
+						// type retValue;
+						cmp.GetStatements.AddRange(GenerateFunctionBody(f));
 						//cmp.GetStatements.Add(new CodeMethodReturnStatement(
 								//new CodeFieldReferenceExpression(
 								//new CodeThisReferenceExpression(), "widthValue")));
+						cmp.HasGet = true;
 					}
 					f = a.Setter;
 					if (f != null)
 					{
 						cmp.HasSet = true;
 					}
-					cmp.Type = GenerateProp(a);
 					co.Members.Add(cmp);
 				}
 			}
