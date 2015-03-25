@@ -1238,6 +1238,28 @@ namespace Ender
 			}
 		}
 
+		private CodeTypeDeclaration GenerateDef(Def d)
+		{
+			// For defs we can do:
+			// for basic types, something like this:
+			// <def name="enesim.argb" type="uint32">
+			//
+			// public class Color2 {
+			// 	int color;
+			// 	public Color2 (int color) {
+			// 	this.color = color;
+			// 	}
+			// 	static public implicit operator Color2 (int color) {
+			// 		return new Color2 (color);
+			// 	}
+			// 	static public implicit operator int (Color2 color) {
+			// 		return color.color;
+			// 	}
+			// }
+			// For complex types, we might inherit directly
+			return null;
+		}
+
 		private CodeTypeDeclaration GenerateObject(Object o)
 		{
 			Function refFunc = null;
