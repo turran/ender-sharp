@@ -551,6 +551,9 @@ namespace Ender
 
 			if (i == null)
 				return null;
+			// TODO handle the nullables
+			if ((arg.Flags & ArgFlag.NULLABLE) == ArgFlag.NULLABLE)
+				Console.WriteLine(">>> NULLABLE");
 			return GenerateArgPreStatementFull(i, arg.Name, arg.Direction, arg.Transfer);
 		}
 
