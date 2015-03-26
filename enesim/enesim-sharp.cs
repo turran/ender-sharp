@@ -773,8 +773,6 @@ private static extern void enesim_renderer_shape_draw_mode_set(IntPtr self, Enes
                 Round,
                 
                 Square,
-                
-                EnesimRendererShapeStrokeCaps,
             }
             
             public enum StrokeJoinEnum {
@@ -784,8 +782,6 @@ private static extern void enesim_renderer_shape_draw_mode_set(IntPtr self, Enes
                 Round,
                 
                 Bevel,
-                
-                EnesimRendererShapeStrokeJoins,
             }
             
             public enum FillRuleEnum {
@@ -793,8 +789,6 @@ private static extern void enesim_renderer_shape_draw_mode_set(IntPtr self, Enes
                 NonZero,
                 
                 EvenOdd,
-                
-                EnesimRendererShapeFillRules,
             }
             
             public enum DrawModeEnum {
@@ -3850,6 +3844,75 @@ private static extern void enesim_log_dump(IntPtr self);
             public double x3;
             
             public double y3;
+        }
+    }
+    
+    public class Color {
+        
+        protected uint value;
+        
+        public Color(uint v) {
+            value = v;
+        }
+        
+        public uint Value {
+            get {
+                return this.value;
+            }
+        }
+        
+        public static   implicit operator Color(uint v) {
+            return new Color(v);
+        }
+        
+        public static   implicit operator uint(Color v) {
+            return v.value;
+        }
+    }
+    
+    public class Argb {
+        
+        protected uint value;
+        
+        public Argb(uint v) {
+            value = v;
+        }
+        
+        public uint Value {
+            get {
+                return this.value;
+            }
+        }
+        
+        public static   implicit operator Argb(uint v) {
+            return new Argb(v);
+        }
+        
+        public static   implicit operator uint(Argb v) {
+            return v.value;
+        }
+    }
+    
+    public class Alpha {
+        
+        protected byte value;
+        
+        public Alpha(byte v) {
+            value = v;
+        }
+        
+        public byte Value {
+            get {
+                return this.value;
+            }
+        }
+        
+        public static   implicit operator Alpha(byte v) {
+            return new Alpha(v);
+        }
+        
+        public static   implicit operator byte(Alpha v) {
+            return v.value;
         }
     }
     
