@@ -1168,7 +1168,7 @@ namespace Ender
 				{
 					CodeTypeDeclaration cob = (CodeTypeDeclaration)processed[inherit.Name];
 					co.BaseTypes.Add(cob.Name);
-				}	
+				}
 			}
 			// Get the constructors
 			List ctors = o.Ctors;
@@ -1257,7 +1257,81 @@ namespace Ender
 			// 	}
 			// }
 			// For complex types, we might inherit directly
-			return null;
+			Item i = d.DefType;
+			if (i == null)
+				return null;
+
+			CodeTypeDeclaration co;
+
+			switch (i.Type)
+			{
+				// Impossible cases
+				case ItemType.INVALID:
+				case ItemType.ATTR:
+				case ItemType.ARG:
+				case ItemType.FUNCTION:
+				case ItemType.CONSTANT:
+					return null;
+				// Basic case
+				case ItemType.BASIC:
+ 					co = new CodeTypeDeclaration(ConvertName(d.Identifier));
+					CodeTypeReference ct = GenerateBasic((Basic)i);
+					// Add the basic type as a Value member
+					CodeMemberField valueField = new CodeMemberField(ct, "value");
+					valueField.Attributes = MemberAttributes.Family;
+					co.Members.Add(valueField);
+					// Add the getter
+					CodeMemberProperty valueProp = new CodeMemberProperty();
+					valueProp.Name = "Value";
+					valueProp.Type = GenerateBasic((Basic)i);
+					valueProp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+					// Declares a property get statement to return the value of the value IntPtr
+					valueProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "value")));
+					co.Members.Add(valueProp);
+					// Add the constructor
+					CodeConstructor cc = new CodeConstructor();
+					cc.Attributes = MemberAttributes.Public;
+					cc.Parameters.Add(new CodeParameterDeclarationExpression(ct, "v"));
+					cc.Statements.Add(new CodeAssignStatement(new CodeVariableReferenceExpression("value"), new CodeVariableReferenceExpression("v")));
+					co.Members.Add(cc);
+					// Add the implicit operators
+					// from its deftype to type
+					CodeMemberMethod cmm = new CodeMemberMethod();
+					cmm.Name = "implicit operator " + co.Name;
+					cmm.Attributes = MemberAttributes.Public | MemberAttributes.Static;
+					cmm.ReturnType = new CodeTypeReference(" ");
+					cmm.Parameters.Add(new CodeParameterDeclarationExpression(ct, "v"));
+					cmm.Statements.Add(new CodeMethodReturnStatement(new CodeObjectCreateExpression(
+							new CodeTypeReference(ConvertName(d.Identifier)),
+							new CodeVariableReferenceExpression("v"))));
+					co.Members.Add(cmm);
+					// from type to deftype
+					cmm = new CodeMemberMethod();
+					cmm.Name = "implicit operator " + GenerateBasicPinvoke((Basic)i);
+					cmm.Attributes = MemberAttributes.Public | MemberAttributes.Static;
+					cmm.ReturnType = new CodeTypeReference(" ");
+					cmm.Parameters.Add(new CodeParameterDeclarationExpression(ConvertName(d.Identifier), "v"));
+					cmm.Statements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeVariableReferenceExpression("v"), "value")));
+					co.Members.Add(cmm);
+					break;
+				case ItemType.STRUCT:
+				case ItemType.OBJECT:
+				case ItemType.ENUM:
+				case ItemType.DEF:
+ 					co = new CodeTypeDeclaration(ConvertName(d.Identifier));
+					// add the inheritance on the type
+					if (!processed.ContainsKey(i.Name))
+						GenerateComplexItem(i);
+					if (processed.ContainsKey(i.Name))
+					{
+						CodeTypeDeclaration cob = (CodeTypeDeclaration)processed[i.Name];
+						co.BaseTypes.Add(cob.Name);
+					}
+					break;
+				default:
+					return null;
+			}
+			return co;
 		}
 
 		private CodeTypeDeclaration GenerateObject(Object o)
@@ -1433,6 +1507,9 @@ namespace Ender
 					break;
 				case ItemType.ENUM:
 					ret = GenerateEnum((Enum)item);
+					break;
+				case ItemType.DEF:
+					ret = GenerateDef((Def)item);
 					break;
 				default:
 					break;
