@@ -1238,25 +1238,68 @@ namespace Ender
 			}
 		}
 
+		// For basic types, something like this:
+		// <def name="enesim.argb" type="uint32">
+		//
+		// public class Color2 {
+		// 	int color;
+		// 	public Color2 (int color) {
+		// 	this.color = color;
+		// 	}
+		// 	static public implicit operator Color2 (int color) {
+		// 		return new Color2 (color);
+		// 	}
+		// 	static public implicit operator int (Color2 color) {
+		// 		return color.color;
+		// 	}
+		// }
+		private CodeTypeDeclaration GenerateBasicDef(Def d, Basic b)
+		{
+			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(d.Identifier));
+			CodeTypeReference ct = GenerateBasic(b);
+			// Add the basic type as a Value member
+			CodeMemberField valueField = new CodeMemberField(ct, "value");
+			valueField.Attributes = MemberAttributes.Family;
+			co.Members.Add(valueField);
+			// Add the getter
+			CodeMemberProperty valueProp = new CodeMemberProperty();
+			valueProp.Name = "Value";
+			valueProp.Type = GenerateBasic(b);
+			valueProp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+			// Declares a property get statement to return the value of the value IntPtr
+			valueProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "value")));
+			co.Members.Add(valueProp);
+			// Add the constructor
+			CodeConstructor cc = new CodeConstructor();
+			cc.Attributes = MemberAttributes.Public;
+			cc.Parameters.Add(new CodeParameterDeclarationExpression(ct, "v"));
+			cc.Statements.Add(new CodeAssignStatement(new CodeVariableReferenceExpression("value"), new CodeVariableReferenceExpression("v")));
+			co.Members.Add(cc);
+			// Add the implicit operators
+			// from its deftype to type
+			CodeMemberMethod cmm = new CodeMemberMethod();
+			cmm.Name = "implicit operator " + co.Name;
+			cmm.Attributes = MemberAttributes.Public | MemberAttributes.Static;
+			cmm.ReturnType = new CodeTypeReference(" ");
+			cmm.Parameters.Add(new CodeParameterDeclarationExpression(ct, "v"));
+			cmm.Statements.Add(new CodeMethodReturnStatement(new CodeObjectCreateExpression(
+					new CodeTypeReference(ConvertName(d.Identifier)),
+					new CodeVariableReferenceExpression("v"))));
+			co.Members.Add(cmm);
+			// from type to deftype
+			cmm = new CodeMemberMethod();
+			cmm.Name = "implicit operator " + GenerateBasicPinvoke(b);
+			cmm.Attributes = MemberAttributes.Public | MemberAttributes.Static;
+			cmm.ReturnType = new CodeTypeReference(" ");
+			cmm.Parameters.Add(new CodeParameterDeclarationExpression(ConvertName(d.Identifier), "v"));
+			cmm.Statements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeVariableReferenceExpression("v"), "value")));
+			co.Members.Add(cmm);
+
+			return co;
+		}
+
 		private CodeTypeDeclaration GenerateDef(Def d)
 		{
-			// For defs we can do:
-			// for basic types, something like this:
-			// <def name="enesim.argb" type="uint32">
-			//
-			// public class Color2 {
-			// 	int color;
-			// 	public Color2 (int color) {
-			// 	this.color = color;
-			// 	}
-			// 	static public implicit operator Color2 (int color) {
-			// 		return new Color2 (color);
-			// 	}
-			// 	static public implicit operator int (Color2 color) {
-			// 		return color.color;
-			// 	}
-			// }
-			// For complex types, we might inherit directly
 			Item i = d.DefType;
 			if (i == null)
 				return null;
@@ -1274,50 +1317,13 @@ namespace Ender
 					return null;
 				// Basic case
 				case ItemType.BASIC:
- 					co = new CodeTypeDeclaration(ConvertName(d.Identifier));
-					CodeTypeReference ct = GenerateBasic((Basic)i);
-					// Add the basic type as a Value member
-					CodeMemberField valueField = new CodeMemberField(ct, "value");
-					valueField.Attributes = MemberAttributes.Family;
-					co.Members.Add(valueField);
-					// Add the getter
-					CodeMemberProperty valueProp = new CodeMemberProperty();
-					valueProp.Name = "Value";
-					valueProp.Type = GenerateBasic((Basic)i);
-					valueProp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-					// Declares a property get statement to return the value of the value IntPtr
-					valueProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "value")));
-					co.Members.Add(valueProp);
-					// Add the constructor
-					CodeConstructor cc = new CodeConstructor();
-					cc.Attributes = MemberAttributes.Public;
-					cc.Parameters.Add(new CodeParameterDeclarationExpression(ct, "v"));
-					cc.Statements.Add(new CodeAssignStatement(new CodeVariableReferenceExpression("value"), new CodeVariableReferenceExpression("v")));
-					co.Members.Add(cc);
-					// Add the implicit operators
-					// from its deftype to type
-					CodeMemberMethod cmm = new CodeMemberMethod();
-					cmm.Name = "implicit operator " + co.Name;
-					cmm.Attributes = MemberAttributes.Public | MemberAttributes.Static;
-					cmm.ReturnType = new CodeTypeReference(" ");
-					cmm.Parameters.Add(new CodeParameterDeclarationExpression(ct, "v"));
-					cmm.Statements.Add(new CodeMethodReturnStatement(new CodeObjectCreateExpression(
-							new CodeTypeReference(ConvertName(d.Identifier)),
-							new CodeVariableReferenceExpression("v"))));
-					co.Members.Add(cmm);
-					// from type to deftype
-					cmm = new CodeMemberMethod();
-					cmm.Name = "implicit operator " + GenerateBasicPinvoke((Basic)i);
-					cmm.Attributes = MemberAttributes.Public | MemberAttributes.Static;
-					cmm.ReturnType = new CodeTypeReference(" ");
-					cmm.Parameters.Add(new CodeParameterDeclarationExpression(ConvertName(d.Identifier), "v"));
-					cmm.Statements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeVariableReferenceExpression("v"), "value")));
-					co.Members.Add(cmm);
-					break;
+					co = GenerateBasicDef(d, (Basic)i);
+ 					break;
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
 				case ItemType.ENUM:
 				case ItemType.DEF:
+					// For complex types, we might inherit directly
  					co = new CodeTypeDeclaration(ConvertName(d.Identifier));
 					// add the inheritance on the type
 					if (!processed.ContainsKey(i.Name))
@@ -1331,6 +1337,13 @@ namespace Ender
 				default:
 					return null;
 			}
+			if (co == null)
+				return null;
+
+			// Add the generated type into our hash
+			processed[d.Name] = co;
+
+			// TODO add the functions
 			return co;
 		}
 
