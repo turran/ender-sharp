@@ -1,5 +1,7 @@
 + Add support for functions, not only methods, useful to initialize the libs
-+ Add support for out args
++ Add support for nullable out args. One idea is to have several versions
+  of the functions with/without the nullable out arg. the simplified version
+  should pass IntPtr.Zero as the missing argument
 References:
 + http://programmers.stackexchange.com/questions/93322/generating-a-class-dynamically-from-types-that-are-fetched-at-runtime
 + https://msdn.microsoft.com/en-us/library/hh156524(v=vs.110).aspx
