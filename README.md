@@ -32,8 +32,8 @@ LIB_NAME-sharp.cs
 LIB_NAME-sharp.pc
 ```
 
-What gets binds for?
-====================
+How is the generated code?
+==========================
 
 Objects
 -------
