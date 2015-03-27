@@ -155,3 +155,8 @@ public enum RepeatModeEnum {
 }
 ```
 
+Examples
+--------
+ + [Enesim bindings](https://github.com/turran/ender-sharp/blob/master/enesim/enesim-sharp.cs) using the Ender [description](https://github.com/turran/enesim/blob/master/data/enesim.ender)
+ + [Eina bindings](https://github.com/turran/ender-sharp/blob/master/enesim/eina-sharp.cs) using the Ender [description](https://github.com/turran/ender/blob/master/data/eina.ender)
+
