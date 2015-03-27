@@ -445,6 +445,7 @@ namespace Ender
 					break;
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
+				case ItemType.DEF:
 					ret = new CodeTypeReference(ConvertFullName(i.Name));
 					break;
 				// TODO same as basic?
@@ -463,10 +464,6 @@ namespace Ender
 					{
 						ret = new CodeTypeReference(ConvertFullName(i.Name) + "Enum" + ".Enum");
 					}
-					break;
-				case ItemType.DEF:
-					Def def = (Def)i;
-					ret = GenerateType(def.DefType);
 					break;
 				default:
 					ret = null;
@@ -496,6 +493,14 @@ namespace Ender
 		{
 			switch (i.Type)
 			{
+				case ItemType.DEF:
+					Def d = (Def)i;
+					if (d.DefType.Type == ItemType.BASIC && direction == ArgDirection.OUT)
+					{
+						return new CodeAssignStatement(new CodeVariableReferenceExpression(name), new CodeVariableReferenceExpression(name + "Raw"));
+					}
+					return null;
+
 				case ItemType.OBJECT:
 					// For out objects, create a new object based on the raw
 					if (direction == ArgDirection.OUT)
@@ -521,40 +526,74 @@ namespace Ender
 		}
 
 		// The statements needed to convert an arg from C# to Pinvoke
-		private CodeStatement GenerateArgPreStatementFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
+		private CodeStatementCollection GenerateArgPreStatementFull(Item i, string iName, string argName, ArgDirection direction, ItemTransfer transfer)
 		{
+			CodeStatementCollection csc = new CodeStatementCollection();
 			switch (i.Type)
 			{
 				case ItemType.DEF:
 					Def d = (Def)i;
-					return GenerateArgPreStatementFull(d.DefType, name, direction, transfer);
+
+					// Can not convert implicitly for out parameters
+					if (d.DefType.Type == ItemType.BASIC && direction == ArgDirection.OUT)
+					{
+						Basic b = (Basic)d.DefType;
+						csc.Add(new CodeVariableDeclarationStatement(GenerateBasic(b), argName + "Raw"));
+					}
+					else
+					{
+						return GenerateArgPreStatementFull(d.DefType, iName, argName, direction, transfer);
+					}
+					return csc;
+
 				case ItemType.STRUCT:
+				case ItemType.OBJECT:
 					// For out structs, we need to create the struct first before passing the raw arg
 					if (direction == ArgDirection.OUT)
-						return new CodeAssignStatement(new CodeVariableReferenceExpression(name), new CodeObjectCreateExpression(
-							new CodeTypeReference(ConvertFullName(i.Name))));
-					return null;
-				case ItemType.OBJECT:
-					// For out objects, just pass an IntPtr
-					if (direction == ArgDirection.OUT)
-						return new CodeVariableDeclarationStatement(typeof(IntPtr), name + "Raw");
-					return null;
+					{
+ 						if (i.Type == ItemType.STRUCT)
+						{
+							csc.Add(new CodeAssignStatement(new CodeVariableReferenceExpression(argName), new CodeObjectCreateExpression(
+								new CodeTypeReference(ConvertFullName(i.Name)))));
+						}
+						else
+						{
+							csc.Add(new CodeVariableDeclarationStatement(typeof(IntPtr), argName + "Raw"));
+						}
+					}
+					else
+					{
+						csc.Add(new CodeVariableDeclarationStatement(typeof(IntPtr), argName + "Raw"));
+						// if argName == null argNameRaw = IntPtr.Zero : argNameRaw = argName.Raw
+						CodeStatement cs = new CodeConditionStatement(
+							new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(argName),
+								CodeBinaryOperatorType.IdentityEquality,
+								new CodePrimitiveExpression(null)),
+							new CodeStatement[] {
+								new CodeAssignStatement(new CodeVariableReferenceExpression(argName + "Raw"),
+										new CodeTypeReferenceExpression("IntPtr.Zero"))
+							},
+							new CodeStatement[] {
+								new CodeAssignStatement(new CodeVariableReferenceExpression(argName + "Raw"),
+										new CodePropertyReferenceExpression(new CodeVariableReferenceExpression(argName), "Raw"))
+							}
+						);
+						csc.Add(cs);
+					}
+					return csc;
 				default:
 					return null;
 			}
 		}
 
 		// The statements needed to convert an arg from C# to Pinvoke
-		private CodeStatement GenerateArgPreStatement(Arg arg)
+		private CodeStatementCollection GenerateArgPreStatement(Arg arg)
 		{
 			Item i = arg.ArgType;
 
 			if (i == null)
 				return null;
-			// TODO handle the nullables
-			if ((arg.Flags & ArgFlag.NULLABLE) == ArgFlag.NULLABLE)
-				Console.WriteLine(">>> NULLABLE");
-			return GenerateArgPreStatementFull(i, arg.Name, arg.Direction, arg.Transfer);
+			return GenerateArgPreStatementFull(i, i.Name, arg.Name, arg.Direction, arg.Transfer);
 		}
 
 		// The expression to pass into the Pinvoke method for this arg
@@ -573,7 +612,14 @@ namespace Ender
 				// call itself with the def pointer
 				case ItemType.DEF:
 					Def d = (Def)i;
-					return GenerateArgExpressionFull(d.DefType, name, direction, transfer);
+					if (d.DefType.Type == ItemType.BASIC && direction == ArgDirection.OUT)
+					{
+						return GenerateArgExpressionFull(d.DefType, name + "Raw", direction, transfer);
+					}
+					else
+					{
+						return GenerateArgExpressionFull(d.DefType, name, direction, transfer);
+					}
 				// TODO how to handle a function ptr?
 				case ItemType.FUNCTION:
 				// TODO same as basic?
@@ -586,22 +632,19 @@ namespace Ender
 					ret = cvr;
 					break;
 				case ItemType.STRUCT:
-					cvr = new CodeVariableReferenceExpression();
-					cvr.VariableName = provider.CreateValidIdentifier(name);
-					ret = new CodePropertyReferenceExpression(cvr, "Raw");
-					break;
-				case ItemType.OBJECT:
 					if (direction == ArgDirection.OUT)
-					{
-						ret = new CodeVariableReferenceExpression(name + "Raw");
-
-					}
-					else
 					{
 						cvr = new CodeVariableReferenceExpression();
 						cvr.VariableName = provider.CreateValidIdentifier(name);
 						ret = new CodePropertyReferenceExpression(cvr, "Raw");
 					}
+					else
+					{
+						ret = new CodeVariableReferenceExpression(name + "Raw");
+					}
+					break;
+				case ItemType.OBJECT:
+					ret = new CodeVariableReferenceExpression(name + "Raw");
 					break;
 				default:
 					break;
@@ -631,9 +674,20 @@ namespace Ender
 			return GenerateArgExpressionFull(i, arg.Name, arg.Direction, arg.Transfer);
 		}
 
-		private CodeParameterDeclarationExpression GenerateArgFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
+		private CodeParameterDeclarationExpression GenerateArg(Arg arg)
 		{
 			CodeParameterDeclarationExpression ret = null;
+			Item i = arg.ArgType;
+
+			if (i == null)
+			{
+				Console.WriteLine("[ERR] Arg '" + arg.Name + "' without a type?");
+				ret = new CodeParameterDeclarationExpression();
+				ret.Type = new CodeTypeReference("System.IntPtr");
+				ret.Name = provider.CreateValidIdentifier(arg.Name);
+				return ret;
+			}
+
 			switch (i.Type)
 			{
 				// Impossible cases
@@ -677,8 +731,9 @@ namespace Ender
 					}
 					break;
 				case ItemType.DEF:
-					Def d = (Def)i;
-					return GenerateArgFull(d.DefType, name, direction, transfer);
+					ret = new CodeParameterDeclarationExpression();
+					ret.Type = new CodeTypeReference(ConvertFullName(i.Name));
+					break;
 				default:
 					ret = new CodeParameterDeclarationExpression();
 					ret.Type = new CodeTypeReference("System.IntPtr");
@@ -687,26 +742,10 @@ namespace Ender
 
 			if (ret == null)
 				return ret;
-			if (direction == ArgDirection.OUT)
+			if (arg.Direction == ArgDirection.OUT)
 				ret.Direction = FieldDirection.Out;
-			ret.Name = provider.CreateValidIdentifier(name);
+			ret.Name = provider.CreateValidIdentifier(arg.Name);
 			return ret;
-
-		}
-
-		private CodeParameterDeclarationExpression GenerateArg(Arg arg)
-		{
-			Item i = arg.ArgType;
-
-			if (i == null)
-			{
-				Console.WriteLine("[ERR] Arg '" + arg.Name + "' without a type?");
-				CodeParameterDeclarationExpression ret = new CodeParameterDeclarationExpression();
-				ret.Type = new CodeTypeReference("System.IntPtr");
-				ret.Name = provider.CreateValidIdentifier(arg.Name);
-				return ret;
-			}
-			return GenerateArgFull(i, arg.Name, arg.Direction, arg.Transfer);
 		}
 
 		private CodeStatement GenerateRetStatement(Arg arg)
@@ -726,6 +765,20 @@ namespace Ender
 				case ItemType.ATTR:
 				case ItemType.ARG:
 					ret = null;
+					break;
+				case ItemType.DEF:
+					Def d = (Def)i;
+					if (d.DefType.Type == ItemType.BASIC)
+					{
+						ret = new CodeMethodReturnStatement(new CodeObjectCreateExpression(
+								new CodeTypeReference(ConvertName(i.Identifier)),
+								new CodeVariableReferenceExpression("ret")));
+					}
+					else
+					{
+						// TODO handle inherit cases?
+						ret = new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret"));
+					}
 					break;
 				case ItemType.BASIC:
 					Basic b = (Basic)i;
@@ -797,9 +850,9 @@ namespace Ender
 					}
 
 					// Add any pre statement we might need
-					CodeStatement cs = GenerateArgPreStatement(a);
+					CodeStatementCollection cs = GenerateArgPreStatement(a);
 					if (cs != null)
-						csc.Add(cs);
+						csc.AddRange(cs);
 				}
 			}
 
@@ -1346,7 +1399,34 @@ namespace Ender
 			// Add the generated type into our hash
 			processed[d.Name] = co;
 
-			// TODO add the functions
+			// Create every pinvoke for functions
+			List funcs = d.Functions;
+			if (funcs != null)
+			{
+				foreach (Function f in funcs)
+				{
+					Console.WriteLine("Processing PInvoke function " + f.Name);
+					co.Members.Add(GeneratePinvoke(f));
+				}
+			}
+
+			if (funcs != null)
+			{
+				foreach (Function f in funcs)
+				{
+					// Skip the ref/unref
+					if ((f.Flags & FunctionFlag.REF) == FunctionFlag.REF)
+						continue;
+					if ((f.Flags & FunctionFlag.UNREF) == FunctionFlag.UNREF)
+						continue;
+
+					Console.WriteLine("Generating function " + f.Name);
+					CodeMemberMethod cm = GenerateFunction(f);
+					if (cm != null)
+						co.Members.Add(cm);
+				}
+			}
+
 			return co;
 		}
 
