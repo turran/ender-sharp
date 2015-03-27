@@ -257,7 +257,14 @@ private static extern void enesim_renderer_default_quality_set(Enesim.QualityEnu
         }
         
         public void SetTransformation(Enesim.Matrix m) {
-            enesim_renderer_transformation_set(raw, m.Raw);
+            System.IntPtr mRaw;
+            if ((m == null)) {
+                mRaw = IntPtr.Zero;
+            }
+            else {
+                mRaw = m.Raw;
+            }
+            enesim_renderer_transformation_set(raw, mRaw);
         }
         
         public void GetTransformation(out Enesim.Matrix m) {
@@ -305,17 +312,24 @@ private static extern void enesim_renderer_default_quality_set(Enesim.QualityEnu
             return ret;
         }
         
-        public void SetColor(uint color) {
+        public void SetColor(Enesim.Color color) {
             enesim_renderer_color_set(raw, color);
         }
         
-        public uint GetColor() {
+        public Enesim.Color GetColor() {
             uint ret = enesim_renderer_color_get(raw);
-            return ret;
+            return new Color(ret);
         }
         
         public void SetMask(Enesim.Renderer mask) {
-            enesim_renderer_mask_set(raw, mask.Raw);
+            System.IntPtr maskRaw;
+            if ((mask == null)) {
+                maskRaw = IntPtr.Zero;
+            }
+            else {
+                maskRaw = mask.Raw;
+            }
+            enesim_renderer_mask_set(raw, maskRaw);
         }
         
         public Enesim.Renderer GetMask() {
@@ -347,7 +361,14 @@ private static extern void enesim_renderer_default_quality_set(Enesim.QualityEnu
         }
         
         public bool IsSupported(Enesim.Surface s) {
-            bool ret = enesim_renderer_is_supported(raw, s.Raw);
+            System.IntPtr sRaw;
+            if ((s == null)) {
+                sRaw = IntPtr.Zero;
+            }
+            else {
+                sRaw = s.Raw;
+            }
+            bool ret = enesim_renderer_is_supported(raw, sRaw);
             return ret;
         }
         
@@ -398,15 +419,36 @@ private static extern void enesim_renderer_default_quality_set(Enesim.QualityEnu
         }
         
         public bool Draw(Enesim.Surface s, Enesim.RopEnum rop, Eina.Rectangle clip, int x, int y, out Enesim.Log log) {
+            System.IntPtr sRaw;
+            if ((s == null)) {
+                sRaw = IntPtr.Zero;
+            }
+            else {
+                sRaw = s.Raw;
+            }
+            System.IntPtr clipRaw;
+            if ((clip == null)) {
+                clipRaw = IntPtr.Zero;
+            }
+            else {
+                clipRaw = clip.Raw;
+            }
             System.IntPtr logRaw;
-            bool ret = enesim_renderer_draw(raw, s.Raw, rop, clip.Raw, x, y, out  logRaw);
+            bool ret = enesim_renderer_draw(raw, sRaw, rop, clipRaw, x, y, out  logRaw);
             log = new Enesim.Log(logRaw, false);
             return ret;
         }
         
         public bool DrawList(Enesim.Surface s, Enesim.RopEnum rop, System.IntPtr clips, int x, int y, out Enesim.Log log) {
+            System.IntPtr sRaw;
+            if ((s == null)) {
+                sRaw = IntPtr.Zero;
+            }
+            else {
+                sRaw = s.Raw;
+            }
             System.IntPtr logRaw;
-            bool ret = enesim_renderer_draw_list(raw, s.Raw, rop, clips, x, y, out  logRaw);
+            bool ret = enesim_renderer_draw_list(raw, sRaw, rop, clips, x, y, out  logRaw);
             log = new Enesim.Log(logRaw, false);
             return ret;
         }
@@ -473,7 +515,14 @@ private static extern void enesim_renderer_dispmap_y_channel_set(IntPtr self, En
                 set {
                     Enesim.Surface map;
                     map = value;
-                    enesim_renderer_dispmap_map_surface_set(raw, map.Raw);
+                    System.IntPtr mapRaw;
+                    if ((map == null)) {
+                        mapRaw = IntPtr.Zero;
+                    }
+                    else {
+                        mapRaw = map.Raw;
+                    }
+                    enesim_renderer_dispmap_map_surface_set(raw, mapRaw);
                 }
             }
             
@@ -485,7 +534,14 @@ private static extern void enesim_renderer_dispmap_y_channel_set(IntPtr self, En
                 set {
                     Enesim.Surface src;
                     src = value;
-                    enesim_renderer_dispmap_source_surface_set(raw, src.Raw);
+                    System.IntPtr srcRaw;
+                    if ((src == null)) {
+                        srcRaw = IntPtr.Zero;
+                    }
+                    else {
+                        srcRaw = src.Raw;
+                    }
+                    enesim_renderer_dispmap_source_surface_set(raw, srcRaw);
                 }
             }
             
@@ -585,13 +641,13 @@ private static extern void enesim_renderer_shape_draw_mode_set(IntPtr self, Enes
                 Initialize(i, owned);
             }
             
-            public uint StrokeColor {
+            public Enesim.Color StrokeColor {
                 get {
                     uint ret = enesim_renderer_shape_stroke_color_get(raw);
-                    return ret;
+                    return new Color(ret);
                 }
                 set {
-                    uint stroke_color;
+                    Enesim.Color stroke_color;
                     stroke_color = value;
                     enesim_renderer_shape_stroke_color_set(raw, stroke_color);
                 }
@@ -605,7 +661,14 @@ private static extern void enesim_renderer_shape_draw_mode_set(IntPtr self, Enes
                 set {
                     Enesim.Renderer stroke;
                     stroke = value;
-                    enesim_renderer_shape_stroke_renderer_set(raw, stroke.Raw);
+                    System.IntPtr strokeRaw;
+                    if ((stroke == null)) {
+                        strokeRaw = IntPtr.Zero;
+                    }
+                    else {
+                        strokeRaw = stroke.Raw;
+                    }
+                    enesim_renderer_shape_stroke_renderer_set(raw, strokeRaw);
                 }
             }
             
@@ -669,13 +732,13 @@ private static extern void enesim_renderer_shape_draw_mode_set(IntPtr self, Enes
                 }
             }
             
-            public uint FillColor {
+            public Enesim.Color FillColor {
                 get {
                     uint ret = enesim_renderer_shape_fill_color_get(raw);
-                    return ret;
+                    return new Color(ret);
                 }
                 set {
-                    uint fill_color;
+                    Enesim.Color fill_color;
                     fill_color = value;
                     enesim_renderer_shape_fill_color_set(raw, fill_color);
                 }
@@ -689,7 +752,14 @@ private static extern void enesim_renderer_shape_draw_mode_set(IntPtr self, Enes
                 set {
                     Enesim.Renderer fill;
                     fill = value;
-                    enesim_renderer_shape_fill_renderer_set(raw, fill.Raw);
+                    System.IntPtr fillRaw;
+                    if ((fill == null)) {
+                        fillRaw = IntPtr.Zero;
+                    }
+                    else {
+                        fillRaw = fill.Raw;
+                    }
+                    enesim_renderer_shape_fill_renderer_set(raw, fillRaw);
                 }
             }
             
@@ -727,7 +797,14 @@ private static extern void enesim_renderer_shape_draw_mode_set(IntPtr self, Enes
             }
             
             public void StrokeDashAdd(Enesim.Renderer.Shape.StrokeDash dash) {
-                enesim_renderer_shape_stroke_dash_add(raw, dash.Raw);
+                System.IntPtr dashRaw;
+                if ((dash == null)) {
+                    dashRaw = IntPtr.Zero;
+                }
+                else {
+                    dashRaw = dash.Raw;
+                }
+                enesim_renderer_shape_stroke_dash_add(raw, dashRaw);
             }
             
             public void StrokeDashClear() {
@@ -894,7 +971,14 @@ private static extern void enesim_renderer_gradient_repeat_mode_set(IntPtr self,
             }
             
             public void StopAdd(Enesim.Renderer.Gradient.Stop stop) {
-                enesim_renderer_gradient_stop_add(raw, stop.Raw);
+                System.IntPtr stopRaw;
+                if ((stop == null)) {
+                    stopRaw = IntPtr.Zero;
+                }
+                else {
+                    stopRaw = stop.Raw;
+                }
+                enesim_renderer_gradient_stop_add(raw, stopRaw);
             }
             
             public void StopClear() {
@@ -1156,13 +1240,13 @@ private static extern void enesim_renderer_background_color_set(IntPtr self, uin
                 Initialize(ret, false);
             }
             
-            public uint Color {
+            public Enesim.Color Color {
                 get {
                     uint ret = enesim_renderer_background_color_get(raw);
-                    return ret;
+                    return new Color(ret);
                 }
                 set {
-                    uint color;
+                    Enesim.Color color;
                     color = value;
                     enesim_renderer_background_color_set(raw, color);
                 }
@@ -1312,13 +1396,13 @@ private static extern void enesim_renderer_stripes_odd_thickness_set(IntPtr self
                 Initialize(ret, false);
             }
             
-            public uint EvenColor {
+            public Enesim.Color EvenColor {
                 get {
                     uint ret = enesim_renderer_stripes_even_color_get(raw);
-                    return ret;
+                    return new Color(ret);
                 }
                 set {
-                    uint color;
+                    Enesim.Color color;
                     color = value;
                     enesim_renderer_stripes_even_color_set(raw, color);
                 }
@@ -1332,7 +1416,14 @@ private static extern void enesim_renderer_stripes_odd_thickness_set(IntPtr self
                 set {
                     Enesim.Renderer paint;
                     paint = value;
-                    enesim_renderer_stripes_even_renderer_set(raw, paint.Raw);
+                    System.IntPtr paintRaw;
+                    if ((paint == null)) {
+                        paintRaw = IntPtr.Zero;
+                    }
+                    else {
+                        paintRaw = paint.Raw;
+                    }
+                    enesim_renderer_stripes_even_renderer_set(raw, paintRaw);
                 }
             }
             
@@ -1348,13 +1439,13 @@ private static extern void enesim_renderer_stripes_odd_thickness_set(IntPtr self
                 }
             }
             
-            public uint OddColor {
+            public Enesim.Color OddColor {
                 get {
                     uint ret = enesim_renderer_stripes_odd_color_get(raw);
-                    return ret;
+                    return new Color(ret);
                 }
                 set {
-                    uint color;
+                    Enesim.Color color;
                     color = value;
                     enesim_renderer_stripes_odd_color_set(raw, color);
                 }
@@ -1368,7 +1459,14 @@ private static extern void enesim_renderer_stripes_odd_thickness_set(IntPtr self
                 set {
                     Enesim.Renderer paint;
                     paint = value;
-                    enesim_renderer_stripes_odd_renderer_set(raw, paint.Raw);
+                    System.IntPtr paintRaw;
+                    if ((paint == null)) {
+                        paintRaw = IntPtr.Zero;
+                    }
+                    else {
+                        paintRaw = paint.Raw;
+                    }
+                    enesim_renderer_stripes_odd_renderer_set(raw, paintRaw);
                 }
             }
             
@@ -1412,7 +1510,14 @@ private static extern void enesim_renderer_path_path_set(IntPtr self, IntPtr pat
                 set {
                     Enesim.Path path;
                     path = value;
-                    enesim_renderer_path_path_set(raw, path.Raw);
+                    System.IntPtr pathRaw;
+                    if ((path == null)) {
+                        pathRaw = IntPtr.Zero;
+                    }
+                    else {
+                        pathRaw = path.Raw;
+                    }
+                    enesim_renderer_path_path_set(raw, pathRaw);
                 }
             }
         }
@@ -1480,7 +1585,14 @@ private static extern void enesim_renderer_raddist_y_set(IntPtr self, double oy)
                 set {
                     Enesim.Surface src;
                     src = value;
-                    enesim_renderer_raddist_source_surface_set(raw, src.Raw);
+                    System.IntPtr srcRaw;
+                    if ((src == null)) {
+                        srcRaw = IntPtr.Zero;
+                    }
+                    else {
+                        srcRaw = src.Raw;
+                    }
+                    enesim_renderer_raddist_source_surface_set(raw, srcRaw);
                 }
             }
             
@@ -1564,13 +1676,13 @@ private static extern void enesim_renderer_grid_border_color_set(IntPtr self, ui
                 }
             }
             
-            public uint InsideColor {
+            public Enesim.Color InsideColor {
                 get {
                     uint ret = enesim_renderer_grid_inside_color_get(raw);
-                    return ret;
+                    return new Color(ret);
                 }
                 set {
-                    uint color;
+                    Enesim.Color color;
                     color = value;
                     enesim_renderer_grid_inside_color_set(raw, color);
                 }
@@ -1600,13 +1712,13 @@ private static extern void enesim_renderer_grid_border_color_set(IntPtr self, ui
                 }
             }
             
-            public uint BorderColor {
+            public Enesim.Color BorderColor {
                 get {
                     uint ret = enesim_renderer_grid_border_color_get(raw);
-                    return ret;
+                    return new Color(ret);
                 }
                 set {
-                    uint color;
+                    Enesim.Color color;
                     color = value;
                     enesim_renderer_grid_border_color_set(raw, color);
                 }
@@ -1710,25 +1822,25 @@ private static extern void enesim_renderer_checker_height_set(IntPtr self, int h
                 Initialize(ret, false);
             }
             
-            public uint EvenColor {
+            public Enesim.Color EvenColor {
                 get {
                     uint ret = enesim_renderer_checker_even_color_get(raw);
-                    return ret;
+                    return new Color(ret);
                 }
                 set {
-                    uint color;
+                    Enesim.Color color;
                     color = value;
                     enesim_renderer_checker_even_color_set(raw, color);
                 }
             }
             
-            public uint OddColor {
+            public Enesim.Color OddColor {
                 get {
                     uint ret = enesim_renderer_checker_odd_color_get(raw);
-                    return ret;
+                    return new Color(ret);
                 }
                 set {
-                    uint color;
+                    Enesim.Color color;
                     color = value;
                     enesim_renderer_checker_odd_color_set(raw, color);
                 }
@@ -1894,7 +2006,14 @@ private static extern void enesim_renderer_blur_radius_y_set(IntPtr self, double
                 set {
                     Enesim.Surface src;
                     src = value;
-                    enesim_renderer_blur_source_surface_set(raw, src.Raw);
+                    System.IntPtr srcRaw;
+                    if ((src == null)) {
+                        srcRaw = IntPtr.Zero;
+                    }
+                    else {
+                        srcRaw = src.Raw;
+                    }
+                    enesim_renderer_blur_source_surface_set(raw, srcRaw);
                 }
             }
             
@@ -1906,7 +2025,14 @@ private static extern void enesim_renderer_blur_radius_y_set(IntPtr self, double
                 set {
                     Enesim.Renderer sr;
                     sr = value;
-                    enesim_renderer_blur_source_renderer_set(raw, sr.Raw);
+                    System.IntPtr srRaw;
+                    if ((sr == null)) {
+                        srRaw = IntPtr.Zero;
+                    }
+                    else {
+                        srRaw = sr.Raw;
+                    }
+                    enesim_renderer_blur_source_renderer_set(raw, srRaw);
                 }
             }
             
@@ -2261,7 +2387,14 @@ private static extern void enesim_renderer_image_source_surface_set(IntPtr self,
                 set {
                     Enesim.Surface src;
                     src = value;
-                    enesim_renderer_image_source_surface_set(raw, src.Raw);
+                    System.IntPtr srcRaw;
+                    if ((src == null)) {
+                        srcRaw = IntPtr.Zero;
+                    }
+                    else {
+                        srcRaw = src.Raw;
+                    }
+                    enesim_renderer_image_source_surface_set(raw, srcRaw);
                 }
             }
             
@@ -2282,7 +2415,14 @@ private static extern void enesim_renderer_image_source_surface_set(IntPtr self,
             }
             
             public void DamageAdd(Eina.Rectangle area) {
-                enesim_renderer_image_damage_add(raw, area.Raw);
+                System.IntPtr areaRaw;
+                if ((area == null)) {
+                    areaRaw = IntPtr.Zero;
+                }
+                else {
+                    areaRaw = area.Raw;
+                }
+                enesim_renderer_image_damage_add(raw, areaRaw);
             }
         }
         
@@ -2321,7 +2461,14 @@ private static extern void enesim_renderer_pattern_repeat_mode_set(IntPtr self, 
                 set {
                     Enesim.Renderer source;
                     source = value;
-                    enesim_renderer_pattern_source_renderer_set(raw, source.Raw);
+                    System.IntPtr sourceRaw;
+                    if ((source == null)) {
+                        sourceRaw = IntPtr.Zero;
+                    }
+                    else {
+                        sourceRaw = source.Raw;
+                    }
+                    enesim_renderer_pattern_source_renderer_set(raw, sourceRaw);
                 }
             }
             
@@ -2345,7 +2492,14 @@ private static extern void enesim_renderer_pattern_repeat_mode_set(IntPtr self, 
             }
             
             public void SetEnesimSurfacePatternSourceSurface(Enesim.Surface source) {
-                enesim_renderer_pattern_enesim_surface_pattern_source_surface_set(raw, source.Raw);
+                System.IntPtr sourceRaw;
+                if ((source == null)) {
+                    sourceRaw = IntPtr.Zero;
+                }
+                else {
+                    sourceRaw = source.Raw;
+                }
+                enesim_renderer_pattern_enesim_surface_pattern_source_surface_set(raw, sourceRaw);
             }
         }
         
@@ -2469,7 +2623,14 @@ private static extern void enesim_renderer_clipper_size_get(IntPtr self, out int
             }
             
             public void SetClipped(Enesim.Renderer clipped) {
-                enesim_renderer_clipper_clipped_set(raw, clipped.Raw);
+                System.IntPtr clippedRaw;
+                if ((clipped == null)) {
+                    clippedRaw = IntPtr.Zero;
+                }
+                else {
+                    clippedRaw = clipped.Raw;
+                }
+                enesim_renderer_clipper_clipped_set(raw, clippedRaw);
             }
             
             public Enesim.Renderer GetClipped() {
@@ -2577,7 +2738,14 @@ private static extern void enesim_renderer_transition_target_set(IntPtr self, In
                 set {
                     Enesim.Renderer r0;
                     r0 = value;
-                    enesim_renderer_transition_source_set(raw, r0.Raw);
+                    System.IntPtr r0Raw;
+                    if ((r0 == null)) {
+                        r0Raw = IntPtr.Zero;
+                    }
+                    else {
+                        r0Raw = r0.Raw;
+                    }
+                    enesim_renderer_transition_source_set(raw, r0Raw);
                 }
             }
             
@@ -2589,7 +2757,14 @@ private static extern void enesim_renderer_transition_target_set(IntPtr self, In
                 set {
                     Enesim.Renderer r1;
                     r1 = value;
-                    enesim_renderer_transition_target_set(raw, r1.Raw);
+                    System.IntPtr r1Raw;
+                    if ((r1 == null)) {
+                        r1Raw = IntPtr.Zero;
+                    }
+                    else {
+                        r1Raw = r1.Raw;
+                    }
+                    enesim_renderer_transition_target_set(raw, r1Raw);
                 }
             }
         }
@@ -2621,7 +2796,14 @@ private static extern void enesim_renderer_proxy_proxied_set(IntPtr self, IntPtr
                 set {
                     Enesim.Renderer proxied;
                     proxied = value;
-                    enesim_renderer_proxy_proxied_set(raw, proxied.Raw);
+                    System.IntPtr proxiedRaw;
+                    if ((proxied == null)) {
+                        proxiedRaw = IntPtr.Zero;
+                    }
+                    else {
+                        proxiedRaw = proxied.Raw;
+                    }
+                    enesim_renderer_proxy_proxied_set(raw, proxiedRaw);
                 }
             }
         }
@@ -2653,7 +2835,14 @@ private static extern void enesim_renderer_importer_buffer_set(IntPtr self, IntP
                 set {
                     Enesim.Buffer buffer;
                     buffer = value;
-                    enesim_renderer_importer_buffer_set(raw, buffer.Raw);
+                    System.IntPtr bufferRaw;
+                    if ((buffer == null)) {
+                        bufferRaw = IntPtr.Zero;
+                    }
+                    else {
+                        bufferRaw = buffer.Raw;
+                    }
+                    enesim_renderer_importer_buffer_set(raw, bufferRaw);
                 }
             }
         }
@@ -2734,17 +2923,45 @@ private static extern Enesim.AplhaHintEnum enesim_buffer_alpha_hint_get(IntPtr s
         }
         
         public Buffer(Enesim.Buffer.FormatEnum f, uint w, uint h, bool copy, Enesim.Buffer.SwData data, System.IntPtr free_func, System.IntPtr free_func_data) {
-            System.IntPtr ret = enesim_buffer_new_data_from(f, w, h, copy, data.Raw, free_func, free_func_data);
+            System.IntPtr dataRaw;
+            if ((data == null)) {
+                dataRaw = IntPtr.Zero;
+            }
+            else {
+                dataRaw = data.Raw;
+            }
+            System.IntPtr ret = enesim_buffer_new_data_from(f, w, h, copy, dataRaw, free_func, free_func_data);
             Initialize(ret, false);
         }
         
         public Buffer(Enesim.Buffer.FormatEnum f, uint w, uint h, Enesim.Pool p) {
-            System.IntPtr ret = enesim_buffer_new_pool_from(f, w, h, p.Raw);
+            System.IntPtr pRaw;
+            if ((p == null)) {
+                pRaw = IntPtr.Zero;
+            }
+            else {
+                pRaw = p.Raw;
+            }
+            System.IntPtr ret = enesim_buffer_new_pool_from(f, w, h, pRaw);
             Initialize(ret, false);
         }
         
         public Buffer(Enesim.Buffer.FormatEnum f, uint w, uint h, Enesim.Pool p, bool copy, Enesim.Buffer.SwData data, System.IntPtr free_func, System.IntPtr free_func_data) {
-            System.IntPtr ret = enesim_buffer_new_pool_and_data_from(f, w, h, p.Raw, copy, data.Raw, free_func, free_func_data);
+            System.IntPtr pRaw;
+            if ((p == null)) {
+                pRaw = IntPtr.Zero;
+            }
+            else {
+                pRaw = p.Raw;
+            }
+            System.IntPtr dataRaw;
+            if ((data == null)) {
+                dataRaw = IntPtr.Zero;
+            }
+            else {
+                dataRaw = data.Raw;
+            }
+            System.IntPtr ret = enesim_buffer_new_pool_and_data_from(f, w, h, pRaw, copy, dataRaw, free_func, free_func_data);
             Initialize(ret, false);
         }
         
@@ -2817,7 +3034,14 @@ private static extern Enesim.AplhaHintEnum enesim_buffer_alpha_hint_get(IntPtr s
         }
         
         public bool Unmap(Enesim.Buffer.SwData data, bool written) {
-            bool ret = enesim_buffer_unmap(raw, data.Raw, written);
+            System.IntPtr dataRaw;
+            if ((data == null)) {
+                dataRaw = IntPtr.Zero;
+            }
+            else {
+                dataRaw = data.Raw;
+            }
+            bool ret = enesim_buffer_unmap(raw, dataRaw, written);
             return ret;
         }
         
@@ -3012,29 +3236,103 @@ private static extern void enesim_image_save_async(IntPtr data, string mime, Int
             enesim_image_dispatch();
         }
         
-        public static bool GetInfo(Enesim.Stream data, string mime, System.IntPtr w, System.IntPtr h, Enesim.Buffer.FormatEnum sfmt, string options, out int err) {
-            bool ret = enesim_image_info_get(data.Raw, mime, w, h, sfmt, options, out  err);
+        public static bool GetInfo(Enesim.Stream data, string mime, System.IntPtr w, System.IntPtr h, Enesim.Buffer.FormatEnum sfmt, string options, out Eina.Error err) {
+            System.IntPtr dataRaw;
+            if ((data == null)) {
+                dataRaw = IntPtr.Zero;
+            }
+            else {
+                dataRaw = data.Raw;
+            }
+            int errRaw;
+            bool ret = enesim_image_info_get(dataRaw, mime, w, h, sfmt, options, out  errRaw);
+            err = errRaw;
             return ret;
         }
         
-        public static bool Load(out Enesim.Stream data, string mime, Enesim.Buffer b, Enesim.Pool mpool, string options, int err) {
+        public static bool Load(out Enesim.Stream data, string mime, Enesim.Buffer b, Enesim.Pool mpool, string options, Eina.Error err) {
             System.IntPtr dataRaw;
-            bool ret = enesim_image_load(out  dataRaw, mime, b.Raw, mpool.Raw, options, err);
+            System.IntPtr bRaw;
+            if ((b == null)) {
+                bRaw = IntPtr.Zero;
+            }
+            else {
+                bRaw = b.Raw;
+            }
+            System.IntPtr mpoolRaw;
+            if ((mpool == null)) {
+                mpoolRaw = IntPtr.Zero;
+            }
+            else {
+                mpoolRaw = mpool.Raw;
+            }
+            bool ret = enesim_image_load(out  dataRaw, mime, bRaw, mpoolRaw, options, err);
             data = new Enesim.Stream(dataRaw, false);
             return ret;
         }
         
         public static void LoadAsync(Enesim.Stream data, string mime, Enesim.Buffer b, Enesim.Pool mpool, System.IntPtr cb, System.IntPtr user_data, string options) {
-            enesim_image_load_async(data.Raw, mime, b.Raw, mpool.Raw, cb, user_data, options);
+            System.IntPtr dataRaw;
+            if ((data == null)) {
+                dataRaw = IntPtr.Zero;
+            }
+            else {
+                dataRaw = data.Raw;
+            }
+            System.IntPtr bRaw;
+            if ((b == null)) {
+                bRaw = IntPtr.Zero;
+            }
+            else {
+                bRaw = b.Raw;
+            }
+            System.IntPtr mpoolRaw;
+            if ((mpool == null)) {
+                mpoolRaw = IntPtr.Zero;
+            }
+            else {
+                mpoolRaw = mpool.Raw;
+            }
+            enesim_image_load_async(dataRaw, mime, bRaw, mpoolRaw, cb, user_data, options);
         }
         
-        public static bool Save(Enesim.Stream data, string mime, Enesim.Buffer b, string options, out int err) {
-            bool ret = enesim_image_save(data.Raw, mime, b.Raw, options, out  err);
+        public static bool Save(Enesim.Stream data, string mime, Enesim.Buffer b, string options, out Eina.Error err) {
+            System.IntPtr dataRaw;
+            if ((data == null)) {
+                dataRaw = IntPtr.Zero;
+            }
+            else {
+                dataRaw = data.Raw;
+            }
+            System.IntPtr bRaw;
+            if ((b == null)) {
+                bRaw = IntPtr.Zero;
+            }
+            else {
+                bRaw = b.Raw;
+            }
+            int errRaw;
+            bool ret = enesim_image_save(dataRaw, mime, bRaw, options, out  errRaw);
+            err = errRaw;
             return ret;
         }
         
         public static void SaveAsync(Enesim.Stream data, string mime, Enesim.Buffer b, System.IntPtr cb, System.IntPtr user_data, string options) {
-            enesim_image_save_async(data.Raw, mime, b.Raw, cb, user_data, options);
+            System.IntPtr dataRaw;
+            if ((data == null)) {
+                dataRaw = IntPtr.Zero;
+            }
+            else {
+                dataRaw = data.Raw;
+            }
+            System.IntPtr bRaw;
+            if ((b == null)) {
+                bRaw = IntPtr.Zero;
+            }
+            else {
+                bRaw = b.Raw;
+            }
+            enesim_image_save_async(dataRaw, mime, bRaw, cb, user_data, options);
         }
         
         public class File {
@@ -3050,27 +3348,75 @@ private static extern bool enesim_image_file_save(string file, IntPtr b, string 
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_image_file_save_async(string file, IntPtr b, IntPtr cb, IntPtr user_data, string options);
             
-            public static bool GetInfo(string file, System.IntPtr w, System.IntPtr h, Enesim.Buffer.FormatEnum sfmt, string options, out int err) {
-                bool ret = enesim_image_file_info_get(file, w, h, sfmt, options, out  err);
+            public static bool GetInfo(string file, System.IntPtr w, System.IntPtr h, Enesim.Buffer.FormatEnum sfmt, string options, out Eina.Error err) {
+                int errRaw;
+                bool ret = enesim_image_file_info_get(file, w, h, sfmt, options, out  errRaw);
+                err = errRaw;
                 return ret;
             }
             
-            public static bool Load(string file, Enesim.Buffer b, Enesim.Pool mpool, string options, out int err) {
-                bool ret = enesim_image_file_load(file, b.Raw, mpool.Raw, options, out  err);
+            public static bool Load(string file, Enesim.Buffer b, Enesim.Pool mpool, string options, out Eina.Error err) {
+                System.IntPtr bRaw;
+                if ((b == null)) {
+                    bRaw = IntPtr.Zero;
+                }
+                else {
+                    bRaw = b.Raw;
+                }
+                System.IntPtr mpoolRaw;
+                if ((mpool == null)) {
+                    mpoolRaw = IntPtr.Zero;
+                }
+                else {
+                    mpoolRaw = mpool.Raw;
+                }
+                int errRaw;
+                bool ret = enesim_image_file_load(file, bRaw, mpoolRaw, options, out  errRaw);
+                err = errRaw;
                 return ret;
             }
             
             public static void LoadAsync(string file, Enesim.Buffer b, Enesim.Pool mpool, System.IntPtr cb, System.IntPtr user_data, string options) {
-                enesim_image_file_load_async(file, b.Raw, mpool.Raw, cb, user_data, options);
+                System.IntPtr bRaw;
+                if ((b == null)) {
+                    bRaw = IntPtr.Zero;
+                }
+                else {
+                    bRaw = b.Raw;
+                }
+                System.IntPtr mpoolRaw;
+                if ((mpool == null)) {
+                    mpoolRaw = IntPtr.Zero;
+                }
+                else {
+                    mpoolRaw = mpool.Raw;
+                }
+                enesim_image_file_load_async(file, bRaw, mpoolRaw, cb, user_data, options);
             }
             
-            public static bool Save(string file, Enesim.Buffer b, string options, out int err) {
-                bool ret = enesim_image_file_save(file, b.Raw, options, out  err);
+            public static bool Save(string file, Enesim.Buffer b, string options, out Eina.Error err) {
+                System.IntPtr bRaw;
+                if ((b == null)) {
+                    bRaw = IntPtr.Zero;
+                }
+                else {
+                    bRaw = b.Raw;
+                }
+                int errRaw;
+                bool ret = enesim_image_file_save(file, bRaw, options, out  errRaw);
+                err = errRaw;
                 return ret;
             }
             
             public static void SaveAsync(string file, Enesim.Buffer b, System.IntPtr cb, System.IntPtr user_data, string options) {
-                enesim_image_file_save_async(file, b.Raw, cb, user_data, options);
+                System.IntPtr bRaw;
+                if ((b == null)) {
+                    bRaw = IntPtr.Zero;
+                }
+                else {
+                    bRaw = b.Raw;
+                }
+                enesim_image_file_save_async(file, bRaw, cb, user_data, options);
             }
         }
     }
@@ -3149,17 +3495,38 @@ private static extern Enesim.AplhaHintEnum enesim_surface_alpha_hint_get(IntPtr 
         }
         
         public Surface(Enesim.FormatEnum f, uint w, uint h, Enesim.Pool p) {
-            System.IntPtr ret = enesim_surface_new_pool_from(f, w, h, p.Raw);
+            System.IntPtr pRaw;
+            if ((p == null)) {
+                pRaw = IntPtr.Zero;
+            }
+            else {
+                pRaw = p.Raw;
+            }
+            System.IntPtr ret = enesim_surface_new_pool_from(f, w, h, pRaw);
             Initialize(ret, false);
         }
         
         public Surface(Enesim.FormatEnum fmt, uint w, uint h, Enesim.Pool p, bool copy, System.IntPtr data, System.IntPtr stride, System.IntPtr free_func, System.IntPtr free_func_data) {
-            System.IntPtr ret = enesim_surface_new_pool_and_data_from(fmt, w, h, p.Raw, copy, data, stride, free_func, free_func_data);
+            System.IntPtr pRaw;
+            if ((p == null)) {
+                pRaw = IntPtr.Zero;
+            }
+            else {
+                pRaw = p.Raw;
+            }
+            System.IntPtr ret = enesim_surface_new_pool_and_data_from(fmt, w, h, pRaw, copy, data, stride, free_func, free_func_data);
             Initialize(ret, false);
         }
         
         public Surface(Enesim.Buffer buffer) {
-            System.IntPtr ret = enesim_surface_new_buffer_from(buffer.Raw);
+            System.IntPtr bufferRaw;
+            if ((buffer == null)) {
+                bufferRaw = IntPtr.Zero;
+            }
+            else {
+                bufferRaw = buffer.Raw;
+            }
+            System.IntPtr ret = enesim_surface_new_buffer_from(bufferRaw);
             Initialize(ret, false);
         }
         
@@ -3315,7 +3682,14 @@ private static extern IntPtr enesim_stream_base64_new(IntPtr d);
         }
         
         public Stream(Enesim.Stream d) {
-            System.IntPtr ret = enesim_stream_base64_new(d.Raw);
+            System.IntPtr dRaw;
+            if ((d == null)) {
+                dRaw = IntPtr.Zero;
+            }
+            else {
+                dRaw = d.Raw;
+            }
+            System.IntPtr ret = enesim_stream_base64_new(dRaw);
             Initialize(ret, false);
         }
         
@@ -3457,7 +3831,14 @@ private static extern void enesim_path_close(IntPtr self);
         }
         
         public void CommandAdd(Enesim.Path.Command cmd) {
-            enesim_path_command_add(raw, cmd.Raw);
+            System.IntPtr cmdRaw;
+            if ((cmd == null)) {
+                cmdRaw = IntPtr.Zero;
+            }
+            else {
+                cmdRaw = cmd.Raw;
+            }
+            enesim_path_command_add(raw, cmdRaw);
         }
         
         public void MoveTo(double x, double y) {
@@ -3648,12 +4029,40 @@ private static extern bool enesim_converter_buffer(IntPtr b, IntPtr dst);
 private static extern bool enesim_converter_surface(IntPtr s, IntPtr dst);
         
         public static bool Buffer(Enesim.Buffer b, Enesim.Buffer dst) {
-            bool ret = enesim_converter_buffer(b.Raw, dst.Raw);
+            System.IntPtr bRaw;
+            if ((b == null)) {
+                bRaw = IntPtr.Zero;
+            }
+            else {
+                bRaw = b.Raw;
+            }
+            System.IntPtr dstRaw;
+            if ((dst == null)) {
+                dstRaw = IntPtr.Zero;
+            }
+            else {
+                dstRaw = dst.Raw;
+            }
+            bool ret = enesim_converter_buffer(bRaw, dstRaw);
             return ret;
         }
         
         public static bool Surface(Enesim.Surface s, Enesim.Buffer dst) {
-            bool ret = enesim_converter_surface(s.Raw, dst.Raw);
+            System.IntPtr sRaw;
+            if ((s == null)) {
+                sRaw = IntPtr.Zero;
+            }
+            else {
+                sRaw = s.Raw;
+            }
+            System.IntPtr dstRaw;
+            if ((dst == null)) {
+                dstRaw = IntPtr.Zero;
+            }
+            else {
+                dstRaw = dst.Raw;
+            }
+            bool ret = enesim_converter_surface(sRaw, dstRaw);
             return ret;
         }
     }
@@ -3851,6 +4260,15 @@ private static extern void enesim_log_dump(IntPtr self);
         
         protected uint value;
         
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern uint enesim_color_argb_to(uint c);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern uint enesim_color_argb_from(uint argb);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern uint enesim_color_components_from(byte a, byte r, byte g, byte b);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_color_components_to(uint color, out byte a, out byte r, out byte g, out byte b);
+        
         public Color(uint v) {
             value = v;
         }
@@ -3868,11 +4286,35 @@ private static extern void enesim_log_dump(IntPtr self);
         public static   implicit operator uint(Color v) {
             return v.value;
         }
+        
+        public static Enesim.Argb ArgbTo(Enesim.Color c) {
+            uint ret = enesim_color_argb_to(c);
+            return new Argb(ret);
+        }
+        
+        public static Enesim.Color ArgbFrom(Enesim.Argb argb) {
+            uint ret = enesim_color_argb_from(argb);
+            return new Color(ret);
+        }
+        
+        public static Enesim.Color ComponentsFrom(byte a, byte r, byte g, byte b) {
+            uint ret = enesim_color_components_from(a, r, g, b);
+            return new Color(ret);
+        }
+        
+        public static void ComponentsTo(Enesim.Color color, out byte a, out byte r, out byte g, out byte b) {
+            enesim_color_components_to(color, out  a, out  r, out  g, out  b);
+        }
     }
     
     public class Argb {
         
         protected uint value;
+        
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern uint enesim_argb_components_from(byte a, byte r, byte g, byte b);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_argb_components_to(uint argb, out byte a, out byte r, out byte g, out byte b);
         
         public Argb(uint v) {
             value = v;
@@ -3890,6 +4332,15 @@ private static extern void enesim_log_dump(IntPtr self);
         
         public static   implicit operator uint(Argb v) {
             return v.value;
+        }
+        
+        public static Enesim.Argb ComponentsFrom(byte a, byte r, byte g, byte b) {
+            uint ret = enesim_argb_components_from(a, r, g, b);
+            return new Argb(ret);
+        }
+        
+        public static void ComponentsTo(Enesim.Argb argb, out byte a, out byte r, out byte g, out byte b) {
+            enesim_argb_components_to(argb, out  a, out  r, out  g, out  b);
         }
     }
     
@@ -4045,7 +4496,14 @@ private static extern bool enesim_text_buffer_smart_is_dirty(IntPtr self);
             }
             
             public Smart(Enesim.Text.Buffer thiz) {
-                System.IntPtr ret = enesim_text_buffer_smart_new(thiz.Raw);
+                System.IntPtr thizRaw;
+                if ((thiz == null)) {
+                    thizRaw = IntPtr.Zero;
+                }
+                else {
+                    thizRaw = thiz.Raw;
+                }
+                System.IntPtr ret = enesim_text_buffer_smart_new(thizRaw);
                 Initialize(ret, false);
             }
             
@@ -4055,7 +4513,14 @@ private static extern bool enesim_text_buffer_smart_is_dirty(IntPtr self);
             }
             
             public void SetReal(Enesim.Text.Buffer real) {
-                enesim_text_buffer_smart_real_set(raw, real.Raw);
+                System.IntPtr realRaw;
+                if ((real == null)) {
+                    realRaw = IntPtr.Zero;
+                }
+                else {
+                    realRaw = real.Raw;
+                }
+                enesim_text_buffer_smart_real_set(raw, realRaw);
             }
             
             public void Dirty() {
@@ -4114,12 +4579,26 @@ private static extern int enesim_text_font_max_descent_get(IntPtr self);
         }
         
         public Font(Enesim.Text.Engine e, string description, int size) {
-            System.IntPtr ret = enesim_text_font_new_description_from(e.Raw, description, size);
+            System.IntPtr eRaw;
+            if ((e == null)) {
+                eRaw = IntPtr.Zero;
+            }
+            else {
+                eRaw = e.Raw;
+            }
+            System.IntPtr ret = enesim_text_font_new_description_from(eRaw, description, size);
             Initialize(ret, false);
         }
         
         public Font(Enesim.Text.Engine e, string file, int index, int size) {
-            System.IntPtr ret = enesim_text_font_new_file_from(e.Raw, file, index, size);
+            System.IntPtr eRaw;
+            if ((e == null)) {
+                eRaw = IntPtr.Zero;
+            }
+            else {
+                eRaw = e.Raw;
+            }
+            System.IntPtr ret = enesim_text_font_new_file_from(eRaw, file, index, size);
             Initialize(ret, false);
         }
         

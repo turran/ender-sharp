@@ -41,4 +41,50 @@ namespace Eina {
             public int h;
         }
     }
+    
+    public class F16p16 {
+        
+        protected int value;
+        
+        public F16p16(int v) {
+            value = v;
+        }
+        
+        public int Value {
+            get {
+                return this.value;
+            }
+        }
+        
+        public static   implicit operator F16p16(int v) {
+            return new F16p16(v);
+        }
+        
+        public static   implicit operator int(F16p16 v) {
+            return v.value;
+        }
+    }
+    
+    public class Error {
+        
+        protected int value;
+        
+        public Error(int v) {
+            value = v;
+        }
+        
+        public int Value {
+            get {
+                return this.value;
+            }
+        }
+        
+        public static   implicit operator Error(int v) {
+            return new Error(v);
+        }
+        
+        public static   implicit operator int(Error v) {
+            return v.value;
+        }
+    }
 }
