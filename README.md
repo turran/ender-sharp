@@ -107,8 +107,8 @@ public class Color {
     protected uint value;
         
     [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-    private static extern void enesim_color_components_to(uint color,
-        out byte a, out byte r, out byte g, out byte b);
+    private static extern uint enesim_color_components_from(byte a, byte r,
+        byte g, byte b);
         
     public Color(uint v) {
         value = v;
