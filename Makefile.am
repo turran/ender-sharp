@@ -83,4 +83,4 @@ pc_verbose_0 = @echo "  PC      " $@;
 pkgconfig_DATA += ender-sharp.pc
 
 $(output_DIR):
-	@mkdir $(output_DIR)
+	@mkdir -p $(output_DIR)

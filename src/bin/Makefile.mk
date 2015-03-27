@@ -1,7 +1,7 @@
 bin_BIN = ender2sharp.exe
 bin_SRC = \
-src/bin/EnderSharp.cs \
-src/bin/Options.cs
+$(top_srcdir)/src/bin/EnderSharp.cs \
+$(top_srcdir)/src/bin/Options.cs
 
 noinst_DATA += $(bin_BIN)
 
