@@ -41,7 +41,8 @@ Objects
 <object name="enesim.renderer.background" inherits="enesim.renderer">
   <prop name="color">
     <setter>
-      <arg name="color" type="enesim.color" direction="in" transfer="full" nullable="false"/>
+      <arg name="color" type="enesim.color" direction="in" transfer="full"
+          nullable="false"/>
     </setter>
     <getter>
       <return type="enesim.color" transfer="full" nullable="false"/>
@@ -54,12 +55,13 @@ Objects
 ```cs
 public class Background : Renderer {
             
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern IntPtr enesim_renderer_background_new();
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern uint enesim_renderer_background_color_get(IntPtr self);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_background_color_set(IntPtr self, uint color);
+    [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+    private static extern IntPtr enesim_renderer_background_new();
+    [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+    private static extern uint enesim_renderer_background_color_get(IntPtr self);
+    [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+    private static extern void enesim_renderer_background_color_set(IntPtr self,
+        uint color);
             
     protected internal Background(System.IntPtr i, bool owned) : 
             base(i, owned) {
@@ -88,93 +90,67 @@ private static extern void enesim_renderer_background_color_set(IntPtr self, uin
 Defs
 ----
 ```xml
-  <def name="enesim.color" type="uint32">
-    <function name="argb_to">
-      <return type="enesim.argb" transfer="full" nullable="false"/>
-      <arg name="c" type="enesim.color" direction="in" transfer="full" nullable="false"/>
-    </function>
-    <function name="argb_from">
-      <return type="enesim.color" transfer="full" nullable="false"/>
-      <arg name="argb" type="enesim.argb" direction="in" transfer="full" nullable="false"/>
-    </function>
-    <function name="components_from">
-      <return type="enesim.color" transfer="full" nullable="false"/>
-      <arg name="a" type="uint8" direction="in" transfer="full" nullable="false"/>
-      <arg name="r" type="uint8" direction="in" transfer="full" nullable="false"/>
-      <arg name="g" type="uint8" direction="in" transfer="full" nullable="false"/>
-      <arg name="b" type="uint8" direction="in" transfer="full" nullable="false"/>
-    </function>
+<def name="enesim.color" type="uint32">
+  <function name="components_from">
+    <return type="enesim.color" transfer="full" nullable="false"/>
+    <arg name="a" type="uint8" direction="in" transfer="full" nullable="false"/>
+    <arg name="r" type="uint8" direction="in" transfer="full" nullable="false"/>
+    <arg name="g" type="uint8" direction="in" transfer="full" nullable="false"/>
+    <arg name="b" type="uint8" direction="in" transfer="full" nullable="false"/>
+  </function>
 ```
 
 ```cs
-    public class Color {
+public class Color {
         
-        protected uint value;
+    protected uint value;
         
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern uint enesim_color_argb_to(uint c);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern uint enesim_color_argb_from(uint argb);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern uint enesim_color_components_from(byte a, byte r, byte g, byte b);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_color_components_to(uint color, out byte a, out byte r, out byte g, out byte b);
+    [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+    private static extern void enesim_color_components_to(uint color,
+        out byte a, out byte r, out byte g, out byte b);
         
-        public Color(uint v) {
-            value = v;
-        }
-        
-        public uint Value {
-            get {
-                return this.value;
-            }
-        }
-        
-        public static   implicit operator Color(uint v) {
-            return new Color(v);
-        }
-        
-        public static   implicit operator uint(Color v) {
-            return v.value;
-        }
-        
-        public static Enesim.Argb ArgbTo(Enesim.Color c) {
-            uint ret = enesim_color_argb_to(c);
-            return new Argb(ret);
-        }
-        
-        public static Enesim.Color ArgbFrom(Enesim.Argb argb) {
-            uint ret = enesim_color_argb_from(argb);
-            return new Color(ret);
-        }
-        
-        public static Enesim.Color ComponentsFrom(byte a, byte r, byte g, byte b) {
-            uint ret = enesim_color_components_from(a, r, g, b);
-            return new Color(ret);
-        }
-        
-        public static void ComponentsTo(Enesim.Color color, out byte a, out byte r, out byte g, out byte b) {
-            enesim_color_components_to(color, out  a, out  r, out  g, out  b);
+    public Color(uint v) {
+        value = v;
+    }
+    
+    public uint Value {
+        get {
+            return this.value;
         }
     }
+    
+    public static   implicit operator Color(uint v) {
+        return new Color(v);
+    }
+    
+    public static   implicit operator uint(Color v) {
+        return v.value;
+    }
+    
+    public static Enesim.Color ComponentsFrom(byte a, byte r, byte g, byte b) {
+        uint ret = enesim_color_components_from(a, r, g, b);
+        return new Color(ret);
+    }
+}
 ```
 
 Enums
 -----
 ```xml
-  <enum name="enesim.matrix.type">
-    <value name="identity"/>
-    <value name="affine"/>
-    <value name="projective"/>
-  </enum>
+<enum name="enesim.repeat_mode">
+  <value name="restrict"/>
+  <value name="pad"/>
+  <value name="reflect"/>
+  <value name="repeat"/>
+</enum>
 ```
 
 ```cs
-    public class Matrix {
-        public enum TypeEnum {
-            Identity,
-            Affine,
-            Projective,
-        }
+public enum RepeatModeEnum {
+    Restrict,
+    Pad,
+    Reflect,
+    Repeat,
+}
 ```
 
