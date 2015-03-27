@@ -98,6 +98,7 @@ Defs
     <arg name="g" type="uint8" direction="in" transfer="full" nullable="false"/>
     <arg name="b" type="uint8" direction="in" transfer="full" nullable="false"/>
   </function>
+</def>
 ```
 
 ```cs
