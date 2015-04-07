@@ -1791,6 +1791,177 @@ private static extern void enesim_renderer_perlin_yfrequency_set(IntPtr self, do
             }
         }
         
+        public class Compound : Renderer {
+            
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern IntPtr enesim_renderer_compound_new();
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_compound_layer_add(IntPtr self, IntPtr layer);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_compound_layer_remove(IntPtr self, IntPtr layer);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_compound_layer_clear(IntPtr self);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_compound_layer_foreach(IntPtr self, IntPtr cb, IntPtr data);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_compound_layer_reverse_foreach(IntPtr self, IntPtr cb, IntPtr data);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern bool enesim_renderer_compound_background_enable_get(IntPtr self);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_compound_background_enable_set(IntPtr self, bool enable);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern uint enesim_renderer_compound_background_color_get(IntPtr self);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_compound_background_color_set(IntPtr self, uint color);
+            
+            protected internal Compound(System.IntPtr i, bool owned) : 
+                    base(i, owned) {
+                Initialize(i, owned);
+            }
+            
+            public Compound() {
+                System.IntPtr ret = enesim_renderer_compound_new();
+                Initialize(ret, false);
+            }
+            
+            public bool BackgroundEnable {
+                get {
+                    bool ret = enesim_renderer_compound_background_enable_get(raw);
+                    return ret;
+                }
+                set {
+                    bool enable;
+                    enable = value;
+                    enesim_renderer_compound_background_enable_set(raw, enable);
+                }
+            }
+            
+            public Enesim.Color BackgroundColor {
+                get {
+                    uint ret = enesim_renderer_compound_background_color_get(raw);
+                    return new Color(ret);
+                }
+                set {
+                    Enesim.Color color;
+                    color = value;
+                    enesim_renderer_compound_background_color_set(raw, color);
+                }
+            }
+            
+            public void LayerAdd(Enesim.Renderer.Compound.Layer layer) {
+                System.IntPtr layerRaw;
+                if ((layer == null)) {
+                    layerRaw = IntPtr.Zero;
+                }
+                else {
+                    layerRaw = layer.Raw;
+                }
+                enesim_renderer_compound_layer_add(raw, layerRaw);
+            }
+            
+            public void LayerRemove(Enesim.Renderer.Compound.Layer layer) {
+                System.IntPtr layerRaw;
+                if ((layer == null)) {
+                    layerRaw = IntPtr.Zero;
+                }
+                else {
+                    layerRaw = layer.Raw;
+                }
+                enesim_renderer_compound_layer_remove(raw, layerRaw);
+            }
+            
+            public void LayerClear() {
+                enesim_renderer_compound_layer_clear(raw);
+            }
+            
+            public void LayerForeach(System.IntPtr cb, System.IntPtr data) {
+                enesim_renderer_compound_layer_foreach(raw, cb, data);
+            }
+            
+            public void LayerReverseForeach(System.IntPtr cb, System.IntPtr data) {
+                enesim_renderer_compound_layer_reverse_foreach(raw, cb, data);
+            }
+            
+            public class Layer : IDisposable {
+                
+                protected IntPtr raw;
+                
+                private bool disposed;
+                
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern IntPtr enesim_renderer_compound_layer_new();
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern IntPtr enesim_renderer_compound_layer_ref(IntPtr self);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_compound_layer_unref(IntPtr self);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_compound_layer_renderer_set(IntPtr self, IntPtr r);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_compound_layer_rop_set(IntPtr self, Enesim.RopEnum rop);
+~Layer() { Dispose(false); }
+                
+                protected internal Layer(System.IntPtr i, bool owned) {
+                    Initialize(i, owned);
+                }
+                
+                public Layer() {
+                    System.IntPtr ret = enesim_renderer_compound_layer_new();
+                    Initialize(ret, false);
+                }
+                
+                public System.IntPtr Raw {
+                    get {
+                        return this.raw;
+                    }
+                }
+                
+                public Enesim.Renderer Renderer {
+                    set {
+                        Enesim.Renderer r;
+                        r = value;
+                        System.IntPtr rRaw;
+                        if ((r == null)) {
+                            rRaw = IntPtr.Zero;
+                        }
+                        else {
+                            rRaw = r.Raw;
+                        }
+                        enesim_renderer_compound_layer_renderer_set(raw, rRaw);
+                    }
+                }
+                
+                public Enesim.RopEnum Rop {
+                    set {
+                        Enesim.RopEnum rop;
+                        rop = value;
+                        enesim_renderer_compound_layer_rop_set(raw, rop);
+                    }
+                }
+                
+                public virtual void Dispose() {
+                    Dispose(false);
+                    GC.SuppressFinalize(this);
+                }
+                
+                protected virtual void Dispose(bool disposing) {
+                    if (disposed) {
+                    }
+                    else {
+                        enesim_renderer_compound_layer_unref(raw);
+                        raw = IntPtr.Zero;
+                        disposed = false;
+                    }
+                }
+                
+                protected virtual void Initialize(System.IntPtr i, bool owned) {
+                    raw = i;
+                    if (owned) {
+                        enesim_renderer_compound_layer_ref(i);
+                    }
+                }
+            }
+        }
+        
         public class Checker : Renderer {
             
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -3664,6 +3835,8 @@ private static extern IntPtr enesim_stream_file_new(string file, string mode);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern IntPtr enesim_stream_buffer_new(IntPtr buffer, IntPtr len);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern IntPtr enesim_stream_buffer_static_new(IntPtr buffer, IntPtr len);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern IntPtr enesim_stream_base64_new(IntPtr d);
 ~Stream() { Dispose(false); }
         
@@ -3678,6 +3851,11 @@ private static extern IntPtr enesim_stream_base64_new(IntPtr d);
         
         public Stream(System.IntPtr buffer, System.IntPtr len) {
             System.IntPtr ret = enesim_stream_buffer_new(buffer, len);
+            Initialize(ret, false);
+        }
+        
+        public Stream(System.IntPtr buffer, System.IntPtr len) {
+            System.IntPtr ret = enesim_stream_buffer_static_new(buffer, len);
             Initialize(ret, false);
         }
         
