@@ -1805,7 +1805,7 @@ private static extern void enesim_renderer_perlin_yfrequency_set(IntPtr self, do
         
         public class Compound : Renderer {
             
-            public delegate bool ForeachLayer(Enesim.Renderer r, Enesim.Renderer.Compound.Layer r, System.IntPtr data);
+            public delegate bool ForeachLayer(Enesim.Renderer r, Enesim.Renderer.Compound.Layer layer, System.IntPtr data);
             
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern IntPtr enesim_renderer_compound_new();
@@ -1828,7 +1828,7 @@ private static extern uint enesim_renderer_compound_background_color_get(IntPtr 
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_compound_background_color_set(IntPtr self, uint color);
 
-private delegate bool ForeachLayerInternal(IntPtr r, IntPtr r, IntPtr data);
+private delegate bool ForeachLayerInternal(IntPtr r, IntPtr layer, IntPtr data);
             
             protected internal Compound(System.IntPtr i, bool owned) : 
                     base(i, owned) {
