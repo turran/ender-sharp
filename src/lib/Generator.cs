@@ -1681,6 +1681,11 @@ namespace Ender
 				}
 				else
 				{
+					CodeSnippetTypeMember pinvoke = null;
+
+					if ((f.Flags & FunctionFlag.CALLBACK) != FunctionFlag.CALLBACK)
+						pinvoke = GeneratePinvoke(f);
+
 					// For functions on namespace add the Main
 					if (parent.GetType() == typeof(CodeNamespace))
 					{
@@ -1697,7 +1702,10 @@ namespace Ender
 							processed[mainName] = main;
 							ns.Types.Add(main);
 						}
-						main.Members.Add(GeneratePinvoke(f));
+
+						if (pinvoke != null)
+							main.Members.Add(pinvoke);
+
 						CodeMemberMethod ret = GenerateFunction(f);
 						main.Members.Add(ret);
 					}
@@ -1705,7 +1713,8 @@ namespace Ender
 					else
 					{
 						CodeTypeDeclaration ty = (CodeTypeDeclaration)parent;
-						ty.Members.Add(GeneratePinvoke(f));
+						if (pinvoke != null)
+							ty.Members.Add(pinvoke);
 					}
 				}
 			}

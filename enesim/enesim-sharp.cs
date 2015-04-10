@@ -189,8 +189,6 @@ private static extern bool enesim_renderer_draw_list(IntPtr self, IntPtr s, Enes
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_default_quality_set(Enesim.QualityEnum quality);
 ~Renderer() { Dispose(false); }
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern bool enesim_renderer_damage(IntPtr r, IntPtr area, bool past, IntPtr data);
         
         protected Renderer() {
         }
@@ -1823,8 +1821,6 @@ private static extern void enesim_renderer_compound_background_enable_set(IntPtr
 private static extern uint enesim_renderer_compound_background_color_get(IntPtr self);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_compound_background_color_set(IntPtr self, uint color);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern bool enesim_renderer_compound_foreach_layer();
             
             protected internal Compound(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -3087,8 +3083,6 @@ private static extern void enesim_buffer_alpha_hint_set(IntPtr self, Enesim.Aplh
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern Enesim.AplhaHintEnum enesim_buffer_alpha_hint_get(IntPtr self);
 ~Buffer() { Dispose(false); }
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_buffer_free(IntPtr data, IntPtr user_data);
         
         protected internal Buffer(System.IntPtr i, bool owned) {
             Initialize(i, owned);
@@ -3388,8 +3382,6 @@ private static extern void enesim_image_load_async(IntPtr data, string mime, Int
 private static extern bool enesim_image_save(IntPtr data, string mime, IntPtr b, string options, out int err);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_image_save_async(IntPtr data, string mime, IntPtr b, IntPtr cb, IntPtr user_data, string options);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_image_callback(IntPtr r, IntPtr data, bool success, int error);
         
         public static void Dispatch() {
             enesim_image_dispatch();
