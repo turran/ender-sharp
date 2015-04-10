@@ -9,8 +9,8 @@ using System.Runtime.InteropServices;
  * For callbacks, dont create pinvoke functions
  * For functions/methods that have a callback parameter, we need to:
  * 1. make the pinvoke be in the form static extern foo(int a, int b, FunctionCb);
- *    where FunctionCb must be the internal version of the callbackw with the C proto
- * 2. create a delegate on the class with the C# form
+ *    where FunctionCb must be the internal version of the callbackw with the C proto (done)
+ * 2. create a delegate on the class with the C# form (done)
  * 3. On the body of foo, create an anonymous function that will translate the stuff
  *    from C# to C and viceversa
  */
@@ -234,9 +234,8 @@ namespace Ender
 					else
 						ret = GenerateBasicPinvoke((Basic)i);
 					break;
-				// TODO how to handle a function ptr?
 				case ItemType.FUNCTION:
-					ret = "IntPtr";
+					ret = ConvertFullName(i.Name) + "Internal";
 					break;
 				case ItemType.OBJECT:
 				case ItemType.STRUCT:
@@ -377,14 +376,26 @@ namespace Ender
 
 		private CodeSnippetTypeMember GeneratePinvoke(Function f)
 		{
-			string pinvoke = string.Format("[DllImport(\"{0}.dll\", CallingConvention=CallingConvention.Cdecl)]", lib.Name);
+			string pinvoke = null;
+
 			// Handle the return value
 			string retString = GenerateRetPinvoke(f.Ret);
-			// Handle the function name
-			string fName = GenerateNamePinvoke(f);
 			// Handle the args
 			string argsString = GenerateArgsPinvoke(f);
-			pinvoke += string.Format("\nprivate static extern {0} {1}({2});", retString, fName, argsString);
+			// For callbacks we need to generate a delegate using the C form (pinvoke)
+			// We just change the name here
+			if ((f.Flags & FunctionFlag.CALLBACK) != FunctionFlag.CALLBACK)
+			{
+				// Handle the function name
+				string fName = GenerateNamePinvoke(f);
+				pinvoke += string.Format("[DllImport(\"{0}.dll\", CallingConvention=CallingConvention.Cdecl)]", lib.Name);
+				pinvoke += string.Format("\nprivate static extern {0} {1}({2});", retString, fName, argsString);
+			}
+			else
+			{
+				string fName = ConvertName(f.Identifier) + "Internal";
+				pinvoke += string.Format("\nprivate delegate {0} {1}({2});", retString, fName, argsString);
+			}
 			CodeSnippetTypeMember ext = new CodeSnippetTypeMember(pinvoke);
 			return ext;
 		}
@@ -972,9 +983,9 @@ namespace Ender
 		//    ret = my_method(i1, s2);
 		//    return ret;
 		//
-		private CodeMemberMethod GenerateFunction(Function f)
+		private CodeTypeMember GenerateFunction(Function f)
 		{
-			CodeMemberMethod cm = null;
+			CodeTypeMember cm = null;
 			// To know if we must skip the first arg
 			bool skipFirst = false;
 
@@ -989,6 +1000,12 @@ namespace Ender
 				cm.Name = ConvertName(f.Identifier);
 				cm.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 				skipFirst = true;
+			}
+			else if ((f.Flags & FunctionFlag.CALLBACK) == FunctionFlag.CALLBACK)
+			{
+				cm = new CodeTypeDelegate();
+				cm.Name = ConvertName(f.Identifier);
+				cm.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 			}
 			else
 			{
@@ -1017,7 +1034,16 @@ namespace Ender
 					{
 						// Add the parameter
 						if (cm != null)
-							cm.Parameters.Add(cp);
+						{
+							if ((f.Flags & FunctionFlag.CALLBACK) == FunctionFlag.CALLBACK)
+							{
+								((CodeTypeDelegate)cm).Parameters.Add(cp);
+							}
+							else
+							{
+								((CodeMemberMethod)cm).Parameters.Add(cp);
+							}
+						}
 					}
 				}
 			}
@@ -1031,12 +1057,20 @@ namespace Ender
 				{
 					if (cm != null)
 					{
-						cm.ReturnType = ret;
+						if ((f.Flags & FunctionFlag.CALLBACK) == FunctionFlag.CALLBACK)
+						{
+							((CodeTypeDelegate)cm).ReturnType = ret;
+						}
+						else
+						{
+							((CodeMemberMethod)cm).ReturnType = ret;
+						}
 					}
 				}
 			}
 
-			cm.Statements.AddRange(GenerateFunctionBody(f));
+			if ((f.Flags & FunctionFlag.CALLBACK) != FunctionFlag.CALLBACK)
+				((CodeMemberMethod)cm).Statements.AddRange(GenerateFunctionBody(f));
 
 			return cm;
 		}
@@ -1431,7 +1465,7 @@ namespace Ender
 						continue;
 
 					Console.WriteLine("Generating function " + f.Name);
-					CodeMemberMethod cm = GenerateFunction(f);
+					CodeTypeMember cm = GenerateFunction(f);
 					if (cm != null)
 						co.Members.Add(cm);
 				}
@@ -1554,7 +1588,7 @@ namespace Ender
 						continue;
 
 					Console.WriteLine("Generating function " + f.Name);
-					CodeMemberMethod cm = GenerateFunction(f);
+					CodeTypeMember cm = GenerateFunction(f);
 					if (cm != null)
 						co.Members.Add(cm);
 				}
@@ -1683,8 +1717,7 @@ namespace Ender
 				{
 					CodeSnippetTypeMember pinvoke = null;
 
-					if ((f.Flags & FunctionFlag.CALLBACK) != FunctionFlag.CALLBACK)
-						pinvoke = GeneratePinvoke(f);
+					pinvoke = GeneratePinvoke(f);
 
 					// For functions on namespace add the Main
 					if (parent.GetType() == typeof(CodeNamespace))
@@ -1706,7 +1739,7 @@ namespace Ender
 						if (pinvoke != null)
 							main.Members.Add(pinvoke);
 
-						CodeMemberMethod ret = GenerateFunction(f);
+						CodeTypeMember ret = GenerateFunction(f);
 						main.Members.Add(ret);
 					}
 					// For functions on an object just add it
@@ -1715,6 +1748,8 @@ namespace Ender
 						CodeTypeDeclaration ty = (CodeTypeDeclaration)parent;
 						if (pinvoke != null)
 							ty.Members.Add(pinvoke);
+						CodeTypeMember ret = GenerateFunction(f);
+						ty.Members.Add(ret);
 					}
 				}
 			}
