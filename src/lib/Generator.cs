@@ -1656,35 +1656,47 @@ namespace Ender
 			}
 			// Generate every function, all the global functions are added to the 'Main' class
 			items = lib.List(ItemType.FUNCTION);
-			// Get the parent namespace
+			// Get the parent namespace or object for functions and callbacks
 			foreach (Function f in items)
 			{
 				string mainName;
 				CodeTypeDeclaration main;
-				CodeNamespace parent;
+				CodeObject parent;
 
 				Console.WriteLine("Generating function '" + f.Name + "'");
-				parent = (CodeNamespace)GenerateParentObjects(f);
+				parent = GenerateParentObjects(f);
 				if (parent == null)
 				{
 					Console.WriteLine("[ERR] Impossible to generate parent for '" + f.Name + "'");
 				}
 				else
 				{
-					mainName = parent.Name + ".Main";
+					// For functions on namespace add the Main
+					if (parent.GetType() == typeof(CodeNamespace))
+					{
+						CodeNamespace ns = (CodeNamespace)parent;
 
-					// Create our Main class
-					if (processed.ContainsKey(mainName))
-						main = (CodeTypeDeclaration)processed[mainName];
+						mainName = ns.Name + ".Main";
+
+						// Create our Main class
+						if (processed.ContainsKey(mainName))
+							main = (CodeTypeDeclaration)processed[mainName];
+						else
+						{
+							main = new CodeTypeDeclaration("Main");
+							processed[mainName] = main;
+							ns.Types.Add(main);
+						}
+						main.Members.Add(GeneratePinvoke(f));
+						CodeMemberMethod ret = GenerateFunction(f);
+						main.Members.Add(ret);
+					}
+					// For functions on an object just add it
 					else
 					{
-						main = new CodeTypeDeclaration("Main");
-						processed[mainName] = main;
-						parent.Types.Add(main);
+						CodeTypeDeclaration ty = (CodeTypeDeclaration)parent;
+						ty.Members.Add(GeneratePinvoke(f));
 					}
-					main.Members.Add(GeneratePinvoke(f));
-					CodeMemberMethod ret = GenerateFunction(f);
-					main.Members.Add(ret);
 				}
 			}
 			return cu;
