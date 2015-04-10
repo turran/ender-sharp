@@ -5,6 +5,16 @@ using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Runtime.InteropServices;
 
+/*
+ * For callbacks, dont create pinvoke functions
+ * For functions/methods that have a callback parameter, we need to:
+ * 1. make the pinvoke be in the form static extern foo(int a, int b, FunctionCb);
+ *    where FunctionCb must be the internal version of the callbackw with the C proto
+ * 2. create a delegate on the class with the C# form
+ * 3. On the body of foo, create an anonymous function that will translate the stuff
+ *    from C# to C and viceversa
+ */
+
 namespace Ender
 {
 	public class Generator
