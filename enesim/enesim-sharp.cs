@@ -167,13 +167,13 @@ private static extern Enesim.AplhaHintEnum enesim_renderer_alpha_hints_get(IntPt
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern bool enesim_renderer_is_supported(IntPtr self, IntPtr s);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern bool enesim_renderer_bounds_get(IntPtr self, IntPtr rect);
+private static extern bool enesim_renderer_bounds_get(IntPtr self, IntPtr rect, out IntPtr log);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern bool enesim_renderer_bounds_get_extended(IntPtr self, IntPtr prev, IntPtr curr);
+private static extern bool enesim_renderer_bounds_get_extended(IntPtr self, IntPtr prev, IntPtr curr, out IntPtr log);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern bool enesim_renderer_destination_bounds_get(IntPtr self, IntPtr rect, int x, int y);
+private static extern bool enesim_renderer_destination_bounds_get(IntPtr self, IntPtr rect, int x, int y, out IntPtr log);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern bool enesim_renderer_destination_bounds_get_extended(IntPtr self, IntPtr prev, IntPtr curr, int x, int y);
+private static extern bool enesim_renderer_destination_bounds_get_extended(IntPtr self, IntPtr prev, IntPtr curr, int x, int y, out IntPtr log);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern Enesim.Renderer.FeatureEnum enesim_renderer_features_get(IntPtr self);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -189,6 +189,8 @@ private static extern bool enesim_renderer_draw_list(IntPtr self, IntPtr s, Enes
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_default_quality_set(Enesim.QualityEnum quality);
 ~Renderer() { Dispose(false); }
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern bool enesim_renderer_damage(IntPtr r, IntPtr area, bool past, IntPtr data);
         
         protected Renderer() {
         }
@@ -372,29 +374,37 @@ private static extern void enesim_renderer_default_quality_set(Enesim.QualityEnu
             return ret;
         }
         
-        public bool GetBounds(out Enesim.Rectangle rect) {
+        public bool GetBounds(out Enesim.Rectangle rect, out Enesim.Log log) {
             rect = new Enesim.Rectangle();
-            bool ret = enesim_renderer_bounds_get(raw, rect.Raw);
+            System.IntPtr logRaw;
+            bool ret = enesim_renderer_bounds_get(raw, rect.Raw, out  logRaw);
+            log = new Enesim.Log(logRaw, false);
             return ret;
         }
         
-        public bool GetBounds(out Enesim.Rectangle prev, out Enesim.Rectangle curr) {
+        public bool GetBounds(out Enesim.Rectangle prev, out Enesim.Rectangle curr, out Enesim.Log log) {
             prev = new Enesim.Rectangle();
             curr = new Enesim.Rectangle();
-            bool ret = enesim_renderer_bounds_get_extended(raw, prev.Raw, curr.Raw);
+            System.IntPtr logRaw;
+            bool ret = enesim_renderer_bounds_get_extended(raw, prev.Raw, curr.Raw, out  logRaw);
+            log = new Enesim.Log(logRaw, false);
             return ret;
         }
         
-        public bool GetDestinationBounds(out Eina.Rectangle rect, int x, int y) {
+        public bool GetDestinationBounds(out Eina.Rectangle rect, int x, int y, out Enesim.Log log) {
             rect = new Eina.Rectangle();
-            bool ret = enesim_renderer_destination_bounds_get(raw, rect.Raw, x, y);
+            System.IntPtr logRaw;
+            bool ret = enesim_renderer_destination_bounds_get(raw, rect.Raw, x, y, out  logRaw);
+            log = new Enesim.Log(logRaw, false);
             return ret;
         }
         
-        public bool GetDestinationBounds(out Eina.Rectangle prev, out Eina.Rectangle curr, int x, int y) {
+        public bool GetDestinationBounds(out Eina.Rectangle prev, out Eina.Rectangle curr, int x, int y, out Enesim.Log log) {
             prev = new Eina.Rectangle();
             curr = new Eina.Rectangle();
-            bool ret = enesim_renderer_destination_bounds_get_extended(raw, prev.Raw, curr.Raw, x, y);
+            System.IntPtr logRaw;
+            bool ret = enesim_renderer_destination_bounds_get_extended(raw, prev.Raw, curr.Raw, x, y, out  logRaw);
+            log = new Enesim.Log(logRaw, false);
             return ret;
         }
         
@@ -1813,6 +1823,8 @@ private static extern void enesim_renderer_compound_background_enable_set(IntPtr
 private static extern uint enesim_renderer_compound_background_color_get(IntPtr self);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_compound_background_color_set(IntPtr self, uint color);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern bool enesim_renderer_compound_foreach_layer();
             
             protected internal Compound(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -3067,14 +3079,6 @@ private static extern bool enesim_buffer_map(IntPtr self, IntPtr data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern bool enesim_buffer_unmap(IntPtr self, IntPtr data, bool written);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern IntPtr enesim_buffer_format_size_get(IntPtr self, uint w, uint h);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern bool enesim_buffer_format_rgb_components_from(IntPtr self, int depth, byte aoffset, byte alen, byte roffset, byte rlen, byte goffset, byte glen, byte boffset, byte blen, bool premul);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern bool enesim_buffer_format_rgb_components_to(IntPtr self, out byte aoffset, out byte alen, out byte roffset, out byte rlen, out byte goffset, out byte glen, out byte boffset, out byte blen, out bool premul);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern byte enesim_buffer_format_rgb_depth_get(IntPtr self);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_buffer_lock(IntPtr self, bool write);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_buffer_unlock(IntPtr self);
@@ -3083,6 +3087,8 @@ private static extern void enesim_buffer_alpha_hint_set(IntPtr self, Enesim.Aplh
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern Enesim.AplhaHintEnum enesim_buffer_alpha_hint_get(IntPtr self);
 ~Buffer() { Dispose(false); }
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_buffer_free(IntPtr data, IntPtr user_data);
         
         protected internal Buffer(System.IntPtr i, bool owned) {
             Initialize(i, owned);
@@ -3213,26 +3219,6 @@ private static extern Enesim.AplhaHintEnum enesim_buffer_alpha_hint_get(IntPtr s
                 dataRaw = data.Raw;
             }
             bool ret = enesim_buffer_unmap(raw, dataRaw, written);
-            return ret;
-        }
-        
-        public System.IntPtr GetFormatSize(uint w, uint h) {
-            System.IntPtr ret = enesim_buffer_format_size_get(raw, w, h);
-            return ret;
-        }
-        
-        public bool FormatRgbComponentsFrom(int depth, byte aoffset, byte alen, byte roffset, byte rlen, byte goffset, byte glen, byte boffset, byte blen, bool premul) {
-            bool ret = enesim_buffer_format_rgb_components_from(raw, depth, aoffset, alen, roffset, rlen, goffset, glen, boffset, blen, premul);
-            return ret;
-        }
-        
-        public bool FormatRgbComponentsTo(out byte aoffset, out byte alen, out byte roffset, out byte rlen, out byte goffset, out byte glen, out byte boffset, out byte blen, out bool premul) {
-            bool ret = enesim_buffer_format_rgb_components_to(raw, out  aoffset, out  alen, out  roffset, out  rlen, out  goffset, out  glen, out  boffset, out  blen, out  premul);
-            return ret;
-        }
-        
-        public byte GetFormatRgbDepth() {
-            byte ret = enesim_buffer_format_rgb_depth_get(raw);
             return ret;
         }
         
@@ -3402,6 +3388,8 @@ private static extern void enesim_image_load_async(IntPtr data, string mime, Int
 private static extern bool enesim_image_save(IntPtr data, string mime, IntPtr b, string options, out int err);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_image_save_async(IntPtr data, string mime, IntPtr b, IntPtr cb, IntPtr user_data, string options);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_image_callback(IntPtr r, IntPtr data, bool success, int error);
         
         public static void Dispatch() {
             enesim_image_dispatch();
