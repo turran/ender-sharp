@@ -192,7 +192,7 @@ private static extern bool enesim_renderer_draw_list(IntPtr self, IntPtr s, Enes
 private static extern void enesim_renderer_default_quality_set(Enesim.QualityEnum quality);
 ~Renderer() { Dispose(false); }
 
-private delegate bool DamageInternal(IntPtr r, IntPtr area, bool past, IntPtr data);
+internal delegate bool DamageInternal(IntPtr r, IntPtr area, bool past, IntPtr data);
         
         protected Renderer() {
         }
@@ -1828,7 +1828,7 @@ private static extern uint enesim_renderer_compound_background_color_get(IntPtr 
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_compound_background_color_set(IntPtr self, uint color);
 
-private delegate bool ForeachLayerInternal(IntPtr r, IntPtr layer, IntPtr data);
+internal delegate bool ForeachLayerInternal(IntPtr r, IntPtr layer, IntPtr data);
             
             protected internal Compound(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -3094,7 +3094,7 @@ private static extern void enesim_buffer_alpha_hint_set(IntPtr self, Enesim.Aplh
 private static extern Enesim.AplhaHintEnum enesim_buffer_alpha_hint_get(IntPtr self);
 ~Buffer() { Dispose(false); }
 
-private delegate void FreeInternal(IntPtr data, IntPtr user_data);
+internal delegate void FreeInternal(IntPtr data, IntPtr user_data);
         
         protected internal Buffer(System.IntPtr i, bool owned) {
             Initialize(i, owned);
@@ -3397,7 +3397,7 @@ private static extern bool enesim_image_save(IntPtr data, string mime, IntPtr b,
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_image_save_async(IntPtr data, string mime, IntPtr b, Enesim.Image.CallbackInternal cb, IntPtr user_data, string options);
 
-private delegate void CallbackInternal(IntPtr r, IntPtr data, bool success, int error);
+internal delegate void CallbackInternal(IntPtr r, IntPtr data, bool success, int error);
         
         public static void Dispatch() {
             enesim_image_dispatch();
@@ -3847,11 +3847,6 @@ private static extern IntPtr enesim_stream_base64_new(IntPtr d);
         
         public Stream(System.IntPtr buffer, System.IntPtr len) {
             System.IntPtr ret = enesim_stream_buffer_new(buffer, len);
-            Initialize(ret, false);
-        }
-        
-        public Stream(System.IntPtr buffer, System.IntPtr len) {
-            System.IntPtr ret = enesim_stream_buffer_static_new(buffer, len);
             Initialize(ret, false);
         }
         

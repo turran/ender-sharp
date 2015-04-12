@@ -397,7 +397,7 @@ namespace Ender
 			else
 			{
 				string fName = ConvertName(f.Identifier) + "Internal";
-				pinvoke += string.Format("\nprivate delegate {0} {1}({2});", retString, fName, argsString);
+				pinvoke += string.Format("\ninternal delegate {0} {1}({2});", retString, fName, argsString);
 			}
 			CodeSnippetTypeMember ext = new CodeSnippetTypeMember(pinvoke);
 			return ext;
