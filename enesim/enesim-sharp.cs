@@ -1500,9 +1500,9 @@ private static extern void enesim_renderer_stripes_odd_thickness_set(IntPtr self
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern IntPtr enesim_renderer_path_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern IntPtr enesim_renderer_path_path_get(IntPtr self);
+private static extern IntPtr enesim_renderer_path_inner_path_get(IntPtr self);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_path_path_set(IntPtr self, IntPtr path);
+private static extern void enesim_renderer_path_inner_path_set(IntPtr self, IntPtr path);
             
             protected internal Path(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -1514,9 +1514,9 @@ private static extern void enesim_renderer_path_path_set(IntPtr self, IntPtr pat
                 Initialize(ret, false);
             }
             
-            public Enesim.Path Path {
+            public Enesim.Path InnerPath {
                 get {
-                    System.IntPtr ret = enesim_renderer_path_path_get(raw);
+                    System.IntPtr ret = enesim_renderer_path_inner_path_get(raw);
                     return new Path(ret, false);
                 }
                 set {
@@ -1529,7 +1529,7 @@ private static extern void enesim_renderer_path_path_set(IntPtr self, IntPtr pat
                     else {
                         pathRaw = path.Raw;
                     }
-                    enesim_renderer_path_path_set(raw, pathRaw);
+                    enesim_renderer_path_inner_path_set(raw, pathRaw);
                 }
             }
         }
