@@ -98,7 +98,11 @@ public class EnderSharp
 
 		if (show_help)
 		{
-			Console.WriteLine ("Help");
+			Console.WriteLine ("Usage: ender2sharp.exe [OPTION] LIBNAME");
+			Console.WriteLine ("Where OPTION can be the following:");
+			Console.WriteLine ("-o|--output The output directory to write the generated files");
+			Console.WriteLine ("-s|--skip   Ender item to skip, you can provide as many skip items as you want");
+			Console.WriteLine ("-h|--help   Show this help");
 			return;
 		}
 
