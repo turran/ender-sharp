@@ -425,8 +425,12 @@ internal delegate bool DamageInternal(IntPtr r, IntPtr area, bool past, IntPtr d
             return ret;
         }
         
-        public bool GetDamages(System.IntPtr cb, System.IntPtr data) {
-            bool ret = enesim_renderer_damages_get(raw, cb, data);
+        public bool GetDamages(Enesim.Renderer.Damage cb, System.IntPtr data) {
+            Enesim.Renderer.DamageInternal cbinternal = (IntPtr ir, IntPtr iarea, bool ipast, IntPtr idata) => {
+		return cb(new Enesim.Renderer(ir, false), new Eina.Rectangle(), ipast, idata);
+            };
+
+            bool ret = enesim_renderer_damages_get(raw, cbinternal, data);
             return ret;
         }
         
@@ -1517,7 +1521,7 @@ private static extern void enesim_renderer_path_inner_path_set(IntPtr self, IntP
             public Enesim.Path InnerPath {
                 get {
                     System.IntPtr ret = enesim_renderer_path_inner_path_get(raw);
-                    return new Path(ret, false);
+                    return new Enesim.Path(ret, false);
                 }
                 set {
                     Enesim.Path path;
