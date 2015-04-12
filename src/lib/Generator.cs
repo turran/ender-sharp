@@ -13,6 +13,10 @@ using System.Runtime.InteropServices;
  * 2. create a delegate on the class with the C# form (done)
  * 3. On the body of foo, create an anonymous function that will translate the stuff
  *    from C# to C and viceversa
+      Enesim.Renderer.DamageInternal cbinternal = (IntPtr ir, IntPtr iarea, bool ipast, IntPtr idata) => {
+          return cb(new Enesim.Renderer(ir, false), new Eina.Rectangle(), ipast, idata);
+      };
+      bool ret = enesim_renderer_damages_get(raw, cbinternal, data);
  */
 
 namespace Ender
@@ -549,6 +553,16 @@ namespace Ender
 			return GenerateArgPostStatementFull(i, arg.Name, arg.Direction, arg.Transfer);
 		}
 
+		// Create an internal delegate
+		private CodeStatementCollection GenerateArgPreStatementFunction(Function f)
+		{
+			// CodeExpression delegateExpression;
+			// StringWriter sw = new StringWriter();
+			// provider.GenerateCodeFromStatement(statementToWrap, sw, new CodeGeneratorOptions());
+			// delegateExpression = new CodeSnippetExpression("delegate {" + sw.ToString() + "}");
+			return null;
+		}
+
 		// The statements needed to convert an arg from C# to Pinvoke
 		private CodeStatementCollection GenerateArgPreStatementFull(Item i, string iName, string argName, ArgDirection direction, ItemTransfer transfer)
 		{
@@ -605,6 +619,9 @@ namespace Ender
 						csc.Add(cs);
 					}
 					return csc;
+				// For function callbacks, we create a delegate
+				case ItemType.FUNCTION:
+					return GenerateArgPreStatementFunction((Function)i);
 				default:
 					return null;
 			}
@@ -725,10 +742,9 @@ namespace Ender
 					ret = new CodeParameterDeclarationExpression();
 					ret.Type = GenerateBasic((Basic)i);
 					break;
-				// TODO how to handle a function ptr?
 				case ItemType.FUNCTION:
 					ret = new CodeParameterDeclarationExpression();
-					ret.Type = new CodeTypeReference("System.IntPtr");
+					ret.Type = new CodeTypeReference(ConvertFullName(i.Name));
 					break;
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
