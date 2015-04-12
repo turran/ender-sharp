@@ -12,4 +12,4 @@ noinst_DATA += $(enesim_BIN)
 
 $(enesim_BIN): $(eina_BIN) $(enesim_SRC) $(output_DIR)
 	$(CSC) -nowarn:169 -unsafe -target:library -debug $(enesim_SRC) \
-		-out:$(output_DIR)/$(enesim_BIN)
+		-r:$(output_DIR)/eina-sharp.dll -out:$(output_DIR)/$(enesim_BIN)
