@@ -23,9 +23,10 @@ namespace Ender
 		private CodeNamespace root;
 		private Lib lib;
 		private Dictionary<string, CodeObject> processed;
+		private System.Collections.Generic.List<string> skip;
 		private CodeDomProvider provider;
 
-		public Generator(Lib lib, CodeDomProvider provider)
+		public Generator(Lib lib, CodeDomProvider provider, System.Collections.Generic.List<string> skip)
 		{
 			this.lib = lib;
 			// Create our empty compilation unit
@@ -34,6 +35,8 @@ namespace Ender
  			processed = new Dictionary<string, CodeObject>();
 			// Our code provider to identify keywords
 			this.provider = provider;
+			// Our items to skip
+			this.skip = skip;
 		}
 
 		private string ConvertFullName(string name)
@@ -1484,6 +1487,7 @@ namespace Ender
 			bool hasCtor = false;
 			bool hasMethod = false;
 			bool isStaticClass = false;
+			bool isPartial = false;
 
 			Console.WriteLine("Generating object " + o.Name);
 			// Do nothing if cannot ref an object
@@ -1495,6 +1499,12 @@ namespace Ender
 				{
 					foreach (Function f in functions)
 					{
+						if (skip.Contains(f.FullName))
+						{
+							Console.WriteLine("Skipping function '" + f.FullName + "'");
+							continue;
+						}
+
 						if ((f.Flags & FunctionFlag.REF) == FunctionFlag.REF)
 						{
 							refFunc = f;
@@ -1543,6 +1553,12 @@ namespace Ender
 			{
 				foreach (Function f in funcs)
 				{
+					if (skip.Contains(f.FullName))
+					{
+						Console.WriteLine("Skipping function '" + f.FullName + "'");
+						isPartial = true;
+						continue;
+					}
 					Console.WriteLine("Processing PInvoke function " + f.Name);
 					co.Members.Add(GeneratePinvoke(f));
 				}
@@ -1574,13 +1590,20 @@ namespace Ender
 
 			if (!isStaticClass)
 				GenerateIntantiableObject(o, co, refFunc, unrefFunc);
+			if (isPartial)
+				co.IsPartial = true;
 
 
-			// in case the object has a ref() method
+			// Generate every function
 			if (funcs != null)
 			{
 				foreach (Function f in funcs)
 				{
+					if (skip.Contains(f.FullName))
+					{
+						Console.WriteLine("Skipping function '" + f.FullName + "'");
+						continue;
+					}
 					// Skip the ref/unref
 					if ((f.Flags & FunctionFlag.REF) == FunctionFlag.REF)
 						continue;
@@ -1631,9 +1654,16 @@ namespace Ender
 				return null;
 			}
 
-			// It might be possible that generating parent objects creates the ourselves
+			// It might be possible that generating parent objects creates ourselves
 			if (processed.ContainsKey(item.Name))
 				return processed[item.Name];
+
+			// Check if we need to skip this item
+			if (skip.Contains(item.Name))
+			{
+				Console.WriteLine("Skipping item '" + item.Name + "'");
+				return null;
+			}
 
 			Console.WriteLine("Generating item '" + item.Name + "'");
 			// Finally generate the particular item
@@ -1688,7 +1718,7 @@ namespace Ender
 
 			// First set the information from the library itself
 			GenerateLib();
-			// Generate very complex type (object, structs, enum and defs)
+			// Generate every complex type (object, structs, enum and defs)
 			ItemType[] complexTypes = { ItemType.OBJECT, ItemType.ENUM, ItemType.STRUCT, ItemType.DEF };
 			foreach (ItemType type in complexTypes)
 			{
@@ -1706,6 +1736,12 @@ namespace Ender
 				string mainName;
 				CodeTypeDeclaration main;
 				CodeObject parent;
+
+				if (skip.Contains(f.Name))
+				{
+					Console.WriteLine("Skipping function '" + f.Name + "'");
+					continue;
+				}
 
 				Console.WriteLine("Generating function '" + f.Name + "'");
 				parent = GenerateParentObjects(f);

@@ -118,7 +118,7 @@ public class EnderSharp
 
 		// Generate the code with the C# code provider.
 		CSharpCodeProvider provider = new CSharpCodeProvider();
-		Generator eg = new Generator(lib, provider);
+		Generator eg = new Generator(lib, provider, skip);
 		CodeCompileUnit cu = eg.Generate();
 
 		// Generate the source file

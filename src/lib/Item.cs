@@ -36,6 +36,8 @@ namespace Ender
 		[DllImport("libender.dll")]
 		static extern IntPtr ender_item_name_get(IntPtr i);
 		[DllImport("libender.dll")]
+		static extern string ender_item_full_name_get(IntPtr i);
+		[DllImport("libender.dll")]
 		static extern ItemType ender_item_type_get(IntPtr i);
 		[DllImport("libender.dll")]
 		static extern IntPtr ender_item_parent_get(IntPtr i);
@@ -72,6 +74,13 @@ namespace Ender
 				IntPtr uname = ender_item_name_get(raw);
 				string s = Marshal.PtrToStringAnsi(uname);
 				return s;
+			}
+		}
+
+		public string FullName
+		{
+			get {
+				return ender_item_full_name_get(raw);
 			}
 		}
 
