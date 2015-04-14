@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.CodeDom;
@@ -554,13 +555,22 @@ namespace Ender
 		}
 
 		// Create an internal delegate
-		private CodeStatementCollection GenerateArgPreStatementFunction(Function f)
+		private CodeStatementCollection GenerateArgPreStatementFunction(Function f, string argName)
 		{
-			// CodeExpression delegateExpression;
-			// StringWriter sw = new StringWriter();
-			// provider.GenerateCodeFromStatement(statementToWrap, sw, new CodeGeneratorOptions());
-			// delegateExpression = new CodeSnippetExpression("delegate {" + sw.ToString() + "}");
-			return null;
+			// Generate the args of the function, this function differes from 
+			string argsString = GenerateArgsPinvoke(f);
+			StringWriter bodyWriter = new StringWriter();
+			CodeStatementCollection csc = GenerateFunctionBody(f);
+			foreach (CodeStatement cs in csc) {
+				provider.GenerateCodeFromStatement(cs, bodyWriter, new CodeGeneratorOptions());
+			}
+			string delegateString = string.Format("\n{0} {1} = ({2}) => {{\n{3}\n}};",
+					ConvertFullName(f.Name) + "Internal", argName + "Internal", argsString,
+					bodyWriter.ToString());
+
+			csc = new CodeStatementCollection();
+			csc.Add(new CodeSnippetStatement(delegateString));
+			return csc;
 		}
 
 		// The statements needed to convert an arg from C# to Pinvoke
@@ -621,7 +631,7 @@ namespace Ender
 					return csc;
 				// For function callbacks, we create a delegate
 				case ItemType.FUNCTION:
-					return GenerateArgPreStatementFunction((Function)i);
+					return GenerateArgPreStatementFunction((Function)i, argName);
 				default:
 					return null;
 			}
@@ -635,6 +645,33 @@ namespace Ender
 			if (i == null)
 				return null;
 			return GenerateArgPreStatementFull(i, i.Name, arg.Name, arg.Direction, arg.Transfer);
+		}
+
+		private CodeStatementCollection GeneratePinvokeArgPreStatement(Arg arg)
+		{
+			Item i = arg.ArgType;
+
+			if (i == null)
+				return null;
+
+			CodeStatementCollection csc = new CodeStatementCollection();
+			switch (i.Type)
+			{
+				case ItemType.OBJECT:
+					// Call the constructor
+					Console.WriteLine(">>>>>> <<<<<<<\n");
+					// identifier nameSharp;
+					csc.Add(new CodeVariableDeclarationStatement(new CodeTypeReference(ConvertName(i.Identifier)), arg.Name + "Sharp"));
+					// nameSharp = new identifier(ret, false/true);
+					csc.Add(new CodeAssignStatement(new CodeVariableReferenceExpression(arg.Name + "Sharp"),
+							new CodeObjectCreateExpression(new CodeTypeReference(ConvertName(i.Identifier)),
+							new CodeVariableReferenceExpression("ret"),
+							new CodePrimitiveExpression(true))));
+					break;
+				default:
+					return null;
+			}
+			return csc;
 		}
 
 		// The expression to pass into the Pinvoke method for this arg
@@ -661,8 +698,9 @@ namespace Ender
 					{
 						return GenerateArgExpressionFull(d.DefType, name, direction, transfer);
 					}
-				// TODO how to handle a function ptr?
 				case ItemType.FUNCTION:
+					ret = new CodeVariableReferenceExpression(name + "Internal");
+					break;
 				// TODO same as basic?
 				case ItemType.CONSTANT:
 				// TODO Check the processed for the enum name
@@ -890,7 +928,11 @@ namespace Ender
 					}
 
 					// Add any pre statement we might need
-					CodeStatementCollection cs = GenerateArgPreStatement(a);
+					CodeStatementCollection cs;
+					if ((f.Flags & FunctionFlag.CALLBACK) == FunctionFlag.CALLBACK)
+						cs = GeneratePinvokeArgPreStatement(a);
+					else
+						cs = GenerateArgPreStatement(a);
 					if (cs != null)
 						csc.AddRange(cs);
 				}
