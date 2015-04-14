@@ -554,13 +554,98 @@ namespace Ender
 			return GenerateArgPostStatementFull(i, arg.Name, arg.Direction, arg.Transfer);
 		}
 
+		// bool ret;
+		// Enesim.Renderer rSharp = new Enesim.Renderer(r, true);
+          	// ret = cb(rSharp, data);
+		// return ret;
+		private CodeStatementCollection GenerateCallbackBody(Function f, string cbName)
+		{
+			CodeStatementCollection csc = new CodeStatementCollection();
+			List args = f.Args;
+			// Now the pre return statements
+			if (args != null)
+			{
+				foreach (Arg a in args)
+				{
+					// Add any pre statement we might need
+					CodeStatementCollection cs = GeneratePinvokeArgPreStatement(a);
+					if (cs != null)
+						csc.AddRange(cs);
+				}
+			}
+
+			// Call the real callback
+			// We for sure call the pinvoke function
+			CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
+			ci.Method = new CodeMethodReferenceExpression(null, cbName);
+
+			// Now generate the cb args
+			if (args != null)
+			{
+				foreach (Arg a in args)
+				{
+					// Add the expression to the invoke function
+					CodeExpression ce = GeneratePinvokeArgExpression(a);
+					if (ce != null)
+						ci.Parameters.Add(ce);
+				}
+			}
+
+			// Now the return value prototype
+			CodeTypeReference ret = GenerateRet(f.Ret);
+			if (ret != null)
+			{
+				CodeVariableDeclarationStatement cvs;
+				// Add the return value
+				string sret = GenerateRetPinvoke(f.Ret);
+				System.Type type = GenerateType(sret);
+				if (type != null)
+				{
+					cvs = new CodeVariableDeclarationStatement(type, "retSharp", ci);
+				}
+				else
+				{
+					cvs = new CodeVariableDeclarationStatement(sret, "retSharp", ci);
+				}
+				csc.Add(cvs);
+			}
+			else
+			{
+				// Just call the method
+				CodeStatement cs = new CodeExpressionStatement(ci);
+				csc.Add(cs);
+			}
+
+			// Now the post statements
+			if (args != null)
+			{
+				foreach (Arg a in args)
+				{
+					// Add any pre statement we might need
+					CodeStatement cs = GenerateArgPostStatement(a);
+					if (cs != null)
+						csc.Add(cs);
+				}
+			}
+
+			// Finally the return value
+			if (ret != null)
+			{
+				CodeStatement cs = new CodeMethodReturnStatement(new CodeVariableReferenceExpression("retSharp"));
+				csc.Add(cs);
+			}
+
+			return csc;
+
+		}
+
 		// Create an internal delegate
 		private CodeStatementCollection GenerateArgPreStatementFunction(Function f, string argName)
 		{
 			// Generate the args of the function, this function differes from 
 			string argsString = GenerateArgsPinvoke(f);
 			StringWriter bodyWriter = new StringWriter();
-			CodeStatementCollection csc = GenerateFunctionBody(f);
+			CodeStatementCollection csc = GenerateCallbackBody(f, argName);
 			foreach (CodeStatement cs in csc) {
 				provider.GenerateCodeFromStatement(cs, bodyWriter, new CodeGeneratorOptions());
 			}
@@ -647,6 +732,30 @@ namespace Ender
 			return GenerateArgPreStatementFull(i, i.Name, arg.Name, arg.Direction, arg.Transfer);
 		}
 
+		private CodeExpression GeneratePinvokeArgExpression(Arg arg)
+		{
+			CodeExpression ret = null;
+			Item i = arg.ArgType;
+
+			if (i == null)
+				return null;
+
+			switch (i.Type)
+			{
+				case ItemType.OBJECT:
+				ret = new CodeVariableReferenceExpression(arg.Name + "Sharp");
+				break;
+
+				case ItemType.BASIC:
+				ret = new CodeVariableReferenceExpression(arg.Name);
+				break;
+
+				default:
+				break;
+			}
+			return ret;
+		}
+
 		private CodeStatementCollection GeneratePinvokeArgPreStatement(Arg arg)
 		{
 			Item i = arg.ArgType;
@@ -659,13 +768,12 @@ namespace Ender
 			{
 				case ItemType.OBJECT:
 					// Call the constructor
-					Console.WriteLine(">>>>>> <<<<<<<\n");
 					// identifier nameSharp;
 					csc.Add(new CodeVariableDeclarationStatement(new CodeTypeReference(ConvertName(i.Identifier)), arg.Name + "Sharp"));
-					// nameSharp = new identifier(ret, false/true);
+					// nameSharp = new identifier(arg.Name, false/true);
 					csc.Add(new CodeAssignStatement(new CodeVariableReferenceExpression(arg.Name + "Sharp"),
 							new CodeObjectCreateExpression(new CodeTypeReference(ConvertName(i.Identifier)),
-							new CodeVariableReferenceExpression("ret"),
+							new CodeVariableReferenceExpression(arg.Name),
 							new CodePrimitiveExpression(true))));
 					break;
 				default:
@@ -928,11 +1036,7 @@ namespace Ender
 					}
 
 					// Add any pre statement we might need
-					CodeStatementCollection cs;
-					if ((f.Flags & FunctionFlag.CALLBACK) == FunctionFlag.CALLBACK)
-						cs = GeneratePinvokeArgPreStatement(a);
-					else
-						cs = GenerateArgPreStatement(a);
+					CodeStatementCollection cs = GenerateArgPreStatement(a);
 					if (cs != null)
 						csc.AddRange(cs);
 				}
