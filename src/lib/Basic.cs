@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.CodeDom;
 
 namespace Ender
 {
@@ -28,8 +29,68 @@ namespace Ender
 				return ender_item_basic_value_type_get(raw);
 			}
 		}
+
+		#region Item interface
+		public override string ManagedType(Generator generator)
+		{
+			System.Type st;
+			switch (ValueType)
+			{
+				case ValueType.BOOL:
+					st = typeof(bool);
+					break;
+				case ValueType.UINT8:
+					st = typeof(byte);
+					break;
+				case ValueType.INT8:
+					st = typeof(sbyte);
+					break;
+				case ValueType.UINT32:
+					st = typeof(uint);
+					break;
+				case ValueType.INT32:
+					st = typeof(int);
+					break;
+				case ValueType.UINT64:
+					st = typeof(ulong);
+					break;
+				case ValueType.INT64:
+					st = typeof(long);
+					break;
+				case ValueType.DOUBLE:
+					st = typeof(double);
+					break;
+				case ValueType.STRING:
+					st = typeof(string);
+					break;
+				case ValueType.POINTER:
+					st = typeof(IntPtr);
+					break;
+				case ValueType.SIZE:
+					st = typeof(IntPtr);
+					break;
+				default:
+					st = typeof(object);
+					break;
+			}
+			return st.ToString();
+		}
+
+		public override string UnmanagedType(Generator generator,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			// The special case for in, full char *
+			if (ValueType == ValueType.STRING)
+			{
+				if (transfer == ItemTransfer.FULL
+					&& direction == ArgDirection.IN)
+					return typeof(IntPtr).ToString();
+				if (transfer == ItemTransfer.NONE
+					&& direction == ArgDirection.OUT)
+					return typeof(IntPtr).ToString();
+			}	
+			return ManagedType(generator);
+		}
+		#endregion
 	}
 }
-
-
-

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.CodeDom;
 
 namespace Ender
 {
@@ -63,5 +64,49 @@ namespace Ender
 				return list;
 			}
 		}
+
+		#region Item interface
+		public override CodeStatementCollection ManagedPreStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			CodeStatementCollection csc = new CodeStatementCollection();
+			if (direction == ArgDirection.OUT)
+			{
+				csc.Add(new CodeAssignStatement(
+						new CodeVariableReferenceExpression(varName),
+						new CodeObjectCreateExpression(
+							new CodeTypeReference(generator.ConvertFullName(Name)))));
+			}
+			else
+			{
+				string rawName = varName + "Raw";
+				csc.Add(new CodeVariableDeclarationStatement(typeof(IntPtr), rawName));
+				// if varName == null varNameRaw = IntPtr.Zero : varNameRaw = varName.Raw
+				CodeStatement cs = new CodeConditionStatement(
+						new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(varName),
+							CodeBinaryOperatorType.IdentityEquality,
+							new CodePrimitiveExpression(null)),
+								new CodeStatement[] {
+									new CodeAssignStatement(new CodeVariableReferenceExpression(rawName),
+									new CodeTypeReferenceExpression("IntPtr.Zero"))
+								},
+							new CodeStatement[] {
+								new CodeAssignStatement(new CodeVariableReferenceExpression(rawName),
+									new CodePropertyReferenceExpression(new CodeVariableReferenceExpression(varName), "Raw"))
+							}
+						);
+				csc.Add(cs);
+			}
+			return csc;
+		}
+
+		public override CodeStatementCollection ManagedPostStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			return null;
+		}
+		#endregion
 	}
 }

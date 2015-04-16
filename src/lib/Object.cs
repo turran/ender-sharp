@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.CodeDom;
 
 namespace Ender
 {
@@ -73,5 +74,65 @@ namespace Ender
 
 			}
 		}
+
+		#region Item interface
+		public override CodeStatementCollection ManagedPreStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			CodeStatementCollection csc = new CodeStatementCollection();
+			string rawName = varName + "Raw"; 
+
+			csc.Add(new CodeVariableDeclarationStatement(typeof(IntPtr), rawName));
+			if (direction == ArgDirection.IN)
+			{
+				// if varName == null varNameRaw = IntPtr.Zero : varNameRaw = varName.Raw
+				CodeStatement cs = new CodeConditionStatement(
+						new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(varName),
+							CodeBinaryOperatorType.IdentityEquality,
+							new CodePrimitiveExpression(null)),
+								new CodeStatement[] {
+									new CodeAssignStatement(new CodeVariableReferenceExpression(rawName),
+									new CodeTypeReferenceExpression("IntPtr.Zero"))
+								},
+								new CodeStatement[] {
+									new CodeAssignStatement(new CodeVariableReferenceExpression(rawName),
+									new CodePropertyReferenceExpression(new CodeVariableReferenceExpression(varName), "Raw"))
+								}
+						);
+				csc.Add(cs);
+			}
+			return csc;
+		}
+
+		public override CodeStatementCollection ManagedPostStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			if (direction == ArgDirection.OUT)
+			{
+				string rawName = varName + "Raw"; 
+				// varName = new identifier(varNameRaw, false/true);
+				CodeStatementCollection csc = new CodeStatementCollection();
+				CodeStatement cs = new CodeAssignStatement(new CodeVariableReferenceExpression(varName),
+						new CodeObjectCreateExpression(ManagedType(generator),
+							new CodeExpression[] {
+								new CodeVariableReferenceExpression(rawName),
+								new CodePrimitiveExpression(false)
+							}));
+				csc.Add(cs);
+				return csc;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		public override string ManagedType(Generator generator)
+		{
+			return generator.ConvertFullName(Name);
+		}
+		#endregion
 	}
 }

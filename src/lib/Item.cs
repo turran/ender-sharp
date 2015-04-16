@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.CodeDom;
 
 namespace Ender
 {
@@ -200,6 +201,31 @@ namespace Ender
 		~Item()
 		{
 			Dispose(false);
+		}
+
+		public virtual CodeStatementCollection ManagedPreStatements(Generator generator,
+				string varName, ArgDirection direction,
+				ItemTransfer transfer)
+		{
+			return null;
+		}
+
+		public virtual CodeStatementCollection ManagedPostStatements(Generator generator,
+				string varName, ArgDirection direction,
+				ItemTransfer transfer)
+		{
+			return null;
+		}
+
+		public virtual string ManagedType(Generator generator)
+		{
+			return typeof(IntPtr).ToString();
+		}
+
+		public virtual string UnmanagedType(Generator generator,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			return typeof(IntPtr).ToString();
 		}
 
 		#region IDisposable

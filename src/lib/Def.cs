@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.CodeDom;
 
 namespace Ender
 {
@@ -42,6 +43,73 @@ namespace Ender
 			}
 		}
 
+		public Item FinalDefType {
+			get {
+				Item i = DefType;
+				if (i is Def)
+				{
+					Item ret = ((Def)i).FinalDefType;
+					i.Dispose ();
+					return ret;
+				}
+				else
+				{
+					return i;
+				}
+			}
+		}
+
+		#region Item interface
+		public override CodeStatementCollection ManagedPreStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			Item i = FinalDefType;
+			// Can not convert implicitly for out parameters
+			if (i.Type == ItemType.BASIC && direction == ArgDirection.OUT)
+			{
+				string rawName = varName + "Raw";
+				CodeStatementCollection csc = new CodeStatementCollection();
+				csc.Add(new CodeVariableDeclarationStatement(i.ManagedType(generator), rawName));
+				return csc;
+			}
+			else
+			{
+				return i.ManagedPreStatements(generator, varName, direction, transfer);
+			}
+		}
+
+		public override CodeStatementCollection ManagedPostStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			Item i = FinalDefType;
+			if (i.Type == ItemType.BASIC && direction == ArgDirection.OUT)
+			{
+				string rawName = varName + "Raw";
+				CodeStatementCollection csc = new CodeStatementCollection();
+				csc.Add(new CodeAssignStatement(new CodeVariableReferenceExpression(varName),
+						new CodeVariableReferenceExpression(rawName)));
+				return csc;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		public override string ManagedType(Generator generator)
+		{
+			return generator.ConvertFullName(Name);
+		}
+
+		public override string UnmanagedType(Generator generator,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			Item i = FinalDefType;
+			return i.UnmanagedType(generator, direction, transfer);
+		}
+		#endregion
 	}
 }
 

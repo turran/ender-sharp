@@ -33,6 +33,23 @@ namespace Ender
 				return list;
 			}
 		}
+
+		#region Item interface
+		public override string ManagedType(Generator generator)
+		{
+			// TODO if the created object is actually an enum (it can be a class in
+			// case it has methods) use it, otherwise the inner enum
+			return generator.ConvertFullName(Name) + "Enum";
+		}
+
+		public override string UnmanagedType(Generator generator,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			// TODO if the created object is actually an enum (it can be a class in
+			// case it has methods) use it, otherwise the inner enum
+			return generator.ConvertFullName(Name) + "Enum";
+		}
+		#endregion
 	}
 }
 
