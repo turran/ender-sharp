@@ -1180,26 +1180,67 @@ namespace Ender
 		// and use that
 		private CodeTypeDeclaration GenerateStruct(Struct s)
 		{
+			CodeMemberMethod cm;
+			CodeMethodInvokeExpression cms;
+			CodeMethodInvokeExpression cma;
+			CodeParameterDeclarationExpression cmp;;
+
 			Console.WriteLine("Generating struct " + s.Name);
 			// Get the real item name
 			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(s.Identifier));
 			// Add the generated type into our hash
 			processed[s.Name] = co;
-			// Generate the raw field
-			CodeMemberField rawField = new CodeMemberField("IntPtr", "raw");
-			rawField.Attributes = MemberAttributes.Family;
-			co.Members.Add(rawField);
-			// Add the getter
-			CodeMemberProperty rawProp = new CodeMemberProperty();
-			rawProp.Name = "Raw";
-			rawProp.Type = new CodeTypeReference("System.IntPtr");
-			rawProp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-			// Declares a property get statement to return the value of the raw IntPtr
-			rawProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "raw")));
-			co.Members.Add(rawProp);
 
-			List fields = s.Fields;
-			// TODO add the getters/setters
+			// Add a constructor that receives a raw argument
+			CodeConstructor cc = new CodeConstructor();
+			cmp = new CodeParameterDeclarationExpression("System.IntPtr", "raw");
+			cc.Parameters.Add(cmp);
+			cc.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+			co.Members.Add(cc);
+
+			// Add a public class method to create the raw from its internal structure
+			cm = new CodeMemberMethod();
+			cm.Name = "CreateRaw";
+			cm.Attributes = MemberAttributes.Public | MemberAttributes.Final | MemberAttributes.Static;
+			// IntPtr raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(p)))
+			// Marshal.StructureToPtr(rawStruct, raw, false);
+			// return raw
+			cm.Statements.Add(new CodeVariableDeclarationStatement(new CodeTypeReference("System.IntPtr"), "raw"));
+			cms = new CodeMethodInvokeExpression(
+					new CodeTypeReferenceExpression("Marshal"), "SizeOf", new CodeTypeOfExpression(new CodeTypeReference(ConvertName(s.Identifier) + "Struct")));
+			cma = new CodeMethodInvokeExpression(
+					new CodeTypeReferenceExpression("Marshal"), "AllocHGlobal", cms);
+			cm.Statements.Add(new CodeAssignStatement(new CodeVariableReferenceExpression("raw"), cma));
+			cms = new CodeMethodInvokeExpression(
+					new CodeTypeReferenceExpression("Marshal"), "StructureToPtr", new CodeExpression[] {
+						new CodeVariableReferenceExpression("rawStruct"),
+						new CodeVariableReferenceExpression("raw"),
+						new CodePrimitiveExpression("false")
+						});
+			cm.Statements.Add(cms);
+			cm.Statements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("raw")));
+			cm.ReturnType = new CodeTypeReference("System.IntPtr");
+			co.Members.Add(cm);
+
+			// Add a public class method to destroy a raw
+			cm = new CodeMemberMethod();
+			cm.Name = "DestroyRaw";
+			cm.Attributes = MemberAttributes.Public | MemberAttributes.Final | MemberAttributes.Static;
+			// rawStruct = Marshal.StructureToPtr(raw);
+			cma = new CodeMethodInvokeExpression(
+					new CodeTypeReferenceExpression("Marshal"), "PtrToStructure", new CodeExpression[] {
+						new CodeVariableReferenceExpression("rawStruct"),
+						new CodeTypeOfExpression(new CodeTypeReference(ConvertName(s.Identifier) + "Struct"))
+						});
+			cm.Statements.Add(new CodeAssignStatement(new CodeVariableReferenceExpression("rawStruct"), cma));
+			// Marshal.FreeHGlobal(raw)
+			cma = new CodeMethodInvokeExpression(
+					new CodeTypeReferenceExpression("Marshal"), "FreeHGlobal", new CodeVariableReferenceExpression("raw"));
+			cm.Statements.Add(new CodeExpressionStatement(cma));
+			cmp = new CodeParameterDeclarationExpression("System.IntPtr", "raw");
+			cm.Parameters.Add(cmp);
+			co.Members.Add(cm);
+
 			// Add the inner struct
 			CodeTypeDeclaration cs = new CodeTypeDeclaration(ConvertName(s.Identifier) + "Struct");
 			cs.Attributes = MemberAttributes.Private;
@@ -1211,6 +1252,7 @@ namespace Ender
 			cs.CustomAttributes.Add(new CodeAttributeDeclaration("StructLayout",
 					new CodeAttributeArgument(new CodeFieldReferenceExpression(
 					new CodeTypeReferenceExpression(typeof(LayoutKind)), "Sequential"))));
+			List fields = s.Fields;
 			if (fields != null)
 			{
 				foreach (Attr f in fields)
@@ -1244,17 +1286,6 @@ namespace Ender
 				}
 			}
 			co.Members.Add(cs);
-			// Add the contructor which will allocate the raw pointer memory
-			CodeConstructor cc = new CodeConstructor();
-			cc.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-			// raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(p)))
-			CodeMethodInvokeExpression cms = new CodeMethodInvokeExpression(
-					new CodeTypeReferenceExpression("Marshal"), "SizeOf", new CodeTypeOfExpression(new CodeTypeReference(ConvertName(s.Identifier) + "Struct")));
-			CodeMethodInvokeExpression cma = new CodeMethodInvokeExpression(
-					new CodeTypeReferenceExpression("Marshal"), "AllocHGlobal", cms);
-			CodeAssignStatement cas = new CodeAssignStatement(new CodeVariableReferenceExpression("raw"), cma);
-			cc.Statements.Add(cas);
-			co.Members.Add(cc);
 			// Make it disposable to remove the allocated memory
 			return co;
 		}
