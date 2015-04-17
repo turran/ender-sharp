@@ -792,6 +792,8 @@ namespace Ender
 			return ret;
 		}
 
+		// TODO remove this to be an GenerateConstructor(generator, ... CodeExpression);
+		// TODO and move the return to where it belongs actually
 		private CodeStatement GenerateRetStatement(Arg arg)
 		{
 			if (arg == null)
@@ -1172,6 +1174,37 @@ namespace Ender
 			return GenerateInnerFieldFull(i, i.Name, a.Name);
 		}
 
+		private CodeStatementCollection GenerateFieldAssignment(Attr f, CodeExpression dst, CodeExpression src)
+		{
+			CodeStatementCollection csc = new CodeStatementCollection();
+			Item i = f.AttrType;
+
+			switch (i.Type)
+			{
+				// Impossible cases
+				case ItemType.INVALID:
+				case ItemType.ATTR:
+				case ItemType.ARG:
+				case ItemType.CONSTANT:
+					break;
+				// Basic case
+				case ItemType.ENUM:
+				case ItemType.BASIC:
+				case ItemType.DEF:
+					csc.Add(new CodeAssignStatement(dst, src));
+					break;
+				// TODO how to handle a function ptr?
+				case ItemType.FUNCTION:
+					break;
+				case ItemType.STRUCT:
+				case ItemType.OBJECT:
+					break;
+				default:
+					break;
+			}
+			return csc;
+		}
+
 		// TODO The struct should have every field on the inner
 		// struct repeated. And a constructor based on a raw and a constructor
 		// generic. In case of an out param being a struct, allocate the
@@ -1190,13 +1223,6 @@ namespace Ender
 			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(s.Identifier));
 			// Add the generated type into our hash
 			processed[s.Name] = co;
-
-			// Add a constructor that receives a raw argument
-			CodeConstructor cc = new CodeConstructor();
-			cmp = new CodeParameterDeclarationExpression("System.IntPtr", "raw");
-			cc.Parameters.Add(cmp);
-			cc.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-			co.Members.Add(cc);
 
 			// Add a public class method to create the raw from its internal structure
 			cm = new CodeMemberMethod();
@@ -1270,14 +1296,34 @@ namespace Ender
 					fProp.Type = GenerateProp(f);
 					fProp.HasGet = true;
 					fProp.HasSet = true;
-
 					Item fType = f.AttrType;
-					csc = fType.ManagedPreStatements(this, "value", ArgDirection.OUT, ItemTransfer.NONE);
+
+					// The getter
+					// Enesim.Renderer ret
+					string retType = fType.ManagedType(this);
+					fProp.GetStatements.Add(new CodeVariableDeclarationStatement(retType, "ret"));
+					csc = fType.ManagedPreStatements(this, "ret", ArgDirection.OUT, ItemTransfer.NONE);
 					if (csc != null)
 					{
 						fProp.GetStatements.AddRange(csc);
 					}
+					csc = GenerateFieldAssignment(f, new CodeVariableReferenceExpression("ret"),
+							new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
+							new CodeThisReferenceExpression(), "rawStruct"), f.Name));
+					if (csc != null)
+					{
+						fProp.GetStatements.AddRange(csc);
+					}
+					fProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret")));
+
 					csc = fType.ManagedPreStatements(this, "value", ArgDirection.IN, ItemTransfer.NONE);
+					if (csc != null)
+					{
+						fProp.SetStatements.AddRange(csc);
+					}
+					csc = GenerateFieldAssignment(f, new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
+							new CodeThisReferenceExpression(), "rawStruct"), f.Name),
+							new CodePropertySetValueReferenceExpression());
 					if (csc != null)
 					{
 						fProp.SetStatements.AddRange(csc);

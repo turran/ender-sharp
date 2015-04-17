@@ -825,20 +825,25 @@ private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr sel
                 
                 private StrokeDashStruct rawStruct;
                 
-                public StrokeDash(System.IntPtr raw) {
-                }
-                
                 public double Length {
                     get {
+                        double ret;
+                        ret = this.rawStruct.length;
+                        return ret;
                     }
                     set {
+                        this.rawStruct.length = value;
                     }
                 }
                 
                 public double Gap {
                     get {
+                        double ret;
+                        ret = this.rawStruct.gap;
+                        return ret;
                     }
                     set {
+                        this.rawStruct.gap = value;
                     }
                 }
                 
@@ -1166,21 +1171,26 @@ private static extern void enesim_renderer_gradient_linear_y1_set(System.IntPtr 
                 
                 private StopStruct rawStruct;
                 
-                public Stop(System.IntPtr raw) {
-                }
-                
                 public Enesim.Argb Argb {
                     get {
-                        uint valueRaw;
+                        Enesim.Argb ret;
+                        uint retRaw;
+                        ret = this.rawStruct.argb;
+                        return ret;
                     }
                     set {
+                        this.rawStruct.argb = value;
                     }
                 }
                 
                 public double Pos {
                     get {
+                        double ret;
+                        ret = this.rawStruct.pos;
+                        return ret;
                     }
                     set {
+                        this.rawStruct.pos = value;
                     }
                 }
                 
@@ -3292,20 +3302,25 @@ free_func(buffer_data, user_data);
             
             private SwData32bppStruct rawStruct;
             
-            public SwData32bpp(System.IntPtr raw) {
-            }
-            
             public System.IntPtr Plane0 {
                 get {
+                    System.IntPtr ret;
+                    ret = this.rawStruct.plane0;
+                    return ret;
                 }
                 set {
+                    this.rawStruct.plane0 = value;
                 }
             }
             
             public int Plane0Stride {
                 get {
+                    int ret;
+                    ret = this.rawStruct.plane0_stride;
+                    return ret;
                 }
                 set {
+                    this.rawStruct.plane0_stride = value;
                 }
             }
             
@@ -3334,20 +3349,25 @@ free_func(buffer_data, user_data);
             
             private SwData24bppStruct rawStruct;
             
-            public SwData24bpp(System.IntPtr raw) {
-            }
-            
             public System.IntPtr Plane0 {
                 get {
+                    System.IntPtr ret;
+                    ret = this.rawStruct.plane0;
+                    return ret;
                 }
                 set {
+                    this.rawStruct.plane0 = value;
                 }
             }
             
             public int Plane0Stride {
                 get {
+                    int ret;
+                    ret = this.rawStruct.plane0_stride;
+                    return ret;
                 }
                 set {
+                    this.rawStruct.plane0_stride = value;
                 }
             }
             
@@ -3376,20 +3396,25 @@ free_func(buffer_data, user_data);
             
             private SwDataRgb565Struct rawStruct;
             
-            public SwDataRgb565(System.IntPtr raw) {
-            }
-            
             public System.IntPtr Plane0 {
                 get {
+                    System.IntPtr ret;
+                    ret = this.rawStruct.plane0;
+                    return ret;
                 }
                 set {
+                    this.rawStruct.plane0 = value;
                 }
             }
             
             public int Plane0Stride {
                 get {
+                    int ret;
+                    ret = this.rawStruct.plane0_stride;
+                    return ret;
                 }
                 set {
+                    this.rawStruct.plane0_stride = value;
                 }
             }
             
@@ -3418,9 +3443,6 @@ free_func(buffer_data, user_data);
             
             private SwDataStruct rawStruct;
             
-            public SwData(System.IntPtr raw) {
-            }
-            
             public static System.IntPtr CreateRaw() {
                 System.IntPtr raw;
                 raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(SwDataStruct)));
@@ -3442,20 +3464,25 @@ free_func(buffer_data, user_data);
             
             private SwDataA8Struct rawStruct;
             
-            public SwDataA8(System.IntPtr raw) {
-            }
-            
             public System.IntPtr Plane0 {
                 get {
+                    System.IntPtr ret;
+                    ret = this.rawStruct.plane0;
+                    return ret;
                 }
                 set {
+                    this.rawStruct.plane0 = value;
                 }
             }
             
             public int Plane0Stride {
                 get {
+                    int ret;
+                    ret = this.rawStruct.plane0_stride;
+                    return ret;
                 }
                 set {
+                    this.rawStruct.plane0_stride = value;
                 }
             }
             
@@ -4190,12 +4217,11 @@ private static extern void enesim_path_close(System.IntPtr self);
             
             private CommandStruct rawStruct;
             
-            public Command(System.IntPtr raw) {
-            }
-            
             public Enesim.Path.Command.Definition Definition {
                 get {
-                    value = new Enesim.Path.Command.Definition();
+                    System.IntPtr ret;
+                    ret = new Enesim.Path.Command.Definition();
+                    return ret;
                 }
                 set {
                     System.IntPtr valueRaw;
@@ -4251,13 +4277,14 @@ private static extern void enesim_path_close(System.IntPtr self);
                 
                 private CloseStruct rawStruct;
                 
-                public Close(System.IntPtr raw) {
-                }
-                
                 public bool Close {
                     get {
+                        bool ret;
+                        ret = this.rawStruct.close;
+                        return ret;
                     }
                     set {
+                        this.rawStruct.close = value;
                     }
                 }
                 
@@ -4283,9 +4310,6 @@ private static extern void enesim_path_close(System.IntPtr self);
             public class Definition {
                 
                 private DefinitionStruct rawStruct;
-                
-                public Definition(System.IntPtr raw) {
-                }
                 
                 public static System.IntPtr CreateRaw() {
                     System.IntPtr raw;
@@ -4489,69 +4513,102 @@ private static extern void enesim_log_dump(System.IntPtr self);
         
         private MatrixStruct rawStruct;
         
-        public Matrix(System.IntPtr raw) {
-        }
-        
         public double Xx {
             get {
+                double ret;
+                ret = this.rawStruct.xx;
+                return ret;
             }
             set {
+                this.rawStruct.xx = value;
             }
         }
         
         public double Xy {
             get {
+                double ret;
+                ret = this.rawStruct.xy;
+                return ret;
             }
             set {
+                this.rawStruct.xy = value;
             }
         }
         
         public double Xz {
             get {
+                double ret;
+                ret = this.rawStruct.xz;
+                return ret;
             }
             set {
+                this.rawStruct.xz = value;
             }
         }
         
         public double Yx {
             get {
+                double ret;
+                ret = this.rawStruct.yx;
+                return ret;
             }
             set {
+                this.rawStruct.yx = value;
             }
         }
         
         public double Yy {
             get {
+                double ret;
+                ret = this.rawStruct.yy;
+                return ret;
             }
             set {
+                this.rawStruct.yy = value;
             }
         }
         
         public double Yz {
             get {
+                double ret;
+                ret = this.rawStruct.yz;
+                return ret;
             }
             set {
+                this.rawStruct.yz = value;
             }
         }
         
         public double Zx {
             get {
+                double ret;
+                ret = this.rawStruct.zx;
+                return ret;
             }
             set {
+                this.rawStruct.zx = value;
             }
         }
         
         public double Zy {
             get {
+                double ret;
+                ret = this.rawStruct.zy;
+                return ret;
             }
             set {
+                this.rawStruct.zy = value;
             }
         }
         
         public double Zz {
             get {
+                double ret;
+                ret = this.rawStruct.zz;
+                return ret;
             }
             set {
+                this.rawStruct.zz = value;
             }
         }
         
@@ -4636,34 +4693,47 @@ private static extern void enesim_log_dump(System.IntPtr self);
         
         private RectangleStruct rawStruct;
         
-        public Rectangle(System.IntPtr raw) {
-        }
-        
         public double X {
             get {
+                double ret;
+                ret = this.rawStruct.x;
+                return ret;
             }
             set {
+                this.rawStruct.x = value;
             }
         }
         
         public double Y {
             get {
+                double ret;
+                ret = this.rawStruct.y;
+                return ret;
             }
             set {
+                this.rawStruct.y = value;
             }
         }
         
         public double W {
             get {
+                double ret;
+                ret = this.rawStruct.w;
+                return ret;
             }
             set {
+                this.rawStruct.w = value;
             }
         }
         
         public double H {
             get {
+                double ret;
+                ret = this.rawStruct.h;
+                return ret;
             }
             set {
+                this.rawStruct.h = value;
             }
         }
         
@@ -4696,78 +4766,111 @@ private static extern void enesim_log_dump(System.IntPtr self);
         
         private MatrixF16p16Struct rawStruct;
         
-        public MatrixF16p16(System.IntPtr raw) {
-        }
-        
         public Eina.F16p16 Xx {
             get {
-                int valueRaw;
+                Eina.F16p16 ret;
+                int retRaw;
+                ret = this.rawStruct.xx;
+                return ret;
             }
             set {
+                this.rawStruct.xx = value;
             }
         }
         
         public Eina.F16p16 Xy {
             get {
-                int valueRaw;
+                Eina.F16p16 ret;
+                int retRaw;
+                ret = this.rawStruct.xy;
+                return ret;
             }
             set {
+                this.rawStruct.xy = value;
             }
         }
         
         public Eina.F16p16 Xz {
             get {
-                int valueRaw;
+                Eina.F16p16 ret;
+                int retRaw;
+                ret = this.rawStruct.xz;
+                return ret;
             }
             set {
+                this.rawStruct.xz = value;
             }
         }
         
         public Eina.F16p16 Yx {
             get {
-                int valueRaw;
+                Eina.F16p16 ret;
+                int retRaw;
+                ret = this.rawStruct.yx;
+                return ret;
             }
             set {
+                this.rawStruct.yx = value;
             }
         }
         
         public Eina.F16p16 Yy {
             get {
-                int valueRaw;
+                Eina.F16p16 ret;
+                int retRaw;
+                ret = this.rawStruct.yy;
+                return ret;
             }
             set {
+                this.rawStruct.yy = value;
             }
         }
         
         public Eina.F16p16 Yz {
             get {
-                int valueRaw;
+                Eina.F16p16 ret;
+                int retRaw;
+                ret = this.rawStruct.yz;
+                return ret;
             }
             set {
+                this.rawStruct.yz = value;
             }
         }
         
         public Eina.F16p16 Zx {
             get {
-                int valueRaw;
+                Eina.F16p16 ret;
+                int retRaw;
+                ret = this.rawStruct.zx;
+                return ret;
             }
             set {
+                this.rawStruct.zx = value;
             }
         }
         
         public Eina.F16p16 Zy {
             get {
-                int valueRaw;
+                Eina.F16p16 ret;
+                int retRaw;
+                ret = this.rawStruct.zy;
+                return ret;
             }
             set {
+                this.rawStruct.zy = value;
             }
         }
         
         public Eina.F16p16 Zz {
             get {
-                int valueRaw;
+                Eina.F16p16 ret;
+                int retRaw;
+                ret = this.rawStruct.zz;
+                return ret;
             }
             set {
+                this.rawStruct.zz = value;
             }
         }
         
@@ -4810,62 +4913,91 @@ private static extern void enesim_log_dump(System.IntPtr self);
         
         private QuadStruct rawStruct;
         
-        public Quad(System.IntPtr raw) {
-        }
-        
         public double X0 {
             get {
+                double ret;
+                ret = this.rawStruct.x0;
+                return ret;
             }
             set {
+                this.rawStruct.x0 = value;
             }
         }
         
         public double Y0 {
             get {
+                double ret;
+                ret = this.rawStruct.y0;
+                return ret;
             }
             set {
+                this.rawStruct.y0 = value;
             }
         }
         
         public double X1 {
             get {
+                double ret;
+                ret = this.rawStruct.x1;
+                return ret;
             }
             set {
+                this.rawStruct.x1 = value;
             }
         }
         
         public double Y1 {
             get {
+                double ret;
+                ret = this.rawStruct.y1;
+                return ret;
             }
             set {
+                this.rawStruct.y1 = value;
             }
         }
         
         public double X2 {
             get {
+                double ret;
+                ret = this.rawStruct.x2;
+                return ret;
             }
             set {
+                this.rawStruct.x2 = value;
             }
         }
         
         public double Y2 {
             get {
+                double ret;
+                ret = this.rawStruct.y2;
+                return ret;
             }
             set {
+                this.rawStruct.y2 = value;
             }
         }
         
         public double X3 {
             get {
+                double ret;
+                ret = this.rawStruct.x3;
+                return ret;
             }
             set {
+                this.rawStruct.x3 = value;
             }
         }
         
         public double Y3 {
             get {
+                double ret;
+                ret = this.rawStruct.y3;
+                return ret;
             }
             set {
+                this.rawStruct.y3 = value;
             }
         }
         
