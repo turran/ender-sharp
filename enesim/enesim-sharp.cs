@@ -70,7 +70,7 @@ private static extern void enesim_renderer_unlock(System.IntPtr self);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_name_set(System.IntPtr self, System.String name);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.String enesim_renderer_name_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_name_get(System.IntPtr self);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_transformation_set(System.IntPtr self, System.IntPtr m);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -201,7 +201,7 @@ internal delegate System.Boolean DamageInternal(System.IntPtr r, System.IntPtr a
         }
         
         public string GetName() {
-            string ret = enesim_renderer_name_get(raw);
+            System.IntPtr ret = enesim_renderer_name_get(raw);
             return Marshal.PtrToStringAnsi(ret);
         }
         
@@ -267,7 +267,7 @@ internal delegate System.Boolean DamageInternal(System.IntPtr r, System.IntPtr a
         
         public Enesim.Color GetColor() {
             uint ret = enesim_renderer_color_get(raw);
-            return new Color(ret);
+            return new Enesim.Color(ret);
         }
         
         public void SetMask(Enesim.Renderer mask) {
@@ -283,7 +283,7 @@ internal delegate System.Boolean DamageInternal(System.IntPtr r, System.IntPtr a
         
         public Enesim.Renderer GetMask() {
             System.IntPtr ret = enesim_renderer_mask_get(raw);
-            return new Renderer(ret, false);
+            return new Enesim.Renderer(ret, false);
         }
         
         public void SetMaskChannel(Enesim.ChannelEnum channel) {
@@ -456,7 +456,7 @@ private static extern void enesim_renderer_dispmap_y_channel_set(System.IntPtr s
             public Enesim.Surface MapSurface {
                 get {
                     System.IntPtr ret = enesim_renderer_dispmap_map_surface_get(raw);
-                    return new Surface(ret, false);
+                    return new Enesim.Surface(ret, false);
                 }
                 set {
                     Enesim.Surface map;
@@ -475,7 +475,7 @@ private static extern void enesim_renderer_dispmap_y_channel_set(System.IntPtr s
             public Enesim.Surface SourceSurface {
                 get {
                     System.IntPtr ret = enesim_renderer_dispmap_source_surface_get(raw);
-                    return new Surface(ret, false);
+                    return new Enesim.Surface(ret, false);
                 }
                 set {
                     Enesim.Surface src;
@@ -590,7 +590,7 @@ private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr sel
             public Enesim.Color StrokeColor {
                 get {
                     uint ret = enesim_renderer_shape_stroke_color_get(raw);
-                    return new Color(ret);
+                    return new Enesim.Color(ret);
                 }
                 set {
                     Enesim.Color stroke_color;
@@ -602,7 +602,7 @@ private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr sel
             public Enesim.Renderer StrokeRenderer {
                 get {
                     System.IntPtr ret = enesim_renderer_shape_stroke_renderer_get(raw);
-                    return new Renderer(ret, false);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer stroke;
@@ -681,7 +681,7 @@ private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr sel
             public Enesim.Color FillColor {
                 get {
                     uint ret = enesim_renderer_shape_fill_color_get(raw);
-                    return new Color(ret);
+                    return new Enesim.Color(ret);
                 }
                 set {
                     Enesim.Color fill_color;
@@ -693,7 +693,7 @@ private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr sel
             public Enesim.Renderer FillRenderer {
                 get {
                     System.IntPtr ret = enesim_renderer_shape_fill_renderer_get(raw);
-                    return new Renderer(ret, false);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer fill;
@@ -1238,7 +1238,7 @@ private static extern void enesim_renderer_background_color_set(System.IntPtr se
             public Enesim.Color Color {
                 get {
                     uint ret = enesim_renderer_background_color_get(raw);
-                    return new Color(ret);
+                    return new Enesim.Color(ret);
                 }
                 set {
                     Enesim.Color color;
@@ -1394,7 +1394,7 @@ private static extern void enesim_renderer_stripes_odd_thickness_set(System.IntP
             public Enesim.Color EvenColor {
                 get {
                     uint ret = enesim_renderer_stripes_even_color_get(raw);
-                    return new Color(ret);
+                    return new Enesim.Color(ret);
                 }
                 set {
                     Enesim.Color color;
@@ -1406,7 +1406,7 @@ private static extern void enesim_renderer_stripes_odd_thickness_set(System.IntP
             public Enesim.Renderer EvenRenderer {
                 get {
                     System.IntPtr ret = enesim_renderer_stripes_even_renderer_get(raw);
-                    return new Renderer(ret, false);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer paint;
@@ -1437,7 +1437,7 @@ private static extern void enesim_renderer_stripes_odd_thickness_set(System.IntP
             public Enesim.Color OddColor {
                 get {
                     uint ret = enesim_renderer_stripes_odd_color_get(raw);
-                    return new Color(ret);
+                    return new Enesim.Color(ret);
                 }
                 set {
                     Enesim.Color color;
@@ -1449,7 +1449,7 @@ private static extern void enesim_renderer_stripes_odd_thickness_set(System.IntP
             public Enesim.Renderer OddRenderer {
                 get {
                     System.IntPtr ret = enesim_renderer_stripes_odd_renderer_get(raw);
-                    return new Renderer(ret, false);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer paint;
@@ -1500,7 +1500,7 @@ private static extern void enesim_renderer_path_inner_path_set(System.IntPtr sel
             public Enesim.Path InnerPath {
                 get {
                     System.IntPtr ret = enesim_renderer_path_inner_path_get(raw);
-                    return new Path(ret, false);
+                    return new Enesim.Path(ret, false);
                 }
                 set {
                     Enesim.Path path;
@@ -1575,7 +1575,7 @@ private static extern void enesim_renderer_raddist_y_set(System.IntPtr self, Sys
             public Enesim.Surface SourceSurface {
                 get {
                     System.IntPtr ret = enesim_renderer_raddist_source_surface_get(raw);
-                    return new Surface(ret, false);
+                    return new Enesim.Surface(ret, false);
                 }
                 set {
                     Enesim.Surface src;
@@ -1674,7 +1674,7 @@ private static extern void enesim_renderer_grid_border_color_set(System.IntPtr s
             public Enesim.Color InsideColor {
                 get {
                     uint ret = enesim_renderer_grid_inside_color_get(raw);
-                    return new Color(ret);
+                    return new Enesim.Color(ret);
                 }
                 set {
                     Enesim.Color color;
@@ -1710,7 +1710,7 @@ private static extern void enesim_renderer_grid_border_color_set(System.IntPtr s
             public Enesim.Color BorderColor {
                 get {
                     uint ret = enesim_renderer_grid_border_color_get(raw);
-                    return new Color(ret);
+                    return new Enesim.Color(ret);
                 }
                 set {
                     Enesim.Color color;
@@ -1838,7 +1838,7 @@ internal delegate System.Boolean ForeachLayerInternal(System.IntPtr r, System.In
             public Enesim.Color BackgroundColor {
                 get {
                     uint ret = enesim_renderer_compound_background_color_get(raw);
-                    return new Color(ret);
+                    return new Enesim.Color(ret);
                 }
                 set {
                     Enesim.Color color;
@@ -2015,7 +2015,7 @@ private static extern void enesim_renderer_checker_height_set(System.IntPtr self
             public Enesim.Color EvenColor {
                 get {
                     uint ret = enesim_renderer_checker_even_color_get(raw);
-                    return new Color(ret);
+                    return new Enesim.Color(ret);
                 }
                 set {
                     Enesim.Color color;
@@ -2027,7 +2027,7 @@ private static extern void enesim_renderer_checker_height_set(System.IntPtr self
             public Enesim.Color OddColor {
                 get {
                     uint ret = enesim_renderer_checker_odd_color_get(raw);
-                    return new Color(ret);
+                    return new Enesim.Color(ret);
                 }
                 set {
                     Enesim.Color color;
@@ -2191,7 +2191,7 @@ private static extern void enesim_renderer_blur_radius_y_set(System.IntPtr self,
             public Enesim.Surface SourceSurface {
                 get {
                     System.IntPtr ret = enesim_renderer_blur_source_surface_get(raw);
-                    return new Surface(ret, false);
+                    return new Enesim.Surface(ret, false);
                 }
                 set {
                     Enesim.Surface src;
@@ -2210,7 +2210,7 @@ private static extern void enesim_renderer_blur_radius_y_set(System.IntPtr self,
             public Enesim.Renderer SourceRenderer {
                 get {
                     System.IntPtr ret = enesim_renderer_blur_source_renderer_get(raw);
-                    return new Renderer(ret, false);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer sr;
@@ -2572,7 +2572,7 @@ private static extern void enesim_renderer_image_source_surface_set(System.IntPt
             public Enesim.Surface SourceSurface {
                 get {
                     System.IntPtr ret = enesim_renderer_image_source_surface_get(raw);
-                    return new Surface(ret, false);
+                    return new Enesim.Surface(ret, false);
                 }
                 set {
                     Enesim.Surface src;
@@ -2646,7 +2646,7 @@ private static extern void enesim_renderer_pattern_repeat_mode_set(System.IntPtr
             public Enesim.Renderer SourceRenderer {
                 get {
                     System.IntPtr ret = enesim_renderer_pattern_source_renderer_get(raw);
-                    return new Renderer(ret, false);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer source;
@@ -2665,7 +2665,7 @@ private static extern void enesim_renderer_pattern_repeat_mode_set(System.IntPtr
             public Enesim.Surface SourceSurface {
                 get {
                     System.IntPtr ret = enesim_renderer_pattern_source_surface_get(raw);
-                    return new Surface(ret, false);
+                    return new Enesim.Surface(ret, false);
                 }
             }
             
@@ -2825,7 +2825,7 @@ private static extern void enesim_renderer_clipper_size_get(System.IntPtr self, 
             
             public Enesim.Renderer GetClipped() {
                 System.IntPtr ret = enesim_renderer_clipper_clipped_get(raw);
-                return new Renderer(ret, false);
+                return new Enesim.Renderer(ret, false);
             }
             
             public void SetX(int x) {
@@ -2923,7 +2923,7 @@ private static extern void enesim_renderer_transition_target_set(System.IntPtr s
             public Enesim.Renderer Source {
                 get {
                     System.IntPtr ret = enesim_renderer_transition_source_get(raw);
-                    return new Renderer(ret, false);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer r0;
@@ -2942,7 +2942,7 @@ private static extern void enesim_renderer_transition_target_set(System.IntPtr s
             public Enesim.Renderer Target {
                 get {
                     System.IntPtr ret = enesim_renderer_transition_target_get(raw);
-                    return new Renderer(ret, false);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer r1;
@@ -2981,7 +2981,7 @@ private static extern void enesim_renderer_proxy_proxied_set(System.IntPtr self,
             public Enesim.Renderer Proxied {
                 get {
                     System.IntPtr ret = enesim_renderer_proxy_proxied_get(raw);
-                    return new Renderer(ret, false);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer proxied;
@@ -3020,7 +3020,7 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
             public Enesim.Buffer Buffer {
                 get {
                     System.IntPtr ret = enesim_renderer_importer_buffer_get(raw);
-                    return new Buffer(ret, false);
+                    return new Enesim.Buffer(ret, false);
                 }
                 set {
                     Enesim.Buffer buffer;
@@ -3222,7 +3222,7 @@ free_func(buffer_data, user_data);
         
         public Enesim.Pool GetPool() {
             System.IntPtr ret = enesim_buffer_pool_get(raw);
-            return new Pool(ret, false);
+            return new Enesim.Pool(ret, false);
         }
         
         public void SetPrivate(System.IntPtr data) {
@@ -3893,7 +3893,7 @@ free_func(buffer_data, user_data);
         
         public Enesim.Buffer GetBuffer() {
             System.IntPtr ret = enesim_surface_buffer_get(raw);
-            return new Buffer(ret, false);
+            return new Enesim.Buffer(ret, false);
         }
         
         public void GetSize(out int w, out int h) {
@@ -3912,7 +3912,7 @@ free_func(buffer_data, user_data);
         
         public Enesim.Pool GetPool() {
             System.IntPtr ret = enesim_surface_pool_get(raw);
-            return new Pool(ret, false);
+            return new Enesim.Pool(ret, false);
         }
         
         public void SetPrivate(System.IntPtr data) {
@@ -3991,7 +3991,7 @@ private static extern void enesim_stream_munmap(System.IntPtr self, System.IntPt
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_stream_reset(System.IntPtr self);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.String enesim_stream_uri_get(System.IntPtr self);
+private static extern System.IntPtr enesim_stream_uri_get(System.IntPtr self);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_stream_file_new(System.String file, System.String mode);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -4090,7 +4090,7 @@ private static extern System.IntPtr enesim_stream_base64_new(System.IntPtr d);
         }
         
         public string GetUri() {
-            string ret = enesim_stream_uri_get(raw);
+            System.IntPtr ret = enesim_stream_uri_get(raw);
             return Marshal.PtrToStringAnsi(ret);
         }
     }
@@ -4387,7 +4387,7 @@ private static extern System.IntPtr enesim_pool_eina_new(IntPtr mp);
         
         public static Enesim.Pool GetDefault() {
             System.IntPtr ret = enesim_pool_default_get();
-            return new Pool(ret, false);
+            return new Enesim.Pool(ret, false);
         }
         
         public void SetDefault() {
@@ -4496,12 +4496,12 @@ private static extern void enesim_log_dump(System.IntPtr self);
         
         public Enesim.Log Add(string _string) {
             System.IntPtr ret = enesim_log_add(raw, _string);
-            return new Log(ret, false);
+            return new Enesim.Log(ret, false);
         }
         
         public Enesim.Log AddParametric(string file, string function, int line, string fmt, System.IntPtr args) {
             System.IntPtr ret = enesim_log_add_parametric(raw, file, function, line, fmt, args);
-            return new Log(ret, false);
+            return new Enesim.Log(ret, false);
         }
         
         public void Dump() {
@@ -5067,17 +5067,17 @@ private static extern void enesim_color_components_to(System.UInt32 color, out S
         
         public static Enesim.Argb ArgbTo(Enesim.Color c) {
             uint ret = enesim_color_argb_to(c);
-            return new Argb(ret);
+            return new Enesim.Argb(ret);
         }
         
         public static Enesim.Color ArgbFrom(Enesim.Argb argb) {
             uint ret = enesim_color_argb_from(argb);
-            return new Color(ret);
+            return new Enesim.Color(ret);
         }
         
         public static Enesim.Color ComponentsFrom(byte a, byte r, byte g, byte b) {
             uint ret = enesim_color_components_from(a, r, g, b);
-            return new Color(ret);
+            return new Enesim.Color(ret);
         }
         
         public static void ComponentsTo(Enesim.Color color, out byte a, out byte r, out byte g, out byte b) {
@@ -5114,7 +5114,7 @@ private static extern void enesim_argb_components_to(System.UInt32 argb, out Sys
         
         public static Enesim.Argb ComponentsFrom(byte a, byte r, byte g, byte b) {
             uint ret = enesim_argb_components_from(a, r, g, b);
-            return new Argb(ret);
+            return new Enesim.Argb(ret);
         }
         
         public static void ComponentsTo(Enesim.Argb argb, out byte a, out byte r, out byte g, out byte b) {
@@ -5185,7 +5185,7 @@ private static extern void enesim_text_buffer_unref(System.IntPtr self);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_text_buffer_string_set(System.IntPtr self, System.String _string, System.Int32 length);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.String enesim_text_buffer_string_get(System.IntPtr self);
+private static extern System.IntPtr enesim_text_buffer_string_get(System.IntPtr self);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Int32 enesim_text_buffer_string_insert(System.IntPtr self, System.String _string, System.Int32 length, System.IntPtr offset);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -5234,7 +5234,7 @@ private static extern System.Int32 enesim_text_buffer_string_length(System.IntPt
         }
         
         public string GetString() {
-            string ret = enesim_text_buffer_string_get(raw);
+            System.IntPtr ret = enesim_text_buffer_string_get(raw);
             return Marshal.PtrToStringAnsi(ret);
         }
         
@@ -5287,7 +5287,7 @@ private static extern System.Boolean enesim_text_buffer_smart_is_dirty(System.In
             
             public Enesim.Text.Buffer GetReal() {
                 System.IntPtr ret = enesim_text_buffer_smart_real_get(raw);
-                return new Buffer(ret, false);
+                return new Enesim.Text.Buffer(ret, false);
             }
             
             public void SetReal(Enesim.Text.Buffer real) {
@@ -5472,12 +5472,12 @@ private static extern void enesim_text_engine_unref(System.IntPtr self);
         
         public static Enesim.Text.Engine GetDefault() {
             System.IntPtr ret = enesim_text_engine_default_get();
-            return new Engine(ret, false);
+            return new Enesim.Text.Engine(ret, false);
         }
         
         public static Enesim.Text.Engine GetFreetype() {
             System.IntPtr ret = enesim_text_engine_freetype_get();
-            return new Engine(ret, false);
+            return new Enesim.Text.Engine(ret, false);
         }
     }
     

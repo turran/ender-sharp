@@ -109,6 +109,21 @@ namespace Ender
 			Item i = FinalDefType;
 			return i.UnmanagedType(generator, direction, transfer);
 		}
+		public override CodeExpression Construct(Generator generator,
+				string from, ArgDirection direction, ItemTransfer transfer)
+		{
+			Item i = FinalDefType;
+			if (i.Type == ItemType.BASIC)
+			{
+				return new CodeObjectCreateExpression(
+					new CodeTypeReference(generator.ConvertFullName(Name)),
+					new CodeVariableReferenceExpression(from));
+			}
+			else
+			{
+				return new CodeVariableReferenceExpression(from);
+			}
+		}
 		#endregion
 	}
 }

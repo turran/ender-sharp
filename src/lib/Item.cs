@@ -228,6 +228,11 @@ namespace Ender
 			return typeof(IntPtr).ToString();
 		}
 
+		public virtual CodeExpression Construct(Generator generator,
+				string from, ArgDirection direction, ItemTransfer transfer)
+		{
+			return new CodeVariableReferenceExpression(from);
+		}
 		#region IDisposable
 		public void Dispose()
 		{

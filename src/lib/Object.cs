@@ -115,11 +115,7 @@ namespace Ender
 				// varName = new identifier(varNameRaw, false/true);
 				CodeStatementCollection csc = new CodeStatementCollection();
 				CodeStatement cs = new CodeAssignStatement(new CodeVariableReferenceExpression(varName),
-						new CodeObjectCreateExpression(ManagedType(generator),
-							new CodeExpression[] {
-								new CodeVariableReferenceExpression(rawName),
-								new CodePrimitiveExpression(false)
-							}));
+						Construct(generator, rawName, direction, transfer));
 				csc.Add(cs);
 				return csc;
 			}
@@ -132,6 +128,16 @@ namespace Ender
 		public override string ManagedType(Generator generator)
 		{
 			return generator.ConvertFullName(Name);
+		}
+
+		public override CodeExpression Construct(Generator generator,
+				string from, ArgDirection direction, ItemTransfer transfer)
+		{
+			return new CodeObjectCreateExpression(ManagedType(generator),
+					new CodeExpression[] {
+						new CodeVariableReferenceExpression(from),
+						new CodePrimitiveExpression(false)
+					});
 		}
 		#endregion
 	}

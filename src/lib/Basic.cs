@@ -91,6 +91,24 @@ namespace Ender
 			}	
 			return ManagedType(generator);
 		}
+
+		public override CodeExpression Construct(Generator generator,
+				string from, ArgDirection direction, ItemTransfer transfer)
+		{
+			// The special case for in, full char *
+			if (ValueType == ValueType.STRING && transfer == ItemTransfer.NONE
+					&& direction == ArgDirection.OUT)
+			{
+				return new CodeMethodInvokeExpression(
+					new CodeTypeReferenceExpression("Marshal"),
+					"PtrToStringAnsi",
+					new CodeVariableReferenceExpression(from));
+			}
+			else
+			{
+				return new CodeVariableReferenceExpression(from);
+			}	
+		}
 		#endregion
 	}
 }

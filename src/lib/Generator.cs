@@ -812,40 +812,11 @@ namespace Ender
 				case ItemType.ARG:
 					ret = null;
 					break;
-				case ItemType.DEF:
-					Def d = (Def)i;
-					if (d.DefType.Type == ItemType.BASIC)
-					{
-						ret = new CodeMethodReturnStatement(new CodeObjectCreateExpression(
-								new CodeTypeReference(ConvertName(i.Identifier)),
-								new CodeVariableReferenceExpression("ret")));
-					}
-					else
-					{
-						// TODO handle inherit cases?
-						ret = new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret"));
-					}
-					break;
 				case ItemType.BASIC:
-					Basic b = (Basic)i;
-					// The special case for const char *: Marshal.PtrToStringAnsi(ret)
-					if (b.ValueType == ValueType.STRING && arg.Transfer == ItemTransfer.NONE)
-						ret = new CodeMethodReturnStatement(
-								new CodeMethodInvokeExpression(new CodeTypeReferenceExpression("Marshal"),
-								"PtrToStringAnsi", new CodeVariableReferenceExpression("ret")));
-					else
-						ret = new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret"));
-					break;
+				case ItemType.DEF:
 				case ItemType.ENUM:
-					ret = new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret"));
-					break;
 				case ItemType.OBJECT:
-					// Call the constructor
-					// return new identifier(ret, false/true);
-					ret = new CodeMethodReturnStatement(new CodeObjectCreateExpression(
-							new CodeTypeReference(ConvertName(i.Identifier)),
-							new CodeVariableReferenceExpression("ret"),
-							new CodePrimitiveExpression(false)));
+					ret = new CodeMethodReturnStatement(i.Construct(this, "ret", arg.Direction, arg.Transfer));
 					break;
 				default:
 					ret = new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret"));
