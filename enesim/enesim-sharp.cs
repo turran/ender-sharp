@@ -1175,7 +1175,7 @@ private static extern void enesim_renderer_gradient_linear_y1_set(System.IntPtr 
                     get {
                         Enesim.Argb ret;
                         uint retRaw;
-                        ret = this.rawStruct.argb;
+                        retRaw = this.rawStruct.argb;
                         return ret;
                     }
                     set {
@@ -4770,7 +4770,7 @@ private static extern void enesim_log_dump(System.IntPtr self);
             get {
                 Eina.F16p16 ret;
                 int retRaw;
-                ret = this.rawStruct.xx;
+                retRaw = this.rawStruct.xx;
                 return ret;
             }
             set {
@@ -4782,7 +4782,7 @@ private static extern void enesim_log_dump(System.IntPtr self);
             get {
                 Eina.F16p16 ret;
                 int retRaw;
-                ret = this.rawStruct.xy;
+                retRaw = this.rawStruct.xy;
                 return ret;
             }
             set {
@@ -4794,7 +4794,7 @@ private static extern void enesim_log_dump(System.IntPtr self);
             get {
                 Eina.F16p16 ret;
                 int retRaw;
-                ret = this.rawStruct.xz;
+                retRaw = this.rawStruct.xz;
                 return ret;
             }
             set {
@@ -4806,7 +4806,7 @@ private static extern void enesim_log_dump(System.IntPtr self);
             get {
                 Eina.F16p16 ret;
                 int retRaw;
-                ret = this.rawStruct.yx;
+                retRaw = this.rawStruct.yx;
                 return ret;
             }
             set {
@@ -4818,7 +4818,7 @@ private static extern void enesim_log_dump(System.IntPtr self);
             get {
                 Eina.F16p16 ret;
                 int retRaw;
-                ret = this.rawStruct.yy;
+                retRaw = this.rawStruct.yy;
                 return ret;
             }
             set {
@@ -4830,7 +4830,7 @@ private static extern void enesim_log_dump(System.IntPtr self);
             get {
                 Eina.F16p16 ret;
                 int retRaw;
-                ret = this.rawStruct.yz;
+                retRaw = this.rawStruct.yz;
                 return ret;
             }
             set {
@@ -4842,7 +4842,7 @@ private static extern void enesim_log_dump(System.IntPtr self);
             get {
                 Eina.F16p16 ret;
                 int retRaw;
-                ret = this.rawStruct.zx;
+                retRaw = this.rawStruct.zx;
                 return ret;
             }
             set {
@@ -4854,7 +4854,7 @@ private static extern void enesim_log_dump(System.IntPtr self);
             get {
                 Eina.F16p16 ret;
                 int retRaw;
-                ret = this.rawStruct.zy;
+                retRaw = this.rawStruct.zy;
                 return ret;
             }
             set {
@@ -4866,7 +4866,7 @@ private static extern void enesim_log_dump(System.IntPtr self);
             get {
                 Eina.F16p16 ret;
                 int retRaw;
-                ret = this.rawStruct.zz;
+                retRaw = this.rawStruct.zz;
                 return ret;
             }
             set {

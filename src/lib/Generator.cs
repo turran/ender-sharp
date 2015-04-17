@@ -1301,13 +1301,15 @@ namespace Ender
 					// The getter
 					// Enesim.Renderer ret
 					string retType = fType.ManagedType(this);
+					string retName = "ret";
 					fProp.GetStatements.Add(new CodeVariableDeclarationStatement(retType, "ret"));
 					csc = fType.ManagedPreStatements(this, "ret", ArgDirection.OUT, ItemTransfer.NONE);
 					if (csc != null)
 					{
 						fProp.GetStatements.AddRange(csc);
+						retName = "retRaw";
 					}
-					csc = GenerateFieldAssignment(f, new CodeVariableReferenceExpression("ret"),
+					csc = GenerateFieldAssignment(f, new CodeVariableReferenceExpression(retName),
 							new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
 							new CodeThisReferenceExpression(), "rawStruct"), f.Name));
 					if (csc != null)
