@@ -450,6 +450,7 @@ namespace Ender
 			{
 				case ItemType.DEF:
 				case ItemType.OBJECT:
+				case ItemType.STRUCT:
 					return i.ManagedPostStatements(this, name, direction, transfer);
 				default:
 					return null;

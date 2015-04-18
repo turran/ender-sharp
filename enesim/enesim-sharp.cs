@@ -214,6 +214,9 @@ internal delegate System.Boolean DamageInternal(System.IntPtr r, System.IntPtr a
                 mRaw = m.Raw;
             }
             enesim_renderer_transformation_set(raw, mRaw);
+            if ((mRaw != IntPtr.Zero)) {
+                Marshal.FreeHGlobal(mRaw);
+            }
         }
         
         public void GetTransformation(out Enesim.Matrix m) {
@@ -376,6 +379,9 @@ Enesim.Renderer.DamageInternal cbInternal = (System.IntPtr r, System.IntPtr area
 Renderer rSharp;
 rSharp = new Renderer(r, true);
 bool retSharp = cb(rSharp, past, user_data);
+if ((areaRaw != IntPtr.Zero)) {
+    Marshal.FreeHGlobal(areaRaw);
+}
 return retSharp;
 
 };
@@ -400,6 +406,9 @@ return retSharp;
             }
             System.IntPtr logRaw;
             bool ret = enesim_renderer_draw(raw, sRaw, rop, clipRaw, x, y, out  logRaw);
+            if ((clipRaw != IntPtr.Zero)) {
+                Marshal.FreeHGlobal(clipRaw);
+            }
             log = new Enesim.Log(logRaw, false);
             return ret;
         }
@@ -751,6 +760,9 @@ private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr sel
                     dashRaw = dash.Raw;
                 }
                 enesim_renderer_shape_stroke_dash_add(raw, dashRaw);
+                if ((dashRaw != IntPtr.Zero)) {
+                    Marshal.FreeHGlobal(dashRaw);
+                }
             }
             
             public void StrokeDashClear() {
@@ -949,6 +961,9 @@ private static extern void enesim_renderer_gradient_repeat_mode_set(System.IntPt
                     stopRaw = stop.Raw;
                 }
                 enesim_renderer_gradient_stop_add(raw, stopRaw);
+                if ((stopRaw != IntPtr.Zero)) {
+                    Marshal.FreeHGlobal(stopRaw);
+                }
             }
             
             public void StopClear() {
@@ -2613,6 +2628,9 @@ private static extern void enesim_renderer_image_source_surface_set(System.IntPt
                     areaRaw = area.Raw;
                 }
                 enesim_renderer_image_damage_add(raw, areaRaw);
+                if ((areaRaw != IntPtr.Zero)) {
+                    Marshal.FreeHGlobal(areaRaw);
+                }
             }
         }
         
@@ -3139,6 +3157,9 @@ free_func(buffer_data, user_data);
 
 };
             System.IntPtr ret = enesim_buffer_new_data_from(f, w, h, copy, dataRaw, free_funcInternal, free_func_data);
+            if ((dataRaw != IntPtr.Zero)) {
+                Marshal.FreeHGlobal(dataRaw);
+            }
             Initialize(ret, false);
         }
         
@@ -3175,6 +3196,9 @@ free_func(buffer_data, user_data);
 
 };
             System.IntPtr ret = enesim_buffer_new_pool_and_data_from(f, w, h, pRaw, copy, dataRaw, free_funcInternal, free_func_data);
+            if ((dataRaw != IntPtr.Zero)) {
+                Marshal.FreeHGlobal(dataRaw);
+            }
             Initialize(ret, false);
         }
         
@@ -3255,6 +3279,9 @@ free_func(buffer_data, user_data);
                 dataRaw = data.Raw;
             }
             bool ret = enesim_buffer_unmap(raw, dataRaw, written);
+            if ((dataRaw != IntPtr.Zero)) {
+                Marshal.FreeHGlobal(dataRaw);
+            }
             return ret;
         }
         
@@ -4179,6 +4206,9 @@ private static extern void enesim_path_close(System.IntPtr self);
                 cmdRaw = cmd.Raw;
             }
             enesim_path_command_add(raw, cmdRaw);
+            if ((cmdRaw != IntPtr.Zero)) {
+                Marshal.FreeHGlobal(cmdRaw);
+            }
         }
         
         public void MoveTo(double x, double y) {

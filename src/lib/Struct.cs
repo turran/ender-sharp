@@ -105,7 +105,26 @@ namespace Ender
 				Generator generator, string varName,
 				ArgDirection direction, ItemTransfer transfer)
 		{
-			return null;
+			CodeStatementCollection csc = new CodeStatementCollection();
+			string rawName = varName + "Raw";
+			if (direction == ArgDirection.IN)
+			{
+				// if varNameRaw != IntPtr.Zero; Marshal.FreeHGlobal 
+				CodeStatement cs = new CodeConditionStatement(
+						new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(rawName),
+							CodeBinaryOperatorType.IdentityInequality,
+							new CodeTypeReferenceExpression("IntPtr.Zero")),
+								new CodeStatement[] {
+									new CodeExpressionStatement(new CodeMethodInvokeExpression(
+										new CodeTypeReferenceExpression("Marshal"),
+										"FreeHGlobal", new CodeVariableReferenceExpression(rawName)))
+								},
+							new CodeStatement[] {
+							}
+						);
+				csc.Add(cs);
+			}
+			return csc;
 		}
 		#endregion
 	}
