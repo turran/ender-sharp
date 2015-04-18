@@ -1227,7 +1227,7 @@ namespace Ender
 			// rawStruct = Marshal.StructureToPtr(raw);
 			cma = new CodeMethodInvokeExpression(
 					new CodeTypeReferenceExpression("Marshal"), "PtrToStructure", new CodeExpression[] {
-						new CodeVariableReferenceExpression("rawStruct"),
+						new CodeVariableReferenceExpression("raw"),
 						new CodeTypeOfExpression(new CodeTypeReference(ConvertName(s.Identifier) + "Struct"))
 						});
 			cm.Statements.Add(new CodeAssignStatement(new CodeVariableReferenceExpression("rawStruct"), cma));

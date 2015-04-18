@@ -867,7 +867,7 @@ private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr sel
                 }
                 
                 public static void DestroyRaw(System.IntPtr raw) {
-                    rawStruct = Marshal.PtrToStructure(rawStruct, typeof(StrokeDashStruct));
+                    rawStruct = Marshal.PtrToStructure(raw, typeof(StrokeDashStruct));
                     Marshal.FreeHGlobal(raw);
                 }
                 
@@ -1217,7 +1217,7 @@ private static extern void enesim_renderer_gradient_linear_y1_set(System.IntPtr 
                 }
                 
                 public static void DestroyRaw(System.IntPtr raw) {
-                    rawStruct = Marshal.PtrToStructure(rawStruct, typeof(StopStruct));
+                    rawStruct = Marshal.PtrToStructure(raw, typeof(StopStruct));
                     Marshal.FreeHGlobal(raw);
                 }
                 
@@ -3359,7 +3359,7 @@ free_func(buffer_data, user_data);
             }
             
             public static void DestroyRaw(System.IntPtr raw) {
-                rawStruct = Marshal.PtrToStructure(rawStruct, typeof(SwData32bppStruct));
+                rawStruct = Marshal.PtrToStructure(raw, typeof(SwData32bppStruct));
                 Marshal.FreeHGlobal(raw);
             }
             
@@ -3406,7 +3406,7 @@ free_func(buffer_data, user_data);
             }
             
             public static void DestroyRaw(System.IntPtr raw) {
-                rawStruct = Marshal.PtrToStructure(rawStruct, typeof(SwData24bppStruct));
+                rawStruct = Marshal.PtrToStructure(raw, typeof(SwData24bppStruct));
                 Marshal.FreeHGlobal(raw);
             }
             
@@ -3453,7 +3453,7 @@ free_func(buffer_data, user_data);
             }
             
             public static void DestroyRaw(System.IntPtr raw) {
-                rawStruct = Marshal.PtrToStructure(rawStruct, typeof(SwDataRgb565Struct));
+                rawStruct = Marshal.PtrToStructure(raw, typeof(SwDataRgb565Struct));
                 Marshal.FreeHGlobal(raw);
             }
             
@@ -3478,7 +3478,7 @@ free_func(buffer_data, user_data);
             }
             
             public static void DestroyRaw(System.IntPtr raw) {
-                rawStruct = Marshal.PtrToStructure(rawStruct, typeof(SwDataStruct));
+                rawStruct = Marshal.PtrToStructure(raw, typeof(SwDataStruct));
                 Marshal.FreeHGlobal(raw);
             }
             
@@ -3521,7 +3521,7 @@ free_func(buffer_data, user_data);
             }
             
             public static void DestroyRaw(System.IntPtr raw) {
-                rawStruct = Marshal.PtrToStructure(rawStruct, typeof(SwDataA8Struct));
+                rawStruct = Marshal.PtrToStructure(raw, typeof(SwDataA8Struct));
                 Marshal.FreeHGlobal(raw);
             }
             
@@ -4272,7 +4272,7 @@ private static extern void enesim_path_close(System.IntPtr self);
             }
             
             public static void DestroyRaw(System.IntPtr raw) {
-                rawStruct = Marshal.PtrToStructure(rawStruct, typeof(CommandStruct));
+                rawStruct = Marshal.PtrToStructure(raw, typeof(CommandStruct));
                 Marshal.FreeHGlobal(raw);
             }
             
@@ -4326,7 +4326,7 @@ private static extern void enesim_path_close(System.IntPtr self);
                 }
                 
                 public static void DestroyRaw(System.IntPtr raw) {
-                    rawStruct = Marshal.PtrToStructure(rawStruct, typeof(CloseStruct));
+                    rawStruct = Marshal.PtrToStructure(raw, typeof(CloseStruct));
                     Marshal.FreeHGlobal(raw);
                 }
                 
@@ -4349,7 +4349,7 @@ private static extern void enesim_path_close(System.IntPtr self);
                 }
                 
                 public static void DestroyRaw(System.IntPtr raw) {
-                    rawStruct = Marshal.PtrToStructure(rawStruct, typeof(DefinitionStruct));
+                    rawStruct = Marshal.PtrToStructure(raw, typeof(DefinitionStruct));
                     Marshal.FreeHGlobal(raw);
                 }
                 
@@ -4650,7 +4650,7 @@ private static extern void enesim_log_dump(System.IntPtr self);
         }
         
         public static void DestroyRaw(System.IntPtr raw) {
-            rawStruct = Marshal.PtrToStructure(rawStruct, typeof(MatrixStruct));
+            rawStruct = Marshal.PtrToStructure(raw, typeof(MatrixStruct));
             Marshal.FreeHGlobal(raw);
         }
         
@@ -4775,7 +4775,7 @@ private static extern void enesim_log_dump(System.IntPtr self);
         }
         
         public static void DestroyRaw(System.IntPtr raw) {
-            rawStruct = Marshal.PtrToStructure(rawStruct, typeof(RectangleStruct));
+            rawStruct = Marshal.PtrToStructure(raw, typeof(RectangleStruct));
             Marshal.FreeHGlobal(raw);
         }
         
@@ -4912,7 +4912,7 @@ private static extern void enesim_log_dump(System.IntPtr self);
         }
         
         public static void DestroyRaw(System.IntPtr raw) {
-            rawStruct = Marshal.PtrToStructure(rawStruct, typeof(MatrixF16p16Struct));
+            rawStruct = Marshal.PtrToStructure(raw, typeof(MatrixF16p16Struct));
             Marshal.FreeHGlobal(raw);
         }
         
@@ -5039,7 +5039,7 @@ private static extern void enesim_log_dump(System.IntPtr self);
         }
         
         public static void DestroyRaw(System.IntPtr raw) {
-            rawStruct = Marshal.PtrToStructure(rawStruct, typeof(QuadStruct));
+            rawStruct = Marshal.PtrToStructure(raw, typeof(QuadStruct));
             Marshal.FreeHGlobal(raw);
         }
         
