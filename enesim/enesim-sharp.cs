@@ -54,90 +54,90 @@ namespace Enesim {
         private bool disposed;
         
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_private_set(System.IntPtr self, System.String name, System.IntPtr data);
+private static extern void enesim_renderer_private_set(System.IntPtr selfRaw, System.String name, System.IntPtr data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_private_get(System.IntPtr self, System.String name);
+private static extern System.IntPtr enesim_renderer_private_get(System.IntPtr selfRaw, System.String name);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_ref(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_unref(System.IntPtr self);
+private static extern void enesim_renderer_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_renderer_ref_count(System.IntPtr self);
+private static extern System.Int32 enesim_renderer_ref_count(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_lock(System.IntPtr self);
+private static extern void enesim_renderer_lock(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_unlock(System.IntPtr self);
+private static extern void enesim_renderer_unlock(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_name_set(System.IntPtr self, System.String name);
+private static extern void enesim_renderer_name_set(System.IntPtr selfRaw, System.String name);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_name_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_name_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_transformation_set(System.IntPtr self, System.IntPtr m);
+private static extern void enesim_renderer_transformation_set(System.IntPtr selfRaw, System.IntPtr mRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_transformation_get(System.IntPtr self, System.IntPtr m);
+private static extern void enesim_renderer_transformation_get(System.IntPtr selfRaw, System.IntPtr mRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.Matrix.TypeEnum enesim_renderer_transformation_type_get(System.IntPtr self);
+private static extern Enesim.Matrix.TypeEnum enesim_renderer_transformation_type_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_origin_set(System.IntPtr self, System.Double x, System.Double y);
+private static extern void enesim_renderer_origin_set(System.IntPtr selfRaw, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_origin_get(System.IntPtr self, out System.Double x, out System.Double y);
+private static extern void enesim_renderer_origin_get(System.IntPtr selfRaw, out System.Double x, out System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_x_origin_set(System.IntPtr self, System.Double x);
+private static extern void enesim_renderer_x_origin_set(System.IntPtr selfRaw, System.Double x);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_x_origin_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_x_origin_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_y_origin_set(System.IntPtr self, System.Double y);
+private static extern void enesim_renderer_y_origin_set(System.IntPtr selfRaw, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_y_origin_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_y_origin_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_visibility_set(System.IntPtr self, System.Boolean visibility);
+private static extern void enesim_renderer_visibility_set(System.IntPtr selfRaw, System.Boolean visibility);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_visibility_get(System.IntPtr self);
+private static extern System.Boolean enesim_renderer_visibility_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_color_set(System.IntPtr self, System.UInt32 color);
+private static extern void enesim_renderer_color_set(System.IntPtr selfRaw, System.UInt32 color);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_color_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_color_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_mask_set(System.IntPtr self, System.IntPtr mask);
+private static extern void enesim_renderer_mask_set(System.IntPtr selfRaw, System.IntPtr maskRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_mask_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_mask_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_mask_channel_set(System.IntPtr self, Enesim.ChannelEnum channel);
+private static extern void enesim_renderer_mask_channel_set(System.IntPtr selfRaw, Enesim.ChannelEnum channel);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.ChannelEnum enesim_renderer_mask_channel_get(System.IntPtr self);
+private static extern Enesim.ChannelEnum enesim_renderer_mask_channel_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_quality_set(System.IntPtr self, Enesim.QualityEnum quality);
+private static extern void enesim_renderer_quality_set(System.IntPtr selfRaw, Enesim.QualityEnum quality);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.QualityEnum enesim_renderer_quality_get(System.IntPtr self);
+private static extern Enesim.QualityEnum enesim_renderer_quality_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.AplhaHintEnum enesim_renderer_alpha_hints_get(System.IntPtr self);
+private static extern Enesim.AplhaHintEnum enesim_renderer_alpha_hints_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_is_supported(System.IntPtr self, System.IntPtr s);
+private static extern System.Boolean enesim_renderer_is_supported(System.IntPtr selfRaw, System.IntPtr sRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_bounds_get(System.IntPtr self, System.IntPtr rect, out System.IntPtr log);
+private static extern System.Boolean enesim_renderer_bounds_get(System.IntPtr selfRaw, System.IntPtr rectRaw, out System.IntPtr logRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_bounds_get_extended(System.IntPtr self, System.IntPtr prev, System.IntPtr curr, out System.IntPtr log);
+private static extern System.Boolean enesim_renderer_bounds_get_extended(System.IntPtr selfRaw, System.IntPtr prevRaw, System.IntPtr currRaw, out System.IntPtr logRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_destination_bounds_get(System.IntPtr self, System.IntPtr rect, System.Int32 x, System.Int32 y, out System.IntPtr log);
+private static extern System.Boolean enesim_renderer_destination_bounds_get(System.IntPtr selfRaw, System.IntPtr rectRaw, System.Int32 x, System.Int32 y, out System.IntPtr logRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_destination_bounds_get_extended(System.IntPtr self, System.IntPtr prev, System.IntPtr curr, System.Int32 x, System.Int32 y, out System.IntPtr log);
+private static extern System.Boolean enesim_renderer_destination_bounds_get_extended(System.IntPtr selfRaw, System.IntPtr prevRaw, System.IntPtr currRaw, System.Int32 x, System.Int32 y, out System.IntPtr logRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.Renderer.FeatureEnum enesim_renderer_features_get(System.IntPtr self);
+private static extern Enesim.Renderer.FeatureEnum enesim_renderer_features_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_is_inside(System.IntPtr self, System.Double x, System.Double y);
+private static extern System.Boolean enesim_renderer_is_inside(System.IntPtr selfRaw, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_has_changed(System.IntPtr self);
+private static extern System.Boolean enesim_renderer_has_changed(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_damages_get(System.IntPtr self, Enesim.Renderer.DamageInternal cb, System.IntPtr data);
+private static extern System.Boolean enesim_renderer_damages_get(System.IntPtr selfRaw, Enesim.Renderer.DamageInternal cb, System.IntPtr data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_draw(System.IntPtr self, System.IntPtr s, Enesim.RopEnum rop, System.IntPtr clip, System.Int32 x, System.Int32 y, out System.IntPtr log);
+private static extern System.Boolean enesim_renderer_draw(System.IntPtr selfRaw, System.IntPtr sRaw, Enesim.RopEnum rop, System.IntPtr clipRaw, System.Int32 x, System.Int32 y, out System.IntPtr logRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_draw_list(System.IntPtr self, System.IntPtr s, Enesim.RopEnum rop, IntPtr clips, System.Int32 x, System.Int32 y, out System.IntPtr log);
+private static extern System.Boolean enesim_renderer_draw_list(System.IntPtr selfRaw, System.IntPtr sRaw, Enesim.RopEnum rop, IntPtr clips, System.Int32 x, System.Int32 y, out System.IntPtr logRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_default_quality_set(Enesim.QualityEnum quality);
 ~Renderer() { Dispose(false); }
 
-internal delegate System.Boolean DamageInternal(System.IntPtr r, System.IntPtr area, System.Boolean past, System.IntPtr user_data);
+internal delegate System.Boolean DamageInternal(System.IntPtr rRaw, System.IntPtr areaRaw, System.Boolean past, System.IntPtr user_data);
         
         protected Renderer() {
         }
@@ -375,7 +375,7 @@ internal delegate System.Boolean DamageInternal(System.IntPtr r, System.IntPtr a
         
         public bool GetDamages(Enesim.Renderer.Damage cb, System.IntPtr data) {
 
-Enesim.Renderer.DamageInternal cbInternal = (System.IntPtr r, System.IntPtr area, System.Boolean past, System.IntPtr user_data) => {
+Enesim.Renderer.DamageInternal cbInternal = (System.IntPtr rRaw, System.IntPtr areaRaw, System.Boolean past, System.IntPtr user_data) => {
 Renderer rSharp;
 rSharp = new Renderer(r, true);
 bool retSharp = cb(rSharp, past, user_data);
@@ -436,21 +436,21 @@ return retSharp;
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_dispmap_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_dispmap_map_surface_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_dispmap_map_surface_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_dispmap_map_surface_set(System.IntPtr self, System.IntPtr map);
+private static extern void enesim_renderer_dispmap_map_surface_set(System.IntPtr selfRaw, System.IntPtr mapRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_dispmap_source_surface_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_dispmap_source_surface_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_dispmap_source_surface_set(System.IntPtr self, System.IntPtr src);
+private static extern void enesim_renderer_dispmap_source_surface_set(System.IntPtr selfRaw, System.IntPtr srcRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_dispmap_factor_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_dispmap_factor_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_dispmap_factor_set(System.IntPtr self, System.Double factor);
+private static extern void enesim_renderer_dispmap_factor_set(System.IntPtr selfRaw, System.Double factor);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_dispmap_x_channel_set(System.IntPtr self, Enesim.ChannelEnum channel);
+private static extern void enesim_renderer_dispmap_x_channel_set(System.IntPtr selfRaw, Enesim.ChannelEnum channel);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_dispmap_y_channel_set(System.IntPtr self, Enesim.ChannelEnum channel);
+private static extern void enesim_renderer_dispmap_y_channel_set(System.IntPtr selfRaw, Enesim.ChannelEnum channel);
             
             protected internal Dispmap(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -532,61 +532,61 @@ private static extern void enesim_renderer_dispmap_y_channel_set(System.IntPtr s
         public class Shape : Renderer {
             
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.Renderer.Shape.FeatureEnum enesim_renderer_shape_shape_features_get(System.IntPtr self);
+private static extern Enesim.Renderer.Shape.FeatureEnum enesim_renderer_shape_shape_features_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_stroke_dash_add_simple(System.IntPtr self, System.Double length, System.Double gap);
+private static extern void enesim_renderer_shape_stroke_dash_add_simple(System.IntPtr selfRaw, System.Double length, System.Double gap);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_stroke_dash_add(System.IntPtr self, System.IntPtr dash);
+private static extern void enesim_renderer_shape_stroke_dash_add(System.IntPtr selfRaw, System.IntPtr dashRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_stroke_dash_clear(System.IntPtr self);
+private static extern void enesim_renderer_shape_stroke_dash_clear(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_shape_geometry_get(System.IntPtr self, System.IntPtr geometry);
+private static extern System.Boolean enesim_renderer_shape_geometry_get(System.IntPtr selfRaw, System.IntPtr geometryRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_shape_destination_geometry_get(System.IntPtr self, System.IntPtr geometry);
+private static extern System.Boolean enesim_renderer_shape_destination_geometry_get(System.IntPtr selfRaw, System.IntPtr geometryRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_shape_stroke_color_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_shape_stroke_color_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_stroke_color_set(System.IntPtr self, System.UInt32 stroke_color);
+private static extern void enesim_renderer_shape_stroke_color_set(System.IntPtr selfRaw, System.UInt32 stroke_color);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_shape_stroke_renderer_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_shape_stroke_renderer_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_stroke_renderer_set(System.IntPtr self, System.IntPtr stroke);
+private static extern void enesim_renderer_shape_stroke_renderer_set(System.IntPtr selfRaw, System.IntPtr strokeRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_shape_stroke_weight_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_shape_stroke_weight_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_stroke_weight_set(System.IntPtr self, System.Double weight);
+private static extern void enesim_renderer_shape_stroke_weight_set(System.IntPtr selfRaw, System.Double weight);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.Renderer.Shape.StrokeLocationEnum enesim_renderer_shape_stroke_location_get(System.IntPtr self);
+private static extern Enesim.Renderer.Shape.StrokeLocationEnum enesim_renderer_shape_stroke_location_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_stroke_location_set(System.IntPtr self, Enesim.Renderer.Shape.StrokeLocationEnum location);
+private static extern void enesim_renderer_shape_stroke_location_set(System.IntPtr selfRaw, Enesim.Renderer.Shape.StrokeLocationEnum location);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.Renderer.Shape.StrokeCapEnum enesim_renderer_shape_stroke_cap_get(System.IntPtr self);
+private static extern Enesim.Renderer.Shape.StrokeCapEnum enesim_renderer_shape_stroke_cap_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_stroke_cap_set(System.IntPtr self, Enesim.Renderer.Shape.StrokeCapEnum cap);
+private static extern void enesim_renderer_shape_stroke_cap_set(System.IntPtr selfRaw, Enesim.Renderer.Shape.StrokeCapEnum cap);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.Renderer.Shape.StrokeJoinEnum enesim_renderer_shape_stroke_join_get(System.IntPtr self);
+private static extern Enesim.Renderer.Shape.StrokeJoinEnum enesim_renderer_shape_stroke_join_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_stroke_join_set(System.IntPtr self, Enesim.Renderer.Shape.StrokeJoinEnum join);
+private static extern void enesim_renderer_shape_stroke_join_set(System.IntPtr selfRaw, Enesim.Renderer.Shape.StrokeJoinEnum join);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_shape_stroke_scalable_get(System.IntPtr self);
+private static extern System.Boolean enesim_renderer_shape_stroke_scalable_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_stroke_scalable_set(System.IntPtr self, System.Boolean scalable);
+private static extern void enesim_renderer_shape_stroke_scalable_set(System.IntPtr selfRaw, System.Boolean scalable);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_shape_fill_color_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_shape_fill_color_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_fill_color_set(System.IntPtr self, System.UInt32 fill_color);
+private static extern void enesim_renderer_shape_fill_color_set(System.IntPtr selfRaw, System.UInt32 fill_color);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_shape_fill_renderer_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_shape_fill_renderer_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_fill_renderer_set(System.IntPtr self, System.IntPtr fill);
+private static extern void enesim_renderer_shape_fill_renderer_set(System.IntPtr selfRaw, System.IntPtr fillRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.Renderer.Shape.FillRuleEnum enesim_renderer_shape_fill_rule_get(System.IntPtr self);
+private static extern Enesim.Renderer.Shape.FillRuleEnum enesim_renderer_shape_fill_rule_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_fill_rule_set(System.IntPtr self, Enesim.Renderer.Shape.FillRuleEnum rule);
+private static extern void enesim_renderer_shape_fill_rule_set(System.IntPtr selfRaw, Enesim.Renderer.Shape.FillRuleEnum rule);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.Renderer.Shape.DrawModeEnum enesim_renderer_shape_draw_mode_get(System.IntPtr self);
+private static extern Enesim.Renderer.Shape.DrawModeEnum enesim_renderer_shape_draw_mode_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr self, Enesim.Renderer.Shape.DrawModeEnum draw_mode);
+private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr selfRaw, Enesim.Renderer.Shape.DrawModeEnum draw_mode);
             
             protected Shape() {
             }
@@ -886,13 +886,13 @@ private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr sel
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_figure_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_figure_polygon_add(System.IntPtr self);
+private static extern void enesim_renderer_figure_polygon_add(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_figure_polygon_vertex_add(System.IntPtr self, System.Double x, System.Double y);
+private static extern void enesim_renderer_figure_polygon_vertex_add(System.IntPtr selfRaw, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_figure_polygon_close(System.IntPtr self);
+private static extern void enesim_renderer_figure_polygon_close(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_figure_clear(System.IntPtr self);
+private static extern void enesim_renderer_figure_clear(System.IntPtr selfRaw);
             
             protected internal Figure(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -924,13 +924,13 @@ private static extern void enesim_renderer_figure_clear(System.IntPtr self);
         public class Gradient : Renderer {
             
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_stop_add(System.IntPtr self, System.IntPtr stop);
+private static extern void enesim_renderer_gradient_stop_add(System.IntPtr selfRaw, System.IntPtr stopRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_stop_clear(System.IntPtr self);
+private static extern void enesim_renderer_gradient_stop_clear(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.RepeatModeEnum enesim_renderer_gradient_repeat_mode_get(System.IntPtr self);
+private static extern Enesim.RepeatModeEnum enesim_renderer_gradient_repeat_mode_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_repeat_mode_set(System.IntPtr self, Enesim.RepeatModeEnum mode);
+private static extern void enesim_renderer_gradient_repeat_mode_set(System.IntPtr selfRaw, Enesim.RepeatModeEnum mode);
             
             protected Gradient() {
             }
@@ -975,33 +975,33 @@ private static extern void enesim_renderer_gradient_repeat_mode_set(System.IntPt
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_gradient_radial_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_radial_center_set(System.IntPtr self, System.Double center_x, System.Double center_y);
+private static extern void enesim_renderer_gradient_radial_center_set(System.IntPtr selfRaw, System.Double center_x, System.Double center_y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_radial_center_get(System.IntPtr self, out System.Double center_x, out System.Double center_y);
+private static extern void enesim_renderer_gradient_radial_center_get(System.IntPtr selfRaw, out System.Double center_x, out System.Double center_y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_radial_focus_set(System.IntPtr self, System.Double focus_x, System.Double focus_y);
+private static extern void enesim_renderer_gradient_radial_focus_set(System.IntPtr selfRaw, System.Double focus_x, System.Double focus_y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_radial_focus_get(System.IntPtr self, out System.Double focus_x, out System.Double focus_y);
+private static extern void enesim_renderer_gradient_radial_focus_get(System.IntPtr selfRaw, out System.Double focus_x, out System.Double focus_y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_gradient_radial_center_x_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_gradient_radial_center_x_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_radial_center_x_set(System.IntPtr self, System.Double center_x);
+private static extern void enesim_renderer_gradient_radial_center_x_set(System.IntPtr selfRaw, System.Double center_x);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_gradient_radial_center_y_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_gradient_radial_center_y_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_radial_center_y_set(System.IntPtr self, System.Double center_y);
+private static extern void enesim_renderer_gradient_radial_center_y_set(System.IntPtr selfRaw, System.Double center_y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_gradient_radial_focus_x_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_gradient_radial_focus_x_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_radial_focus_x_set(System.IntPtr self, System.Double focus_x);
+private static extern void enesim_renderer_gradient_radial_focus_x_set(System.IntPtr selfRaw, System.Double focus_x);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_gradient_radial_focus_y_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_gradient_radial_focus_y_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_radial_focus_y_set(System.IntPtr self, System.Double focus_y);
+private static extern void enesim_renderer_gradient_radial_focus_y_set(System.IntPtr selfRaw, System.Double focus_y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_gradient_radial_radius_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_gradient_radial_radius_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_radial_radius_set(System.IntPtr self, System.Double radius);
+private static extern void enesim_renderer_gradient_radial_radius_set(System.IntPtr selfRaw, System.Double radius);
                 
                 protected internal Radial(System.IntPtr i, bool owned) : 
                         base(i, owned) {
@@ -1095,25 +1095,25 @@ private static extern void enesim_renderer_gradient_radial_radius_set(System.Int
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_gradient_linear_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_linear_position_set(System.IntPtr self, System.Double x0, System.Double y0, System.Double x1, System.Double y1);
+private static extern void enesim_renderer_gradient_linear_position_set(System.IntPtr selfRaw, System.Double x0, System.Double y0, System.Double x1, System.Double y1);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_linear_position_get(System.IntPtr self, out System.Double x0, out System.Double y0, out System.Double x1, out System.Double y1);
+private static extern void enesim_renderer_gradient_linear_position_get(System.IntPtr selfRaw, out System.Double x0, out System.Double y0, out System.Double x1, out System.Double y1);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_gradient_linear_x0_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_gradient_linear_x0_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_linear_x0_set(System.IntPtr self, System.Double x0);
+private static extern void enesim_renderer_gradient_linear_x0_set(System.IntPtr selfRaw, System.Double x0);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_gradient_linear_y0_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_gradient_linear_y0_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_linear_y0_set(System.IntPtr self, System.Double y0);
+private static extern void enesim_renderer_gradient_linear_y0_set(System.IntPtr selfRaw, System.Double y0);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_gradient_linear_x1_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_gradient_linear_x1_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_linear_x1_set(System.IntPtr self, System.Double x1);
+private static extern void enesim_renderer_gradient_linear_x1_set(System.IntPtr selfRaw, System.Double x1);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_gradient_linear_y1_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_gradient_linear_y1_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_gradient_linear_y1_set(System.IntPtr self, System.Double y1);
+private static extern void enesim_renderer_gradient_linear_y1_set(System.IntPtr selfRaw, System.Double y1);
                 
                 protected internal Linear(System.IntPtr i, bool owned) : 
                         base(i, owned) {
@@ -1236,9 +1236,9 @@ private static extern void enesim_renderer_gradient_linear_y1_set(System.IntPtr 
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_background_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_background_color_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_background_color_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_background_color_set(System.IntPtr self, System.UInt32 color);
+private static extern void enesim_renderer_background_color_set(System.IntPtr selfRaw, System.UInt32 color);
             
             protected internal Background(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -1268,29 +1268,29 @@ private static extern void enesim_renderer_background_color_set(System.IntPtr se
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_ellipse_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_ellipse_center_set(System.IntPtr self, System.Double x, System.Double y);
+private static extern void enesim_renderer_ellipse_center_set(System.IntPtr selfRaw, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_ellipse_center_get(System.IntPtr self, out System.Double x, out System.Double y);
+private static extern void enesim_renderer_ellipse_center_get(System.IntPtr selfRaw, out System.Double x, out System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_ellipse_radii_set(System.IntPtr self, System.Double radius_x, System.Double radius_y);
+private static extern void enesim_renderer_ellipse_radii_set(System.IntPtr selfRaw, System.Double radius_x, System.Double radius_y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_ellipse_radii_get(System.IntPtr self, out System.Double radius_x, out System.Double radius_y);
+private static extern void enesim_renderer_ellipse_radii_get(System.IntPtr selfRaw, out System.Double radius_x, out System.Double radius_y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_ellipse_x_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_ellipse_x_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_ellipse_x_set(System.IntPtr self, System.Double x);
+private static extern void enesim_renderer_ellipse_x_set(System.IntPtr selfRaw, System.Double x);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_ellipse_y_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_ellipse_y_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_ellipse_y_set(System.IntPtr self, System.Double y);
+private static extern void enesim_renderer_ellipse_y_set(System.IntPtr selfRaw, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_ellipse_radius_x_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_ellipse_radius_x_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_ellipse_radius_x_set(System.IntPtr self, System.Double rad);
+private static extern void enesim_renderer_ellipse_radius_x_set(System.IntPtr selfRaw, System.Double rad);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_ellipse_radius_y_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_ellipse_radius_y_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_ellipse_radius_y_set(System.IntPtr self, System.Double rad);
+private static extern void enesim_renderer_ellipse_radius_y_set(System.IntPtr selfRaw, System.Double rad);
             
             protected internal Ellipse(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -1372,29 +1372,29 @@ private static extern void enesim_renderer_ellipse_radius_y_set(System.IntPtr se
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_stripes_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_stripes_even_color_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_stripes_even_color_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_stripes_even_color_set(System.IntPtr self, System.UInt32 color);
+private static extern void enesim_renderer_stripes_even_color_set(System.IntPtr selfRaw, System.UInt32 color);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_stripes_even_renderer_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_stripes_even_renderer_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_stripes_even_renderer_set(System.IntPtr self, System.IntPtr paint);
+private static extern void enesim_renderer_stripes_even_renderer_set(System.IntPtr selfRaw, System.IntPtr paintRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_stripes_even_thickness_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_stripes_even_thickness_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_stripes_even_thickness_set(System.IntPtr self, System.Double thickness);
+private static extern void enesim_renderer_stripes_even_thickness_set(System.IntPtr selfRaw, System.Double thickness);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_stripes_odd_color_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_stripes_odd_color_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_stripes_odd_color_set(System.IntPtr self, System.UInt32 color);
+private static extern void enesim_renderer_stripes_odd_color_set(System.IntPtr selfRaw, System.UInt32 color);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_stripes_odd_renderer_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_stripes_odd_renderer_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_stripes_odd_renderer_set(System.IntPtr self, System.IntPtr paint);
+private static extern void enesim_renderer_stripes_odd_renderer_set(System.IntPtr selfRaw, System.IntPtr paintRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_stripes_odd_thickness_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_stripes_odd_thickness_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_stripes_odd_thickness_set(System.IntPtr self, System.Double thickness);
+private static extern void enesim_renderer_stripes_odd_thickness_set(System.IntPtr selfRaw, System.Double thickness);
             
             protected internal Stripes(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -1498,9 +1498,9 @@ private static extern void enesim_renderer_stripes_odd_thickness_set(System.IntP
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_path_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_path_inner_path_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_path_inner_path_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_path_inner_path_set(System.IntPtr self, System.IntPtr path);
+private static extern void enesim_renderer_path_inner_path_set(System.IntPtr selfRaw, System.IntPtr pathRaw);
             
             protected internal Path(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -1537,21 +1537,21 @@ private static extern void enesim_renderer_path_inner_path_set(System.IntPtr sel
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_raddist_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_raddist_radius_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_raddist_radius_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_raddist_radius_set(System.IntPtr self, System.Double radius);
+private static extern void enesim_renderer_raddist_radius_set(System.IntPtr selfRaw, System.Double radius);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_raddist_factor_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_raddist_factor_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_raddist_factor_set(System.IntPtr self, System.Double factor);
+private static extern void enesim_renderer_raddist_factor_set(System.IntPtr selfRaw, System.Double factor);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_raddist_source_surface_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_raddist_source_surface_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_raddist_source_surface_set(System.IntPtr self, System.IntPtr src);
+private static extern void enesim_renderer_raddist_source_surface_set(System.IntPtr selfRaw, System.IntPtr srcRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_raddist_x_set(System.IntPtr self, System.Double ox);
+private static extern void enesim_renderer_raddist_x_set(System.IntPtr selfRaw, System.Double ox);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_raddist_y_set(System.IntPtr self, System.Double oy);
+private static extern void enesim_renderer_raddist_y_set(System.IntPtr selfRaw, System.Double oy);
             
             protected internal Raddist(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -1628,29 +1628,29 @@ private static extern void enesim_renderer_raddist_y_set(System.IntPtr self, Sys
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_grid_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_grid_inside_width_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_grid_inside_width_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_grid_inside_width_set(System.IntPtr self, System.UInt32 width);
+private static extern void enesim_renderer_grid_inside_width_set(System.IntPtr selfRaw, System.UInt32 width);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_grid_inside_height_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_grid_inside_height_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_grid_inside_height_set(System.IntPtr self, System.UInt32 height);
+private static extern void enesim_renderer_grid_inside_height_set(System.IntPtr selfRaw, System.UInt32 height);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_grid_inside_color_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_grid_inside_color_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_grid_inside_color_set(System.IntPtr self, System.UInt32 color);
+private static extern void enesim_renderer_grid_inside_color_set(System.IntPtr selfRaw, System.UInt32 color);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_grid_border_hthickness_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_grid_border_hthickness_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_grid_border_hthickness_set(System.IntPtr self, System.UInt32 hthickness);
+private static extern void enesim_renderer_grid_border_hthickness_set(System.IntPtr selfRaw, System.UInt32 hthickness);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_grid_border_vthickness_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_grid_border_vthickness_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_grid_border_vthickness_set(System.IntPtr self, System.UInt32 vthickness);
+private static extern void enesim_renderer_grid_border_vthickness_set(System.IntPtr selfRaw, System.UInt32 vthickness);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_grid_border_color_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_grid_border_color_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_grid_border_color_set(System.IntPtr self, System.UInt32 color);
+private static extern void enesim_renderer_grid_border_color_set(System.IntPtr selfRaw, System.UInt32 color);
             
             protected internal Grid(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -1740,15 +1740,15 @@ private static extern void enesim_renderer_grid_border_color_set(System.IntPtr s
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_perlin_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_perlin_octaves_set(System.IntPtr self, System.UInt32 octaves);
+private static extern void enesim_renderer_perlin_octaves_set(System.IntPtr selfRaw, System.UInt32 octaves);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_perlin_persistence_set(System.IntPtr self, System.Double persistence);
+private static extern void enesim_renderer_perlin_persistence_set(System.IntPtr selfRaw, System.Double persistence);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_perlin_amplitude_set(System.IntPtr self, System.Double ampl);
+private static extern void enesim_renderer_perlin_amplitude_set(System.IntPtr selfRaw, System.Double ampl);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_perlin_xfrequency_set(System.IntPtr self, System.Double freq);
+private static extern void enesim_renderer_perlin_xfrequency_set(System.IntPtr selfRaw, System.Double freq);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_perlin_yfrequency_set(System.IntPtr self, System.Double freq);
+private static extern void enesim_renderer_perlin_yfrequency_set(System.IntPtr selfRaw, System.Double freq);
             
             protected internal Perlin(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -1808,25 +1808,25 @@ private static extern void enesim_renderer_perlin_yfrequency_set(System.IntPtr s
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_compound_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_compound_layer_add(System.IntPtr self, System.IntPtr layer);
+private static extern void enesim_renderer_compound_layer_add(System.IntPtr selfRaw, System.IntPtr layerRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_compound_layer_remove(System.IntPtr self, System.IntPtr layer);
+private static extern void enesim_renderer_compound_layer_remove(System.IntPtr selfRaw, System.IntPtr layerRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_compound_layer_clear(System.IntPtr self);
+private static extern void enesim_renderer_compound_layer_clear(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_compound_layer_foreach(System.IntPtr self, Enesim.Renderer.Compound.ForeachLayerInternal cb, System.IntPtr data);
+private static extern void enesim_renderer_compound_layer_foreach(System.IntPtr selfRaw, Enesim.Renderer.Compound.ForeachLayerInternal cb, System.IntPtr data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_compound_layer_reverse_foreach(System.IntPtr self, Enesim.Renderer.Compound.ForeachLayerInternal cb, System.IntPtr data);
+private static extern void enesim_renderer_compound_layer_reverse_foreach(System.IntPtr selfRaw, Enesim.Renderer.Compound.ForeachLayerInternal cb, System.IntPtr data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_compound_background_enable_get(System.IntPtr self);
+private static extern System.Boolean enesim_renderer_compound_background_enable_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_compound_background_enable_set(System.IntPtr self, System.Boolean enable);
+private static extern void enesim_renderer_compound_background_enable_set(System.IntPtr selfRaw, System.Boolean enable);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_compound_background_color_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_compound_background_color_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_compound_background_color_set(System.IntPtr self, System.UInt32 color);
+private static extern void enesim_renderer_compound_background_color_set(System.IntPtr selfRaw, System.UInt32 color);
 
-internal delegate System.Boolean ForeachLayerInternal(System.IntPtr r, System.IntPtr layer, System.IntPtr user_data);
+internal delegate System.Boolean ForeachLayerInternal(System.IntPtr rRaw, System.IntPtr layerRaw, System.IntPtr user_data);
             
             protected internal Compound(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -1890,7 +1890,7 @@ internal delegate System.Boolean ForeachLayerInternal(System.IntPtr r, System.In
             
             public void LayerForeach(Enesim.Renderer.Compound.ForeachLayer cb, System.IntPtr data) {
 
-Enesim.Renderer.Compound.ForeachLayerInternal cbInternal = (System.IntPtr r, System.IntPtr layer, System.IntPtr user_data) => {
+Enesim.Renderer.Compound.ForeachLayerInternal cbInternal = (System.IntPtr rRaw, System.IntPtr layerRaw, System.IntPtr user_data) => {
 Renderer rSharp;
 rSharp = new Renderer(r, true);
 Layer layerSharp;
@@ -1904,7 +1904,7 @@ return retSharp;
             
             public void LayerReverseForeach(Enesim.Renderer.Compound.ForeachLayer cb, System.IntPtr data) {
 
-Enesim.Renderer.Compound.ForeachLayerInternal cbInternal = (System.IntPtr r, System.IntPtr layer, System.IntPtr user_data) => {
+Enesim.Renderer.Compound.ForeachLayerInternal cbInternal = (System.IntPtr rRaw, System.IntPtr layerRaw, System.IntPtr user_data) => {
 Renderer rSharp;
 rSharp = new Renderer(r, true);
 Layer layerSharp;
@@ -1925,13 +1925,13 @@ return retSharp;
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_compound_layer_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_compound_layer_ref(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_compound_layer_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_compound_layer_unref(System.IntPtr self);
+private static extern void enesim_renderer_compound_layer_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_compound_layer_renderer_set(System.IntPtr self, System.IntPtr r);
+private static extern void enesim_renderer_compound_layer_renderer_set(System.IntPtr selfRaw, System.IntPtr rRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_compound_layer_rop_set(System.IntPtr self, Enesim.RopEnum rop);
+private static extern void enesim_renderer_compound_layer_rop_set(System.IntPtr selfRaw, Enesim.RopEnum rop);
 ~Layer() { Dispose(false); }
                 
                 protected internal Layer(System.IntPtr i, bool owned) {
@@ -2001,21 +2001,21 @@ private static extern void enesim_renderer_compound_layer_rop_set(System.IntPtr 
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_checker_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_checker_even_color_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_checker_even_color_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_checker_even_color_set(System.IntPtr self, System.UInt32 color);
+private static extern void enesim_renderer_checker_even_color_set(System.IntPtr selfRaw, System.UInt32 color);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.UInt32 enesim_renderer_checker_odd_color_get(System.IntPtr self);
+private static extern System.UInt32 enesim_renderer_checker_odd_color_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_checker_odd_color_set(System.IntPtr self, System.UInt32 color);
+private static extern void enesim_renderer_checker_odd_color_set(System.IntPtr selfRaw, System.UInt32 color);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_renderer_checker_width_get(System.IntPtr self);
+private static extern System.Int32 enesim_renderer_checker_width_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_checker_width_set(System.IntPtr self, System.Int32 width);
+private static extern void enesim_renderer_checker_width_set(System.IntPtr selfRaw, System.Int32 width);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_renderer_checker_height_get(System.IntPtr self);
+private static extern System.Int32 enesim_renderer_checker_height_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_checker_height_set(System.IntPtr self, System.Int32 height);
+private static extern void enesim_renderer_checker_height_set(System.IntPtr selfRaw, System.Int32 height);
             
             protected internal Checker(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -2081,25 +2081,25 @@ private static extern void enesim_renderer_checker_height_set(System.IntPtr self
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_line_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_line_coords_set(System.IntPtr self, System.Double x0, System.Double y0, System.Double x1, System.Double y1);
+private static extern void enesim_renderer_line_coords_set(System.IntPtr selfRaw, System.Double x0, System.Double y0, System.Double x1, System.Double y1);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_line_coords_get(System.IntPtr self, out System.Double x0, out System.Double y0, out System.Double x1, out System.Double y1);
+private static extern void enesim_renderer_line_coords_get(System.IntPtr selfRaw, out System.Double x0, out System.Double y0, out System.Double x1, out System.Double y1);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_line_x0_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_line_x0_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_line_x0_set(System.IntPtr self, System.Double x0);
+private static extern void enesim_renderer_line_x0_set(System.IntPtr selfRaw, System.Double x0);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_line_y0_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_line_y0_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_line_y0_set(System.IntPtr self, System.Double y0);
+private static extern void enesim_renderer_line_y0_set(System.IntPtr selfRaw, System.Double y0);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_line_x1_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_line_x1_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_line_x1_set(System.IntPtr self, System.Double x1);
+private static extern void enesim_renderer_line_x1_set(System.IntPtr selfRaw, System.Double x1);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_line_y1_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_line_y1_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_line_y1_set(System.IntPtr self, System.Double y1);
+private static extern void enesim_renderer_line_y1_set(System.IntPtr selfRaw, System.Double y1);
             
             protected internal Line(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -2173,25 +2173,25 @@ private static extern void enesim_renderer_line_y1_set(System.IntPtr self, Syste
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_blur_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_blur_source_surface_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_blur_source_surface_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_blur_source_surface_set(System.IntPtr self, System.IntPtr src);
+private static extern void enesim_renderer_blur_source_surface_set(System.IntPtr selfRaw, System.IntPtr srcRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_blur_source_renderer_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_blur_source_renderer_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_blur_source_renderer_set(System.IntPtr self, System.IntPtr sr);
+private static extern void enesim_renderer_blur_source_renderer_set(System.IntPtr selfRaw, System.IntPtr srRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.Renderer.Blur.ChannelEnum enesim_renderer_blur_channel_get(System.IntPtr self);
+private static extern Enesim.Renderer.Blur.ChannelEnum enesim_renderer_blur_channel_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_blur_channel_set(System.IntPtr self, Enesim.Renderer.Blur.ChannelEnum channel);
+private static extern void enesim_renderer_blur_channel_set(System.IntPtr selfRaw, Enesim.Renderer.Blur.ChannelEnum channel);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_blur_radius_x_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_blur_radius_x_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_blur_radius_x_set(System.IntPtr self, System.Double rx);
+private static extern void enesim_renderer_blur_radius_x_set(System.IntPtr selfRaw, System.Double rx);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_blur_radius_y_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_blur_radius_y_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_blur_radius_y_set(System.IntPtr self, System.Double ry);
+private static extern void enesim_renderer_blur_radius_y_set(System.IntPtr selfRaw, System.Double ry);
             
             protected internal Blur(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -2290,61 +2290,61 @@ private static extern void enesim_renderer_blur_radius_y_set(System.IntPtr self,
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_rectangle_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_position_set(System.IntPtr self, System.Double x, System.Double y);
+private static extern void enesim_renderer_rectangle_position_set(System.IntPtr selfRaw, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_position_get(System.IntPtr self, out System.Double x, out System.Double y);
+private static extern void enesim_renderer_rectangle_position_get(System.IntPtr selfRaw, out System.Double x, out System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_size_set(System.IntPtr self, System.Double w, System.Double h);
+private static extern void enesim_renderer_rectangle_size_set(System.IntPtr selfRaw, System.Double w, System.Double h);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_size_get(System.IntPtr self, out System.Double w, out System.Double h);
+private static extern void enesim_renderer_rectangle_size_get(System.IntPtr selfRaw, out System.Double w, out System.Double h);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_corner_radius_x_set(System.IntPtr self, System.Double rx);
+private static extern void enesim_renderer_rectangle_corner_radius_x_set(System.IntPtr selfRaw, System.Double rx);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_rectangle_corner_radius_x_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_rectangle_corner_radius_x_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_corner_radius_y_set(System.IntPtr self, System.Double ry);
+private static extern void enesim_renderer_rectangle_corner_radius_y_set(System.IntPtr selfRaw, System.Double ry);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_rectangle_corner_radius_y_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_rectangle_corner_radius_y_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_corner_radii_set(System.IntPtr self, System.Double rx, System.Double ry);
+private static extern void enesim_renderer_rectangle_corner_radii_set(System.IntPtr selfRaw, System.Double rx, System.Double ry);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_corner_radii_get(System.IntPtr self, System.Double rx, System.Double ry);
+private static extern void enesim_renderer_rectangle_corner_radii_get(System.IntPtr selfRaw, System.Double rx, System.Double ry);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_corners_set(System.IntPtr self, System.Boolean tl, System.Boolean tr, System.Boolean bl, System.Boolean br);
+private static extern void enesim_renderer_rectangle_corners_set(System.IntPtr selfRaw, System.Boolean tl, System.Boolean tr, System.Boolean bl, System.Boolean br);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_corners_get(System.IntPtr self, out System.Boolean tl, out System.Boolean tr, out System.Boolean bl, out System.Boolean br);
+private static extern void enesim_renderer_rectangle_corners_get(System.IntPtr selfRaw, out System.Boolean tl, out System.Boolean tr, out System.Boolean bl, out System.Boolean br);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_top_left_corner_set(System.IntPtr self, System.Boolean rounded);
+private static extern void enesim_renderer_rectangle_top_left_corner_set(System.IntPtr selfRaw, System.Boolean rounded);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_rectangle_top_left_corner_get(System.IntPtr self);
+private static extern System.Boolean enesim_renderer_rectangle_top_left_corner_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_top_right_corner_set(System.IntPtr self, System.Boolean rounded);
+private static extern void enesim_renderer_rectangle_top_right_corner_set(System.IntPtr selfRaw, System.Boolean rounded);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_rectangle_top_right_corner_get(System.IntPtr self);
+private static extern System.Boolean enesim_renderer_rectangle_top_right_corner_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_bottom_left_corner_set(System.IntPtr self, System.Boolean rounded);
+private static extern void enesim_renderer_rectangle_bottom_left_corner_set(System.IntPtr selfRaw, System.Boolean rounded);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_rectangle_bottom_left_corner_get(System.IntPtr self);
+private static extern System.Boolean enesim_renderer_rectangle_bottom_left_corner_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_bottom_right_corner_set(System.IntPtr self, System.Boolean rounded);
+private static extern void enesim_renderer_rectangle_bottom_right_corner_set(System.IntPtr selfRaw, System.Boolean rounded);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_rectangle_bottom_right_corner_get(System.IntPtr self);
+private static extern System.Boolean enesim_renderer_rectangle_bottom_right_corner_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_rectangle_x_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_rectangle_x_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_x_set(System.IntPtr self, System.Double x);
+private static extern void enesim_renderer_rectangle_x_set(System.IntPtr selfRaw, System.Double x);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_rectangle_y_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_rectangle_y_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_y_set(System.IntPtr self, System.Double y);
+private static extern void enesim_renderer_rectangle_y_set(System.IntPtr selfRaw, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_rectangle_width_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_rectangle_width_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_width_set(System.IntPtr self, System.Double w);
+private static extern void enesim_renderer_rectangle_width_set(System.IntPtr selfRaw, System.Double w);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_rectangle_height_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_rectangle_height_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_rectangle_height_set(System.IntPtr self, System.Double h);
+private static extern void enesim_renderer_rectangle_height_set(System.IntPtr selfRaw, System.Double h);
             
             protected internal Rectangle(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -2496,35 +2496,35 @@ private static extern void enesim_renderer_rectangle_height_set(System.IntPtr se
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_image_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_image_position_set(System.IntPtr self, System.Double x, System.Double y);
+private static extern void enesim_renderer_image_position_set(System.IntPtr selfRaw, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_image_position_get(System.IntPtr self, out System.Double x, out System.Double y);
+private static extern void enesim_renderer_image_position_get(System.IntPtr selfRaw, out System.Double x, out System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_image_size_set(System.IntPtr self, System.Double w, System.Double h);
+private static extern void enesim_renderer_image_size_set(System.IntPtr selfRaw, System.Double w, System.Double h);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_image_size_get(System.IntPtr self, out System.Double w, out System.Double h);
+private static extern void enesim_renderer_image_size_get(System.IntPtr selfRaw, out System.Double w, out System.Double h);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_image_damage_add(System.IntPtr self, System.IntPtr area);
+private static extern void enesim_renderer_image_damage_add(System.IntPtr selfRaw, System.IntPtr areaRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_image_x_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_image_x_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_image_x_set(System.IntPtr self, System.Double x);
+private static extern void enesim_renderer_image_x_set(System.IntPtr selfRaw, System.Double x);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_image_y_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_image_y_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_image_y_set(System.IntPtr self, System.Double y);
+private static extern void enesim_renderer_image_y_set(System.IntPtr selfRaw, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_image_width_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_image_width_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_image_width_set(System.IntPtr self, System.Double w);
+private static extern void enesim_renderer_image_width_set(System.IntPtr selfRaw, System.Double w);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_image_height_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_image_height_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_image_height_set(System.IntPtr self, System.Double h);
+private static extern void enesim_renderer_image_height_set(System.IntPtr selfRaw, System.Double h);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_image_source_surface_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_image_source_surface_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_image_source_surface_set(System.IntPtr self, System.IntPtr src);
+private static extern void enesim_renderer_image_source_surface_set(System.IntPtr selfRaw, System.IntPtr srcRaw);
             
             protected internal Image(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -2639,17 +2639,17 @@ private static extern void enesim_renderer_image_source_surface_set(System.IntPt
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_pattern_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_pattern_enesim_surface_pattern_source_surface_set(System.IntPtr self, System.IntPtr source);
+private static extern void enesim_renderer_pattern_enesim_surface_pattern_source_surface_set(System.IntPtr selfRaw, System.IntPtr sourceRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_pattern_source_renderer_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_pattern_source_renderer_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_pattern_source_renderer_set(System.IntPtr self, System.IntPtr source);
+private static extern void enesim_renderer_pattern_source_renderer_set(System.IntPtr selfRaw, System.IntPtr sourceRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_pattern_source_surface_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_pattern_source_surface_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.RepeatModeEnum enesim_renderer_pattern_repeat_mode_get(System.IntPtr self);
+private static extern Enesim.RepeatModeEnum enesim_renderer_pattern_repeat_mode_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_pattern_repeat_mode_set(System.IntPtr self, Enesim.RepeatModeEnum mode);
+private static extern void enesim_renderer_pattern_repeat_mode_set(System.IntPtr selfRaw, Enesim.RepeatModeEnum mode);
             
             protected internal Pattern(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -2716,21 +2716,21 @@ private static extern void enesim_renderer_pattern_repeat_mode_set(System.IntPtr
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_circle_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_circle_center_set(System.IntPtr self, System.Double x, System.Double y);
+private static extern void enesim_renderer_circle_center_set(System.IntPtr selfRaw, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_circle_center_get(System.IntPtr self, out System.Double x, out System.Double y);
+private static extern void enesim_renderer_circle_center_get(System.IntPtr selfRaw, out System.Double x, out System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_circle_x_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_circle_x_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_circle_x_set(System.IntPtr self, System.Double x);
+private static extern void enesim_renderer_circle_x_set(System.IntPtr selfRaw, System.Double x);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_circle_y_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_circle_y_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_circle_y_set(System.IntPtr self, System.Double y);
+private static extern void enesim_renderer_circle_y_set(System.IntPtr selfRaw, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_circle_radius_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_circle_radius_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_circle_radius_set(System.IntPtr self, System.Double radius);
+private static extern void enesim_renderer_circle_radius_set(System.IntPtr selfRaw, System.Double radius);
             
             protected internal Circle(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -2792,33 +2792,33 @@ private static extern void enesim_renderer_circle_radius_set(System.IntPtr self,
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_clipper_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_clipper_clipped_set(System.IntPtr self, System.IntPtr clipped);
+private static extern void enesim_renderer_clipper_clipped_set(System.IntPtr selfRaw, System.IntPtr clippedRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_clipper_clipped_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_clipper_clipped_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_clipper_x_set(System.IntPtr self, System.Int32 x);
+private static extern void enesim_renderer_clipper_x_set(System.IntPtr selfRaw, System.Int32 x);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_renderer_clipper_x_get(System.IntPtr self);
+private static extern System.Int32 enesim_renderer_clipper_x_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_clipper_y_set(System.IntPtr self, System.Int32 y);
+private static extern void enesim_renderer_clipper_y_set(System.IntPtr selfRaw, System.Int32 y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_renderer_clipper_y_get(System.IntPtr self);
+private static extern System.Int32 enesim_renderer_clipper_y_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_clipper_position_set(System.IntPtr self, System.Int32 x, System.Int32 y);
+private static extern void enesim_renderer_clipper_position_set(System.IntPtr selfRaw, System.Int32 x, System.Int32 y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_clipper_position_get(System.IntPtr self, out System.Int32 x, out System.Int32 y);
+private static extern void enesim_renderer_clipper_position_get(System.IntPtr selfRaw, out System.Int32 x, out System.Int32 y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_clipper_width_set(System.IntPtr self, System.Int32 width);
+private static extern void enesim_renderer_clipper_width_set(System.IntPtr selfRaw, System.Int32 width);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_renderer_clipper_width_get(System.IntPtr self);
+private static extern System.Int32 enesim_renderer_clipper_width_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_clipper_height_set(System.IntPtr self, System.Int32 height);
+private static extern void enesim_renderer_clipper_height_set(System.IntPtr selfRaw, System.Int32 height);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_renderer_clipper_height_get(System.IntPtr self);
+private static extern System.Int32 enesim_renderer_clipper_height_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_clipper_size_set(System.IntPtr self, System.Int32 w, System.Int32 h);
+private static extern void enesim_renderer_clipper_size_set(System.IntPtr selfRaw, System.Int32 w, System.Int32 h);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_clipper_size_get(System.IntPtr self, out System.Int32 w, out System.Int32 h);
+private static extern void enesim_renderer_clipper_size_get(System.IntPtr selfRaw, out System.Int32 w, out System.Int32 h);
             
             protected internal Clipper(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -2904,17 +2904,17 @@ private static extern void enesim_renderer_clipper_size_get(System.IntPtr self, 
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_transition_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Double enesim_renderer_transition_level_get(System.IntPtr self);
+private static extern System.Double enesim_renderer_transition_level_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_transition_level_set(System.IntPtr self, System.Double level);
+private static extern void enesim_renderer_transition_level_set(System.IntPtr selfRaw, System.Double level);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_transition_source_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_transition_source_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_transition_source_set(System.IntPtr self, System.IntPtr r0);
+private static extern void enesim_renderer_transition_source_set(System.IntPtr selfRaw, System.IntPtr r0Raw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_transition_target_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_transition_target_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_transition_target_set(System.IntPtr self, System.IntPtr r1);
+private static extern void enesim_renderer_transition_target_set(System.IntPtr selfRaw, System.IntPtr r1Raw);
             
             protected internal Transition(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -2982,9 +2982,9 @@ private static extern void enesim_renderer_transition_target_set(System.IntPtr s
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_proxy_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_proxy_proxied_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_proxy_proxied_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_proxy_proxied_set(System.IntPtr self, System.IntPtr proxied);
+private static extern void enesim_renderer_proxy_proxied_set(System.IntPtr selfRaw, System.IntPtr proxiedRaw);
             
             protected internal Proxy(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -3021,9 +3021,9 @@ private static extern void enesim_renderer_proxy_proxied_set(System.IntPtr self,
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_importer_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_renderer_importer_buffer_get(System.IntPtr self);
+private static extern System.IntPtr enesim_renderer_importer_buffer_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_importer_buffer_set(System.IntPtr self, System.IntPtr buffer);
+private static extern void enesim_renderer_importer_buffer_set(System.IntPtr selfRaw, System.IntPtr bufferRaw);
             
             protected internal Importer(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -3095,41 +3095,41 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_buffer_new(Enesim.Buffer.FormatEnum f, System.UInt32 w, System.UInt32 h);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_buffer_new_data_from(Enesim.Buffer.FormatEnum f, System.UInt32 w, System.UInt32 h, System.Boolean copy, System.IntPtr data, Enesim.Buffer.FreeInternal free_func, System.IntPtr free_func_data);
+private static extern System.IntPtr enesim_buffer_new_data_from(Enesim.Buffer.FormatEnum f, System.UInt32 w, System.UInt32 h, System.Boolean copy, System.IntPtr dataRaw, Enesim.Buffer.FreeInternal free_func, System.IntPtr free_func_data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_buffer_new_pool_from(Enesim.Buffer.FormatEnum f, System.UInt32 w, System.UInt32 h, System.IntPtr p);
+private static extern System.IntPtr enesim_buffer_new_pool_from(Enesim.Buffer.FormatEnum f, System.UInt32 w, System.UInt32 h, System.IntPtr pRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_buffer_new_pool_and_data_from(Enesim.Buffer.FormatEnum f, System.UInt32 w, System.UInt32 h, System.IntPtr p, System.Boolean copy, System.IntPtr data, Enesim.Buffer.FreeInternal free_func, System.IntPtr free_func_data);
+private static extern System.IntPtr enesim_buffer_new_pool_and_data_from(Enesim.Buffer.FormatEnum f, System.UInt32 w, System.UInt32 h, System.IntPtr pRaw, System.Boolean copy, System.IntPtr dataRaw, Enesim.Buffer.FreeInternal free_func, System.IntPtr free_func_data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_buffer_ref(System.IntPtr self);
+private static extern System.IntPtr enesim_buffer_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_buffer_unref(System.IntPtr self);
+private static extern void enesim_buffer_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_buffer_size_get(System.IntPtr self, out System.Int32 w, out System.Int32 h);
+private static extern void enesim_buffer_size_get(System.IntPtr selfRaw, out System.Int32 w, out System.Int32 h);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.Buffer.FormatEnum enesim_buffer_format_get(System.IntPtr self);
+private static extern Enesim.Buffer.FormatEnum enesim_buffer_format_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.BackendEnum enesim_buffer_backend_get(System.IntPtr self);
+private static extern Enesim.BackendEnum enesim_buffer_backend_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_buffer_pool_get(System.IntPtr self);
+private static extern System.IntPtr enesim_buffer_pool_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_buffer_private_set(System.IntPtr self, System.IntPtr data);
+private static extern void enesim_buffer_private_set(System.IntPtr selfRaw, System.IntPtr data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_buffer_private_get(System.IntPtr self);
+private static extern System.IntPtr enesim_buffer_private_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_buffer_sw_data_get(System.IntPtr self, System.IntPtr data);
+private static extern System.Boolean enesim_buffer_sw_data_get(System.IntPtr selfRaw, System.IntPtr dataRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_buffer_map(System.IntPtr self, System.IntPtr data);
+private static extern System.Boolean enesim_buffer_map(System.IntPtr selfRaw, System.IntPtr dataRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_buffer_unmap(System.IntPtr self, System.IntPtr data, System.Boolean written);
+private static extern System.Boolean enesim_buffer_unmap(System.IntPtr selfRaw, System.IntPtr dataRaw, System.Boolean written);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_buffer_lock(System.IntPtr self, System.Boolean write);
+private static extern void enesim_buffer_lock(System.IntPtr selfRaw, System.Boolean write);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_buffer_unlock(System.IntPtr self);
+private static extern void enesim_buffer_unlock(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_buffer_alpha_hint_set(System.IntPtr self, Enesim.AplhaHintEnum hint);
+private static extern void enesim_buffer_alpha_hint_set(System.IntPtr selfRaw, Enesim.AplhaHintEnum hint);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.AplhaHintEnum enesim_buffer_alpha_hint_get(System.IntPtr self);
+private static extern Enesim.AplhaHintEnum enesim_buffer_alpha_hint_get(System.IntPtr selfRaw);
 ~Buffer() { Dispose(false); }
 
 internal delegate void FreeInternal(System.IntPtr buffer_data, System.IntPtr user_data);
@@ -3542,17 +3542,17 @@ free_func(buffer_data, user_data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_image_dispatch();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_image_info_get(System.IntPtr data, System.String mime, IntPtr w, IntPtr h, Enesim.Buffer.FormatEnum sfmt, System.String options, out System.Int32 err);
+private static extern System.Boolean enesim_image_info_get(System.IntPtr dataRaw, System.String mime, IntPtr w, IntPtr h, Enesim.Buffer.FormatEnum sfmt, System.String options, out System.Int32 err);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_image_load(out System.IntPtr data, System.String mime, System.IntPtr b, System.IntPtr mpool, System.String options, System.Int32 err);
+private static extern System.Boolean enesim_image_load(out System.IntPtr dataRaw, System.String mime, System.IntPtr bRaw, System.IntPtr mpoolRaw, System.String options, System.Int32 err);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_image_load_async(System.IntPtr data, System.String mime, System.IntPtr b, System.IntPtr mpool, Enesim.Image.CallbackInternal cb, System.IntPtr user_data, System.String options);
+private static extern void enesim_image_load_async(System.IntPtr dataRaw, System.String mime, System.IntPtr bRaw, System.IntPtr mpoolRaw, Enesim.Image.CallbackInternal cb, System.IntPtr user_data, System.String options);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_image_save(System.IntPtr data, System.String mime, System.IntPtr b, System.String options, out System.Int32 err);
+private static extern System.Boolean enesim_image_save(System.IntPtr dataRaw, System.String mime, System.IntPtr bRaw, System.String options, out System.Int32 err);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_image_save_async(System.IntPtr data, System.String mime, System.IntPtr b, Enesim.Image.CallbackInternal cb, System.IntPtr user_data, System.String options);
+private static extern void enesim_image_save_async(System.IntPtr dataRaw, System.String mime, System.IntPtr bRaw, Enesim.Image.CallbackInternal cb, System.IntPtr user_data, System.String options);
 
-internal delegate void CallbackInternal(System.IntPtr r, System.IntPtr ser_data, System.Boolean success, System.Int32 error);
+internal delegate void CallbackInternal(System.IntPtr rRaw, System.IntPtr ser_data, System.Boolean success, System.Int32 error);
         
         public static void Dispatch() {
             enesim_image_dispatch();
@@ -3616,7 +3616,7 @@ internal delegate void CallbackInternal(System.IntPtr r, System.IntPtr ser_data,
                 mpoolRaw = mpool.Raw;
             }
 
-Enesim.Image.CallbackInternal cbInternal = (System.IntPtr r, System.IntPtr ser_data, System.Boolean success, System.Int32 error) => {
+Enesim.Image.CallbackInternal cbInternal = (System.IntPtr rRaw, System.IntPtr ser_data, System.Boolean success, System.Int32 error) => {
 Buffer rSharp;
 rSharp = new Buffer(r, true);
 cb(rSharp, ser_data, success);
@@ -3662,7 +3662,7 @@ cb(rSharp, ser_data, success);
                 bRaw = b.Raw;
             }
 
-Enesim.Image.CallbackInternal cbInternal = (System.IntPtr r, System.IntPtr ser_data, System.Boolean success, System.Int32 error) => {
+Enesim.Image.CallbackInternal cbInternal = (System.IntPtr rRaw, System.IntPtr ser_data, System.Boolean success, System.Int32 error) => {
 Buffer rSharp;
 rSharp = new Buffer(r, true);
 cb(rSharp, ser_data, success);
@@ -3676,13 +3676,13 @@ cb(rSharp, ser_data, success);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Boolean enesim_image_file_info_get(System.String file, IntPtr w, IntPtr h, Enesim.Buffer.FormatEnum sfmt, System.String options, out System.Int32 err);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_image_file_load(System.String file, System.IntPtr b, System.IntPtr mpool, System.String options, out System.Int32 err);
+private static extern System.Boolean enesim_image_file_load(System.String file, System.IntPtr bRaw, System.IntPtr mpoolRaw, System.String options, out System.Int32 err);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_image_file_load_async(System.String file, System.IntPtr b, System.IntPtr mpool, Enesim.Image.CallbackInternal cb, System.IntPtr user_data, System.String options);
+private static extern void enesim_image_file_load_async(System.String file, System.IntPtr bRaw, System.IntPtr mpoolRaw, Enesim.Image.CallbackInternal cb, System.IntPtr user_data, System.String options);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_image_file_save(System.String file, System.IntPtr b, System.String options, out System.Int32 err);
+private static extern System.Boolean enesim_image_file_save(System.String file, System.IntPtr bRaw, System.String options, out System.Int32 err);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_image_file_save_async(System.String file, System.IntPtr b, Enesim.Image.CallbackInternal cb, System.IntPtr user_data, System.String options);
+private static extern void enesim_image_file_save_async(System.String file, System.IntPtr bRaw, Enesim.Image.CallbackInternal cb, System.IntPtr user_data, System.String options);
             
             public static bool GetInfo(string file, System.IntPtr w, System.IntPtr h, Enesim.Buffer.FormatEnum sfmt, string options, out Eina.Error err) {
                 int errRaw;
@@ -3728,7 +3728,7 @@ private static extern void enesim_image_file_save_async(System.String file, Syst
                     mpoolRaw = mpool.Raw;
                 }
 
-Enesim.Image.CallbackInternal cbInternal = (System.IntPtr r, System.IntPtr ser_data, System.Boolean success, System.Int32 error) => {
+Enesim.Image.CallbackInternal cbInternal = (System.IntPtr rRaw, System.IntPtr ser_data, System.Boolean success, System.Int32 error) => {
 Buffer rSharp;
 rSharp = new Buffer(r, true);
 cb(rSharp, ser_data, success);
@@ -3760,7 +3760,7 @@ cb(rSharp, ser_data, success);
                     bRaw = b.Raw;
                 }
 
-Enesim.Image.CallbackInternal cbInternal = (System.IntPtr r, System.IntPtr ser_data, System.Boolean success, System.Int32 error) => {
+Enesim.Image.CallbackInternal cbInternal = (System.IntPtr rRaw, System.IntPtr ser_data, System.Boolean success, System.Int32 error) => {
 Buffer rSharp;
 rSharp = new Buffer(r, true);
 cb(rSharp, ser_data, success);
@@ -3791,43 +3791,43 @@ private static extern System.IntPtr enesim_surface_new(Enesim.FormatEnum f, Syst
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_surface_new_data_from(Enesim.FormatEnum f, System.UInt32 w, System.UInt32 h, System.Boolean copy, System.IntPtr data, System.IntPtr stride, Enesim.Buffer.FreeInternal free_func, System.IntPtr free_func_data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_surface_new_pool_from(Enesim.FormatEnum f, System.UInt32 w, System.UInt32 h, System.IntPtr p);
+private static extern System.IntPtr enesim_surface_new_pool_from(Enesim.FormatEnum f, System.UInt32 w, System.UInt32 h, System.IntPtr pRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_surface_new_pool_and_data_from(Enesim.FormatEnum fmt, System.UInt32 w, System.UInt32 h, System.IntPtr p, System.Boolean copy, System.IntPtr data, System.IntPtr stride, Enesim.Buffer.FreeInternal free_func, System.IntPtr free_func_data);
+private static extern System.IntPtr enesim_surface_new_pool_and_data_from(Enesim.FormatEnum fmt, System.UInt32 w, System.UInt32 h, System.IntPtr pRaw, System.Boolean copy, System.IntPtr data, System.IntPtr stride, Enesim.Buffer.FreeInternal free_func, System.IntPtr free_func_data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_surface_new_buffer_from(System.IntPtr buffer);
+private static extern System.IntPtr enesim_surface_new_buffer_from(System.IntPtr bufferRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_surface_ref(System.IntPtr self);
+private static extern System.IntPtr enesim_surface_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_surface_unref(System.IntPtr self);
+private static extern void enesim_surface_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_surface_buffer_get(System.IntPtr self);
+private static extern System.IntPtr enesim_surface_buffer_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_surface_size_get(System.IntPtr self, out System.Int32 w, out System.Int32 h);
+private static extern void enesim_surface_size_get(System.IntPtr selfRaw, out System.Int32 w, out System.Int32 h);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.FormatEnum enesim_surface_format_get(System.IntPtr self);
+private static extern Enesim.FormatEnum enesim_surface_format_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.BackendEnum enesim_surface_backend_get(System.IntPtr self);
+private static extern Enesim.BackendEnum enesim_surface_backend_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_surface_pool_get(System.IntPtr self);
+private static extern System.IntPtr enesim_surface_pool_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_surface_private_set(System.IntPtr self, System.IntPtr data);
+private static extern void enesim_surface_private_set(System.IntPtr selfRaw, System.IntPtr data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_surface_private_get(System.IntPtr self);
+private static extern System.IntPtr enesim_surface_private_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_surface_sw_data_get(System.IntPtr self, out System.IntPtr data, out System.IntPtr stride);
+private static extern System.Boolean enesim_surface_sw_data_get(System.IntPtr selfRaw, out System.IntPtr data, out System.IntPtr stride);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_surface_map(System.IntPtr self, out System.IntPtr data, out System.IntPtr stride);
+private static extern System.Boolean enesim_surface_map(System.IntPtr selfRaw, out System.IntPtr data, out System.IntPtr stride);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_surface_unmap(System.IntPtr self, System.IntPtr data, System.Boolean written);
+private static extern System.Boolean enesim_surface_unmap(System.IntPtr selfRaw, System.IntPtr data, System.Boolean written);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_surface_lock(System.IntPtr self, System.Boolean write);
+private static extern void enesim_surface_lock(System.IntPtr selfRaw, System.Boolean write);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_surface_unlock(System.IntPtr self);
+private static extern void enesim_surface_unlock(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_surface_alpha_hint_set(System.IntPtr self, Enesim.AplhaHintEnum hint);
+private static extern void enesim_surface_alpha_hint_set(System.IntPtr selfRaw, Enesim.AplhaHintEnum hint);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.AplhaHintEnum enesim_surface_alpha_hint_get(System.IntPtr self);
+private static extern Enesim.AplhaHintEnum enesim_surface_alpha_hint_get(System.IntPtr selfRaw);
 ~Surface() { Dispose(false); }
         
         protected internal Surface(System.IntPtr i, bool owned) {
@@ -4002,23 +4002,23 @@ free_func(buffer_data, user_data);
         private bool disposed;
         
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_ref(System.IntPtr self);
+private static extern System.IntPtr enesim_stream_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_stream_unref(System.IntPtr self);
+private static extern void enesim_stream_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_read(System.IntPtr self, System.IntPtr buffer, System.IntPtr len);
+private static extern System.IntPtr enesim_stream_read(System.IntPtr selfRaw, System.IntPtr buffer, System.IntPtr len);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_write(System.IntPtr self, System.IntPtr buffer, System.IntPtr len);
+private static extern System.IntPtr enesim_stream_write(System.IntPtr selfRaw, System.IntPtr buffer, System.IntPtr len);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_length(System.IntPtr self);
+private static extern System.IntPtr enesim_stream_length(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_mmap(System.IntPtr self, out System.IntPtr size);
+private static extern System.IntPtr enesim_stream_mmap(System.IntPtr selfRaw, out System.IntPtr size);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_stream_munmap(System.IntPtr self, System.IntPtr ptr);
+private static extern void enesim_stream_munmap(System.IntPtr selfRaw, System.IntPtr ptr);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_stream_reset(System.IntPtr self);
+private static extern void enesim_stream_reset(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_uri_get(System.IntPtr self);
+private static extern System.IntPtr enesim_stream_uri_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_stream_file_new(System.String file, System.String mode);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -4026,7 +4026,7 @@ private static extern System.IntPtr enesim_stream_buffer_new(System.IntPtr buffe
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_stream_buffer_static_new(System.IntPtr buffer, System.IntPtr len);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_base64_new(System.IntPtr d);
+private static extern System.IntPtr enesim_stream_base64_new(System.IntPtr dRaw);
 ~Stream() { Dispose(false); }
         
         protected internal Stream(System.IntPtr i, bool owned) {
@@ -4131,29 +4131,29 @@ private static extern System.IntPtr enesim_stream_base64_new(System.IntPtr d);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_path_new();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_path_ref(System.IntPtr self);
+private static extern System.IntPtr enesim_path_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_path_unref(System.IntPtr self);
+private static extern void enesim_path_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_path_command_clear(System.IntPtr self);
+private static extern void enesim_path_command_clear(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_path_command_add(System.IntPtr self, System.IntPtr cmd);
+private static extern void enesim_path_command_add(System.IntPtr selfRaw, System.IntPtr cmdRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_path_move_to(System.IntPtr self, System.Double x, System.Double y);
+private static extern void enesim_path_move_to(System.IntPtr selfRaw, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_path_line_to(System.IntPtr self, System.Double x, System.Double y);
+private static extern void enesim_path_line_to(System.IntPtr selfRaw, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_path_squadratic_to(System.IntPtr self, System.Double x, System.Double y);
+private static extern void enesim_path_squadratic_to(System.IntPtr selfRaw, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_path_quadratic_to(System.IntPtr self, System.Double ctrl_x, System.Double ctrl_y, System.Double x, System.Double y);
+private static extern void enesim_path_quadratic_to(System.IntPtr selfRaw, System.Double ctrl_x, System.Double ctrl_y, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_path_cubic_to(System.IntPtr self, System.Double ctrl_x0, System.Double ctrl_y0, System.Double ctrl_x, System.Double ctrl_y, System.Double x, System.Double y);
+private static extern void enesim_path_cubic_to(System.IntPtr selfRaw, System.Double ctrl_x0, System.Double ctrl_y0, System.Double ctrl_x, System.Double ctrl_y, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_path_scubic_to(System.IntPtr self, System.Double ctrl_x, System.Double ctrl_y, System.Double x, System.Double y);
+private static extern void enesim_path_scubic_to(System.IntPtr selfRaw, System.Double ctrl_x, System.Double ctrl_y, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_path_arc_to(System.IntPtr self, System.Double rx, System.Double ry, System.Double angle, System.Byte large, System.Byte sweep, System.Double x, System.Double y);
+private static extern void enesim_path_arc_to(System.IntPtr selfRaw, System.Double rx, System.Double ry, System.Double angle, System.Byte large, System.Byte sweep, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_path_close(System.IntPtr self);
+private static extern void enesim_path_close(System.IntPtr selfRaw);
 ~Path() { Dispose(false); }
         
         protected internal Path(System.IntPtr i, bool owned) {
@@ -4369,11 +4369,11 @@ private static extern void enesim_path_close(System.IntPtr self);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_pool_default_get();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_pool_default_set(System.IntPtr self);
+private static extern void enesim_pool_default_set(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_pool_ref(System.IntPtr self);
+private static extern System.IntPtr enesim_pool_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_pool_unref(System.IntPtr self);
+private static extern void enesim_pool_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_pool_eina_new(IntPtr mp);
 ~Pool() { Dispose(false); }
@@ -4428,9 +4428,9 @@ private static extern System.IntPtr enesim_pool_eina_new(IntPtr mp);
     public class Converter {
         
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_converter_buffer(System.IntPtr b, System.IntPtr dst);
+private static extern System.Boolean enesim_converter_buffer(System.IntPtr bRaw, System.IntPtr dstRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_converter_surface(System.IntPtr s, System.IntPtr dst);
+private static extern System.Boolean enesim_converter_surface(System.IntPtr sRaw, System.IntPtr dstRaw);
         
         public static bool Buffer(Enesim.Buffer b, Enesim.Buffer dst) {
             System.IntPtr bRaw;
@@ -4478,15 +4478,15 @@ private static extern System.Boolean enesim_converter_surface(System.IntPtr s, S
         private bool disposed;
         
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_log_ref(System.IntPtr self);
+private static extern System.IntPtr enesim_log_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_log_unref(System.IntPtr self);
+private static extern void enesim_log_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_log_add(System.IntPtr self, System.String _string);
+private static extern System.IntPtr enesim_log_add(System.IntPtr selfRaw, System.String _string);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_log_add_parametric(System.IntPtr self, System.String file, System.String function, System.Int32 line, System.IntPtr fmt, IntPtr args);
+private static extern System.IntPtr enesim_log_add_parametric(System.IntPtr selfRaw, System.String file, System.String function, System.Int32 line, System.IntPtr fmt, IntPtr args);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_log_dump(System.IntPtr self);
+private static extern void enesim_log_dump(System.IntPtr selfRaw);
 ~Log() { Dispose(false); }
         
         protected Log() {
@@ -5209,19 +5209,19 @@ namespace Enesim.Text {
         private bool disposed;
         
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_text_buffer_ref(System.IntPtr self);
+private static extern System.IntPtr enesim_text_buffer_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_text_buffer_unref(System.IntPtr self);
+private static extern void enesim_text_buffer_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_text_buffer_string_set(System.IntPtr self, System.String _string, System.Int32 length);
+private static extern void enesim_text_buffer_string_set(System.IntPtr selfRaw, System.String _string, System.Int32 length);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_text_buffer_string_get(System.IntPtr self);
+private static extern System.IntPtr enesim_text_buffer_string_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_text_buffer_string_insert(System.IntPtr self, System.String _string, System.Int32 length, System.IntPtr offset);
+private static extern System.Int32 enesim_text_buffer_string_insert(System.IntPtr selfRaw, System.String _string, System.Int32 length, System.IntPtr offset);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_text_buffer_string_delete(System.IntPtr self, System.Int32 length, System.IntPtr offset);
+private static extern System.Int32 enesim_text_buffer_string_delete(System.IntPtr selfRaw, System.Int32 length, System.IntPtr offset);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_text_buffer_string_length(System.IntPtr self);
+private static extern System.Int32 enesim_text_buffer_string_length(System.IntPtr selfRaw);
 ~Buffer() { Dispose(false); }
         
         protected Buffer() {
@@ -5286,17 +5286,17 @@ private static extern System.Int32 enesim_text_buffer_string_length(System.IntPt
         public class Smart : Buffer {
             
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_text_buffer_smart_new(System.IntPtr thiz);
+private static extern System.IntPtr enesim_text_buffer_smart_new(System.IntPtr thizRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_text_buffer_smart_real_get(System.IntPtr self);
+private static extern System.IntPtr enesim_text_buffer_smart_real_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_text_buffer_smart_real_set(System.IntPtr self, System.IntPtr real);
+private static extern void enesim_text_buffer_smart_real_set(System.IntPtr selfRaw, System.IntPtr realRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_text_buffer_smart_dirty(System.IntPtr self);
+private static extern void enesim_text_buffer_smart_dirty(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_text_buffer_smart_clear(System.IntPtr self);
+private static extern void enesim_text_buffer_smart_clear(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_text_buffer_smart_is_dirty(System.IntPtr self);
+private static extern System.Boolean enesim_text_buffer_smart_is_dirty(System.IntPtr selfRaw);
             
             protected internal Smart(System.IntPtr i, bool owned) : 
                     base(i, owned) {
@@ -5369,17 +5369,17 @@ private static extern System.IntPtr enesim_text_buffer_simple_new(System.Int32 i
         private bool disposed;
         
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_text_font_new_description_from(System.IntPtr e, System.String description, System.Int32 size);
+private static extern System.IntPtr enesim_text_font_new_description_from(System.IntPtr eRaw, System.String description, System.Int32 size);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_text_font_new_file_from(System.IntPtr e, System.String file, System.Int32 index, System.Int32 size);
+private static extern System.IntPtr enesim_text_font_new_file_from(System.IntPtr eRaw, System.String file, System.Int32 index, System.Int32 size);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_text_font_ref(System.IntPtr self);
+private static extern System.IntPtr enesim_text_font_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_text_font_unref(System.IntPtr self);
+private static extern void enesim_text_font_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_text_font_max_ascent_get(System.IntPtr self);
+private static extern System.Int32 enesim_text_font_max_ascent_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_text_font_max_descent_get(System.IntPtr self);
+private static extern System.Int32 enesim_text_font_max_descent_get(System.IntPtr selfRaw);
 ~Font() { Dispose(false); }
         
         protected internal Font(System.IntPtr i, bool owned) {
@@ -5460,9 +5460,9 @@ private static extern System.IntPtr enesim_text_engine_default_get();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_text_engine_freetype_get();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_text_engine_ref(System.IntPtr self);
+private static extern System.IntPtr enesim_text_engine_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_text_engine_unref(System.IntPtr self);
+private static extern void enesim_text_engine_unref(System.IntPtr selfRaw);
 ~Engine() { Dispose(false); }
         
         protected Engine() {

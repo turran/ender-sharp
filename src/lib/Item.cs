@@ -228,6 +228,12 @@ namespace Ender
 			return typeof(IntPtr).ToString();
 		}
 
+
+		public virtual string UnmanagedName(string name)
+		{
+			return name;
+		}
+
 		public virtual CodeExpression Construct(Generator generator,
 				string from, ArgDirection direction, ItemTransfer transfer)
 		{

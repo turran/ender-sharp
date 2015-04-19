@@ -125,11 +125,18 @@ namespace Ender
 			}
 		}
 
+		// FullName
 		public override string ManagedType(Generator generator)
 		{
 			return generator.ConvertFullName(Name);
 		}
 
+		public override string UnmanagedName(string name)
+		{
+			return name + "Raw";
+		}
+
+		// new FullName(from, false);
 		public override CodeExpression Construct(Generator generator,
 				string from, ArgDirection direction, ItemTransfer transfer)
 		{

@@ -44,6 +44,12 @@ namespace Ender
 			this.skip = skip;
 		}
 
+		public CodeDomProvider Provider {
+			get {
+				return provider;
+			}
+		}
+
 		public string ConvertFullName(string name)
 		{
 			string[] values = name.Split('.');
@@ -202,7 +208,7 @@ namespace Ender
 			// For structs, the out is irrelevant
 			if (direction == ArgDirection.OUT && i.Type != ItemType.STRUCT)
 				ret = "out " + ret;
-			ret += " " + provider.CreateValidIdentifier(name);
+			ret += " " + provider.CreateValidIdentifier(i.UnmanagedName(name));
 			return ret;
 		}
 

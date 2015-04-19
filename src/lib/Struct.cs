@@ -126,6 +126,12 @@ namespace Ender
 			}
 			return csc;
 		}
+
+		public override string UnmanagedName(string name)
+		{
+			return name + "Raw";
+		}
+
 		#endregion
 	}
 }
