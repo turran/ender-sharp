@@ -73,6 +73,19 @@ EAPI int ender_item_function_throw_position_get(Ender_Item *i);
 				return ender_item_function_flags_get(raw);
 			}
 		}
+
+		#region Item interface
+		public override string UnmanagedType(Generator generator,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			return generator.ConvertFullName(Name) + "Internal";
+		}
+
+		public override string UnmanagedName(string name)
+		{
+			return name;
+		}
+		#endregion
 	}
 }
 

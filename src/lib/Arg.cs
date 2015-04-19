@@ -67,5 +67,21 @@ namespace Ender
 				return ender_item_arg_transfer_get(raw);
 			}
 		}
+
+		public string GeneratePinvoke(Generator generator) {
+			Item i = ArgType;
+
+			if (i == null)
+			{
+				return "IntPtr " + Name;
+			}
+
+			string ret = i.UnmanagedType(generator, Direction, Transfer);
+			// For structs, the out is irrelevant
+			if (Direction == ArgDirection.OUT && i.Type != ItemType.STRUCT)
+				ret = "out " + ret;
+			ret += " " + generator.Provider.CreateValidIdentifier(i.UnmanagedName(Name));
+			return ret;
+		}
 	}
 }

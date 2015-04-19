@@ -174,58 +174,6 @@ namespace Ender
 			return GenerateRetPinvokeFull(i, arg.Name, arg.Direction, arg.Transfer);
 		}
 
-		private string GenerateArgPinvokeFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
-		{
-			string ret = null;
-
-			switch (i.Type)
-			{
-				// Impossible cases
-				case ItemType.INVALID:
-				case ItemType.ATTR:
-				case ItemType.ARG:
-					ret = null;
-					break;
-				// Basic case
-				case ItemType.OBJECT:
-				case ItemType.STRUCT:
-				case ItemType.BASIC:
-				case ItemType.ENUM:
-				case ItemType.DEF:
-					ret = i.UnmanagedType(this, direction, transfer);
-					break;
-				case ItemType.FUNCTION:
-					ret = ConvertFullName(i.Name) + "Internal";
-					break;
-				// TODO same as basic?
-				case ItemType.CONSTANT:
-					ret = null;
-					break;
-				default:
-					ret = null;
-					break;
-			}
-			// For structs, the out is irrelevant
-			if (direction == ArgDirection.OUT && i.Type != ItemType.STRUCT)
-				ret = "out " + ret;
-			ret += " " + provider.CreateValidIdentifier(i.UnmanagedName(name));
-			return ret;
-		}
-
-		private string GenerateArgPinvoke(Arg arg)
-		{
-			if (arg == null)
-				return null;
-
-			Item i = arg.ArgType;
-			if (i == null)
-			{
-				Console.WriteLine("[ERR] Arg '" + arg.Name + "' without a type?");
-				return "IntPtr " + arg.Name;
-			}
-			return GenerateArgPinvokeFull(i, arg.Name, arg.Direction, arg.Transfer);
-		}
-
 		private string GenerateNamePinvoke(Function f)
 		{
 			Item parent = f.Parent;
@@ -263,7 +211,8 @@ namespace Ender
 			// Generate each arg string
 			for (uint i = 0; i < args.Count; i++)
 			{
-				argsString[i] = GenerateArgPinvoke((Arg)args.Nth(i));
+				Arg a = (Arg)args.Nth(i);
+				argsString[i] = a.GeneratePinvoke(this);
 			}
 			ret = String.Join(", ", argsString);
 			return ret;
