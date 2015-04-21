@@ -217,6 +217,20 @@ namespace Ender
 			return null;
 		}
 
+		public virtual CodeStatementCollection UnmanagedPreStatements(Generator generator,
+				string varName, ArgDirection direction,
+				ItemTransfer transfer)
+		{
+			return null;
+		}
+
+		public virtual CodeStatementCollection UnmanagedPostStatements(Generator generator,
+				string varName, ArgDirection direction,
+				ItemTransfer transfer)
+		{
+			return null;
+		}
+
 		public virtual string ManagedType(Generator generator)
 		{
 			return typeof(IntPtr).ToString();

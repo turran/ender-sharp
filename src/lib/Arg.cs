@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.CodeDom;
 
 namespace Ender
 {
@@ -68,11 +69,13 @@ namespace Ender
 			}
 		}
 
-		public string GeneratePinvoke(Generator generator) {
+		public string GeneratePinvoke(Generator generator)
+		{
 			Item i = ArgType;
 
 			if (i == null)
 			{
+				Console.WriteLine("[WRN] Arg '" + Name + "' without a type?");
 				return "IntPtr " + Name;
 			}
 
@@ -82,6 +85,31 @@ namespace Ender
 				ret = "out " + ret;
 			ret += " " + generator.Provider.CreateValidIdentifier(i.UnmanagedName(Name));
 			return ret;
+		}
+
+		public string GenerateRetPinvoke(Generator generator)
+		{
+			Item i = ArgType;
+			if (i == null)
+			{
+				Console.WriteLine("[WRN] Arg '" + Name + "' without a type?");
+				return "IntPtr";
+			}
+
+			string ret = i.UnmanagedType(generator, Direction, Transfer);
+			return ret;
+		}
+
+		public CodeTypeReference GenerateRet(Generator generator)
+		{
+			Item i = ArgType;
+			if (i == null)
+			{
+				Console.WriteLine("[ERR] Arg '" + Name + "' without a type?");
+				return new CodeTypeReference("System.IntPtr");
+			}
+
+			return new CodeTypeReference(i.ManagedType(generator));
 		}
 	}
 }

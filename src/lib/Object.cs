@@ -125,6 +125,34 @@ namespace Ender
 			}
 		}
 
+		public override CodeStatementCollection UnmanagedPreStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			CodeStatementCollection csc = new CodeStatementCollection();
+
+			csc.Add(new CodeVariableDeclarationStatement(ManagedType(generator), varName));
+			if (direction == ArgDirection.IN)
+			{
+				string rawName = varName + "Raw"; 
+				CodeStatement cs = new CodeConditionStatement(
+						new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(rawName),
+							CodeBinaryOperatorType.IdentityEquality,
+							new CodeTypeReferenceExpression("IntPtr.Zero")),
+								new CodeStatement[] {
+									new CodeAssignStatement(new CodeVariableReferenceExpression(varName),
+									new CodePrimitiveExpression(null))
+								},
+								new CodeStatement[] {
+									new CodeAssignStatement(new CodeVariableReferenceExpression(varName),
+									Construct(generator, rawName, direction, transfer))
+								}
+						);
+				csc.Add(cs);
+			}
+			return csc;
+		}
+
 		// FullName
 		public override string ManagedType(Generator generator)
 		{

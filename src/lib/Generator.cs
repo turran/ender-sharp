@@ -50,6 +50,12 @@ namespace Ender
 			}
 		}
 
+		public Lib Lib {
+			get {
+				return lib;
+			}
+		}
+
 		public string ConvertFullName(string name)
 		{
 			string[] values = name.Split('.');
@@ -132,92 +138,6 @@ namespace Ender
 			return parent;
 		}
 
-		private string GenerateRetPinvokeFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
-		{
-			switch (i.Type)
-			{
-				// Impossible cases
-				case ItemType.INVALID:
-				case ItemType.ATTR:
-				case ItemType.ARG:
-					return null;
-				// Basic cases
-				case ItemType.STRUCT:
-				case ItemType.OBJECT:
-				case ItemType.DEF:
-				case ItemType.BASIC:
-				case ItemType.ENUM:
-					return i.UnmanagedType(this, direction, transfer);
-				// TODO how to handle a function ptr?
-				case ItemType.FUNCTION:
-					return "IntPtr";
-				// TODO same as basic?
-				case ItemType.CONSTANT:
-					return "IntPtr";
-				default:
-					return null;
-			}	
-		}
-
-		private string GenerateRetPinvoke(Arg arg)
-		{
-			if (arg == null)
-				return "void";
-
-			Item i = arg.ArgType;
-			if (i == null)
-			{
-				Console.WriteLine("[WRN] Arg '" + arg.Name + "' without a type?");
-				return "IntPtr";
-			}
-
-			return GenerateRetPinvokeFull(i, arg.Name, arg.Direction, arg.Transfer);
-		}
-
-		private string GenerateNamePinvoke(Function f)
-		{
-			Item parent = f.Parent;
-			if (parent == null)
-			{
-				// TODO use the correct replacement to support case/notation
-				return f.Name.Replace(".", "_");
-			}
-			else
-			{
-				string fName;
-				// TODO use the correct replacement to support case/notation
-				// in case the parent is an attribute, we will have another parent
-				if (parent.Type == ItemType.ATTR)
-				{
-					fName = parent.Parent.Name.Replace(".", "_") + "_" + parent.Name + "_" + f.Identifier;
-				}
-				else
-				{
-					fName = parent.Namespace.Replace(".", "_") + "_" + parent.Identifier + "_" + f.Identifier;
-				}
-				return fName;
-			}
-		}
-
-		private string GenerateArgsPinvoke(Function f)
-		{
-			string ret;
-			List args = f.Args;
-
-			if (args == null)
-				return null;
-
-			string[] argsString = new string[args.Count];
-			// Generate each arg string
-			for (uint i = 0; i < args.Count; i++)
-			{
-				Arg a = (Arg)args.Nth(i);
-				argsString[i] = a.GeneratePinvoke(this);
-			}
-			ret = String.Join(", ", argsString);
-			return ret;
-		}
-
 		private void GenerateDisposable(CodeTypeDeclaration co, Function unrefFunc)
 		{
 			if (provider.Supports(GeneratorSupport.DeclareInterfaces))
@@ -243,7 +163,7 @@ namespace Ender
 						new CodeStatement[] {},
 						new CodeStatement[] {
 							// unref(raw)
-							new CodeExpressionStatement(new CodeMethodInvokeExpression(null, GenerateNamePinvoke(unrefFunc), new CodeVariableReferenceExpression("raw"))),
+							new CodeExpressionStatement(new CodeMethodInvokeExpression(null, unrefFunc.GeneratePinvokeName(this), new CodeVariableReferenceExpression("raw"))),
 							// raw = IntPtr.Zero
 							new CodeAssignStatement(new CodeVariableReferenceExpression("raw"), new CodeTypeReferenceExpression("IntPtr.Zero")),
 							// disposed = false
@@ -258,35 +178,9 @@ namespace Ender
 			else
 			{
 				// make the destructor call directly the unref
-				CodeSnippetTypeMember ext = new CodeSnippetTypeMember("~" + co.Name + "() { " + GenerateNamePinvoke(unrefFunc) + "(); }");
+				CodeSnippetTypeMember ext = new CodeSnippetTypeMember("~" + co.Name + "() { " + unrefFunc.GeneratePinvokeName(this) + "(); }");
 				co.Members.Add(ext);
 			}
-		}
-
-		private CodeSnippetTypeMember GeneratePinvoke(Function f)
-		{
-			string pinvoke = null;
-
-			// Handle the return value
-			string retString = GenerateRetPinvoke(f.Ret);
-			// Handle the args
-			string argsString = GenerateArgsPinvoke(f);
-			// For callbacks we need to generate a delegate using the C form (pinvoke)
-			// We just change the name here
-			if ((f.Flags & FunctionFlag.CALLBACK) != FunctionFlag.CALLBACK)
-			{
-				// Handle the function name
-				string fName = GenerateNamePinvoke(f);
-				pinvoke += string.Format("[DllImport(\"{0}.dll\", CallingConvention=CallingConvention.Cdecl)]", lib.Name);
-				pinvoke += string.Format("\nprivate static extern {0} {1}({2});", retString, fName, argsString);
-			}
-			else
-			{
-				string fName = ConvertName(f.Identifier) + "Internal";
-				pinvoke += string.Format("\ninternal delegate {0} {1}({2});", retString, fName, argsString);
-			}
-			CodeSnippetTypeMember ext = new CodeSnippetTypeMember(pinvoke);
-			return ext;
 		}
 
 		private CodeTypeReference GenerateBasic(Basic b)
@@ -422,103 +316,6 @@ namespace Ender
 			return GenerateArgPostStatementFull(i, arg.Name, arg.Direction, arg.Transfer);
 		}
 
-		// bool ret;
-		// Enesim.Renderer rSharp = new Enesim.Renderer(r, true);
-          	// ret = cb(rSharp, data);
-		// return ret;
-		private CodeStatementCollection GenerateCallbackBody(Function f, string cbName)
-		{
-			CodeStatementCollection csc = new CodeStatementCollection();
-			List args = f.Args;
-			// Now the pre return statements
-			if (args != null)
-			{
-				foreach (Arg a in args)
-				{
-					// Add any pre statement we might need
-					CodeStatementCollection cs = GeneratePinvokeArgPreStatement(a);
-					if (cs != null)
-						csc.AddRange(cs);
-				}
-			}
-
-			// Call the real callback
-			// We for sure call the pinvoke function
-			CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
-			ci.Method = new CodeMethodReferenceExpression(null, cbName);
-
-			// Now generate the cb args
-			if (args != null)
-			{
-				foreach (Arg a in args)
-				{
-					// Add the expression to the invoke function
-					CodeExpression ce = GeneratePinvokeArgExpression(a);
-					if (ce != null)
-						ci.Parameters.Add(ce);
-				}
-			}
-
-			// Now the return value prototype
-			CodeTypeReference ret = GenerateRet(f.Ret);
-			if (ret != null)
-			{
-				CodeVariableDeclarationStatement cvs;
-				// Add the return value
-				Item argType = f.Ret.ArgType;
-				string retType = argType.UnmanagedType(this, f.Ret.Direction, f.Ret.Transfer);
-				cvs = new CodeVariableDeclarationStatement(retType, "retSharp", ci);
-				csc.Add(cvs);
-			}
-			else
-			{
-				// Just call the method
-				CodeStatement cs = new CodeExpressionStatement(ci);
-				csc.Add(cs);
-			}
-
-			// Now the post statements
-			if (args != null)
-			{
-				foreach (Arg a in args)
-				{
-					// Add any pre statement we might need
-					CodeStatementCollection cs = GenerateArgPostStatement(a);
-					if (cs != null)
-						csc.AddRange(cs);
-				}
-			}
-
-			// Finally the return value
-			if (ret != null)
-			{
-				CodeStatement cs = new CodeMethodReturnStatement(new CodeVariableReferenceExpression("retSharp"));
-				csc.Add(cs);
-			}
-
-			return csc;
-
-		}
-
-		// Create an internal delegate
-		private CodeStatementCollection GenerateArgPreStatementFunction(Function f, string argName)
-		{
-			// Generate the args of the function, this function differes from 
-			string argsString = GenerateArgsPinvoke(f);
-			StringWriter bodyWriter = new StringWriter();
-			CodeStatementCollection csc = GenerateCallbackBody(f, argName);
-			foreach (CodeStatement cs in csc) {
-				provider.GenerateCodeFromStatement(cs, bodyWriter, new CodeGeneratorOptions());
-			}
-			string delegateString = string.Format("\n{0} {1} = ({2}) => {{\n{3}\n}};",
-					ConvertFullName(f.Name) + "Internal", argName + "Internal", argsString,
-					bodyWriter.ToString());
-
-			csc = new CodeStatementCollection();
-			csc.Add(new CodeSnippetStatement(delegateString));
-			return csc;
-		}
-
 		// The statements needed to convert an arg from C# to Pinvoke
 		private CodeStatementCollection GenerateArgPreStatementFull(Item i, string iName, string argName, ArgDirection direction, ItemTransfer transfer)
 		{
@@ -527,10 +324,8 @@ namespace Ender
 				case ItemType.DEF:
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
-					return i.ManagedPreStatements(this, argName, direction, transfer);
-				// For function callbacks, we create a delegate
 				case ItemType.FUNCTION:
-					return GenerateArgPreStatementFunction((Function)i, argName);
+					return i.ManagedPreStatements(this, argName, direction, transfer);
 				default:
 					return null;
 			}
@@ -568,32 +363,6 @@ namespace Ender
 				break;
 			}
 			return ret;
-		}
-
-		private CodeStatementCollection GeneratePinvokeArgPreStatement(Arg arg)
-		{
-			Item i = arg.ArgType;
-
-			if (i == null)
-				return null;
-
-			CodeStatementCollection csc = new CodeStatementCollection();
-			switch (i.Type)
-			{
-				case ItemType.OBJECT:
-					// Call the constructor
-					// identifier nameSharp;
-					csc.Add(new CodeVariableDeclarationStatement(new CodeTypeReference(ConvertName(i.Identifier)), arg.Name + "Sharp"));
-					// nameSharp = new identifier(arg.Name, false/true);
-					csc.Add(new CodeAssignStatement(new CodeVariableReferenceExpression(arg.Name + "Sharp"),
-							new CodeObjectCreateExpression(new CodeTypeReference(ConvertName(i.Identifier)),
-							new CodeVariableReferenceExpression(arg.Name),
-							new CodePrimitiveExpression(true))));
-					break;
-				default:
-					return null;
-			}
-			return csc;
 		}
 
 		// The expression to pass into the Pinvoke method for this arg
@@ -781,21 +550,6 @@ namespace Ender
 			return ret;
 		}
 
-		private CodeTypeReference GenerateRet(Arg arg)
-		{
-			if (arg == null)
-				return null;
-
-			Item i = arg.ArgType;
-			if (i == null)
-			{
-				Console.WriteLine("[ERR] Arg '" + arg.Name + "' without a type?");
-				return new CodeTypeReference("System.IntPtr");
-			}
-
-			return new CodeTypeReference(i.ManagedType(this));
-		}
-
 		//    int ret;
 		//    ret = my_method(i1, s2);
 		//    return ret;
@@ -831,7 +585,7 @@ namespace Ender
 
 			// We for sure call the pinvoke function
 			CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
-			ci.Method = new CodeMethodReferenceExpression(null, GenerateNamePinvoke(f));
+			ci.Method = new CodeMethodReferenceExpression(null, f.GeneratePinvokeName(this));
 
 			if (skipFirst)
 			{
@@ -860,7 +614,7 @@ namespace Ender
 			}
 
 			// Now the return value prototype
-			CodeTypeReference ret = GenerateRet(f.Ret);
+			CodeTypeReference ret = f.GenerateRet(this);
 			if (ret != null)
 			{
 				CodeVariableDeclarationStatement cvs;
@@ -993,7 +747,7 @@ namespace Ender
 			}
 
 			// Now the return value prototype
-			CodeTypeReference ret = GenerateRet(f.Ret);
+			CodeTypeReference ret = f.GenerateRet(this);
 			if (ret != null)
 			{
 				// Do not set a return value on ctors
@@ -1168,7 +922,7 @@ namespace Ender
 					new CodeTypeReferenceExpression("Marshal"), "StructureToPtr", new CodeExpression[] {
 						new CodeVariableReferenceExpression("rawStruct"),
 						new CodeVariableReferenceExpression("raw"),
-						new CodePrimitiveExpression("false")
+						new CodePrimitiveExpression(false)
 						});
 			cm.Statements.Add(cms);
 			cm.Statements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("raw")));
@@ -1298,7 +1052,7 @@ namespace Ender
 				cm.Statements.Add(as1);
 				// if (owned) ref(i)
 				CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
-				ci.Method = new CodeMethodReferenceExpression(null, GenerateNamePinvoke(refFunc));
+				ci.Method = new CodeMethodReferenceExpression(null, refFunc.GeneratePinvokeName(this));
 				ci.Parameters.Add(new CodeVariableReferenceExpression("i"));
 				CodeConditionStatement cs = new CodeConditionStatement(new CodeVariableReferenceExpression("owned"),
 						new CodeExpressionStatement(ci));
@@ -1496,7 +1250,7 @@ namespace Ender
 				foreach (Function f in funcs)
 				{
 					Console.WriteLine("Processing PInvoke function " + f.Name);
-					co.Members.Add(GeneratePinvoke(f));
+					co.Members.Add(f.GeneratePinvoke(this));
 				}
 			}
 
@@ -1603,7 +1357,7 @@ namespace Ender
 						continue;
 					}
 					Console.WriteLine("Processing PInvoke function " + f.Name);
-					co.Members.Add(GeneratePinvoke(f));
+					co.Members.Add(f.GeneratePinvoke(this));
 				}
 			}
 
@@ -1619,14 +1373,14 @@ namespace Ender
 					if (f != null)
 					{
 						Console.WriteLine("Processing Getter PInvoke function " + f.Name);
-						co.Members.Add(GeneratePinvoke(f));
+						co.Members.Add(f.GeneratePinvoke(this));
 					}
 
 					f = a.Setter;
 					if (f != null)
 					{
 						Console.WriteLine("Processing Setter PInvoke function " + f.Name);
-						co.Members.Add(GeneratePinvoke(f));
+						co.Members.Add(f.GeneratePinvoke(this));
 					}
 				}
 			}
@@ -1796,7 +1550,7 @@ namespace Ender
 				{
 					CodeSnippetTypeMember pinvoke = null;
 
-					pinvoke = GeneratePinvoke(f);
+					pinvoke = f.GeneratePinvoke(this);
 
 					// For functions on namespace add the Main
 					if (parent.GetType() == typeof(CodeNamespace))
