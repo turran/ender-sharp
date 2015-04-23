@@ -137,6 +137,12 @@ namespace Ender
 				ArgDirection direction, ItemTransfer transfer)
 		{
 			CodeStatementCollection csc = new CodeStatementCollection();
+			ItemTransfer invTransfer;
+
+			if (transfer == ItemTransfer.FULL)
+				invTransfer = ItemTransfer.NONE;
+			else
+				invTransfer = ItemTransfer.FULL;
 
 			csc.Add(new CodeVariableDeclarationStatement(ManagedType(generator), varName));
 			if (direction == ArgDirection.IN)
@@ -152,7 +158,7 @@ namespace Ender
 								},
 								new CodeStatement[] {
 									new CodeAssignStatement(new CodeVariableReferenceExpression(varName),
-									Construct(generator, rawName, direction, transfer))
+									Construct(generator, rawName, direction, invTransfer))
 								}
 						);
 				csc.Add(cs);
@@ -171,16 +177,32 @@ namespace Ender
 			return name + "Raw";
 		}
 
+
+		//      |      in    |    out    |
+		//      |   F  |  N  |  F  |  N  |
+		// func |   R  |  -  |  -  |  R  |
+		// cb   |   -  |  R  |  R  |  -  |
 		// new FullName(from, false);
 		public override CodeExpression Construct(Generator generator,
 				string from, ArgDirection direction, ItemTransfer transfer)
 		{
-			bool incRef;
+			bool incRef = false;
 
-			if (transfer == ItemTransfer.FULL)
-				incRef = false;
-			else
-				incRef = true;
+
+			if (direction == ArgDirection.IN)
+			{
+				if (transfer == ItemTransfer.FULL)
+					incRef = true;
+				else
+					incRef = false;
+			}
+			else if (direction == ArgDirection.OUT)
+			{
+				if (transfer == ItemTransfer.FULL)
+					incRef = false;
+				else
+					incRef = true;
+			}
 			return new CodeObjectCreateExpression(ManagedType(generator),
 					new CodeExpression[] {
 						new CodeVariableReferenceExpression(from),
