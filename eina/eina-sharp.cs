@@ -17,16 +17,73 @@ namespace Eina {
     
     public class Rectangle {
         
-        protected IntPtr raw;
+        private RectangleStruct rawStruct;
         
-        public Rectangle() {
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(RectangleStruct)));
+        public IntPtr Raw {
+            get {
+                System.IntPtr raw;
+                raw = CreateRaw();
+                Marshal.StructureToPtr(rawStruct, raw, false);
+                return raw;
+            }
+            set {
+                rawStruct = ((RectangleStruct)(Marshal.PtrToStructure(value, typeof(RectangleStruct))));
+                DestroyRaw(value);
+            }
         }
         
-        public System.IntPtr Raw {
+        public int X {
             get {
-                return this.raw;
+                int ret;
+                ret = this.rawStruct.x;
+                return ret;
             }
+            set {
+                this.rawStruct.x = value;
+            }
+        }
+        
+        public int Y {
+            get {
+                int ret;
+                ret = this.rawStruct.y;
+                return ret;
+            }
+            set {
+                this.rawStruct.y = value;
+            }
+        }
+        
+        public int W {
+            get {
+                int ret;
+                ret = this.rawStruct.w;
+                return ret;
+            }
+            set {
+                this.rawStruct.w = value;
+            }
+        }
+        
+        public int H {
+            get {
+                int ret;
+                ret = this.rawStruct.h;
+                return ret;
+            }
+            set {
+                this.rawStruct.h = value;
+            }
+        }
+        
+        public static System.IntPtr CreateRaw() {
+            System.IntPtr raw;
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(RectangleStruct)));
+            return raw;
+        }
+        
+        public static void DestroyRaw(System.IntPtr raw) {
+            Marshal.FreeHGlobal(raw);
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -60,7 +117,7 @@ namespace Eina {
             return new F16p16(v);
         }
         
-        public static   implicit operator int(F16p16 v) {
+        public static   implicit operator System.Int32(F16p16 v) {
             return v.value;
         }
     }
@@ -83,7 +140,7 @@ namespace Eina {
             return new Error(v);
         }
         
-        public static   implicit operator int(Error v) {
+        public static   implicit operator System.Int32(Error v) {
             return v.value;
         }
     }

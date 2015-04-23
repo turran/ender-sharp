@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.CodeDom;
 
 namespace Ender
 {
@@ -9,6 +10,8 @@ namespace Ender
 		/* ender_item_object.h */
 		[DllImport("libender.dll")]
 		static extern IntPtr ender_item_enum_values_get(IntPtr i);
+		[DllImport("libender.dll")]
+		static extern IntPtr ender_item_enum_functions_get(IntPtr i);
 
 		internal Enum()
 		{
@@ -34,20 +37,37 @@ namespace Ender
 			}
 		}
 
+		public List Functions
+		{
+			get {
+				IntPtr l = ender_item_enum_functions_get(raw);
+				if (l == IntPtr.Zero)
+					return null;
+
+				List list = new List(l, typeof(Function), true, true);
+				return list;
+			}
+		}
+
 		#region Item interface
 		public override string ManagedType(Generator generator)
 		{
-			// TODO if the created object is actually an enum (it can be a class in
-			// case it has methods) use it, otherwise the inner enum
-			return generator.ConvertFullName(Name) + "Enum";
+			List funcs = Functions;
+			string ret = generator.ConvertFullName(Name) + "Enum";
+			if (funcs != null)
+				ret += ".Enum";
+			return ret;
 		}
 
 		public override string UnmanagedType(Generator generator,
 				ArgDirection direction, ItemTransfer transfer)
 		{
-			// TODO if the created object is actually an enum (it can be a class in
-			// case it has methods) use it, otherwise the inner enum
-			return generator.ConvertFullName(Name) + "Enum";
+			return ManagedType(generator);
+		}
+
+		public override CodeObject Generate(Generator generator)
+		{
+			return null;
 		}
 		#endregion
 	}

@@ -65,12 +65,18 @@ namespace Ender
 				ArgDirection direction, ItemTransfer transfer)
 		{
 			Item i = FinalDefType;
-			// Can not convert implicitly for out parameters
-			if (i.Type == ItemType.BASIC && direction == ArgDirection.OUT)
+			if (i.Type == ItemType.BASIC)
 			{
 				string rawName = varName + "Raw";
 				CodeStatementCollection csc = new CodeStatementCollection();
 				csc.Add(new CodeVariableDeclarationStatement(i.ManagedType(generator), rawName));
+
+				// Do the implicit conversion for input params rawName = varName
+				if (direction == ArgDirection.IN)
+				{
+					csc.Add(new CodeAssignStatement(new CodeVariableReferenceExpression(rawName),
+						new CodeVariableReferenceExpression(varName)));
+				}
 				return csc;
 			}
 			else
@@ -98,6 +104,23 @@ namespace Ender
 			}
 		}
 
+		public override CodeStatementCollection UnmanagedPreStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			Item i = FinalDefType;
+			if (i.Type == ItemType.BASIC && direction == ArgDirection.IN)
+			{
+				string rawName = varName + "Raw";
+				CodeStatementCollection csc = new CodeStatementCollection();
+				csc.Add(new CodeVariableDeclarationStatement(ManagedType(generator), varName));
+				csc.Add(new CodeAssignStatement(new CodeVariableReferenceExpression(varName),
+					new CodeVariableReferenceExpression(rawName)));
+				return csc;
+			}
+			return null;
+		}
+
 		public override string ManagedType(Generator generator)
 		{
 			return generator.ConvertFullName(Name);
@@ -109,6 +132,21 @@ namespace Ender
 			Item i = FinalDefType;
 			return i.UnmanagedType(generator, direction, transfer);
 		}
+
+		public override string UnmanagedName(string name)
+		{
+			Item i = FinalDefType;
+			if (i.Type == ItemType.BASIC)
+			{
+				return name + "Raw";
+			}
+			else
+			{
+				return name;
+			}
+		}
+
+		// new FullName();
 		public override CodeExpression Construct(Generator generator,
 				string from, ArgDirection direction, ItemTransfer transfer)
 		{
@@ -121,7 +159,7 @@ namespace Ender
 			}
 			else
 			{
-				return new CodeVariableReferenceExpression(from);
+				return i.Construct(generator, from, direction, transfer);
 			}
 		}
 		#endregion

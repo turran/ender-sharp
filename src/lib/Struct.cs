@@ -71,17 +71,18 @@ namespace Ender
 				ArgDirection direction, ItemTransfer transfer)
 		{
 			CodeStatementCollection csc = new CodeStatementCollection();
+			string rawName = varName + "Raw";
+			csc.Add(new CodeVariableDeclarationStatement(typeof(IntPtr), rawName));
+
 			if (direction == ArgDirection.OUT)
 			{
-				csc.Add(new CodeAssignStatement(
-						new CodeVariableReferenceExpression(varName),
-						new CodeObjectCreateExpression(
-							new CodeTypeReference(generator.ConvertFullName(Name)))));
+				csc.Add(new CodeAssignStatement(new CodeVariableReferenceExpression(rawName),
+					new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(
+						ManagedType(generator)), "CreateRaw")
+					));
 			}
 			else
 			{
-				string rawName = varName + "Raw";
-				csc.Add(new CodeVariableDeclarationStatement(typeof(IntPtr), rawName));
 				// if varName == null varNameRaw = IntPtr.Zero : varNameRaw = varName.Raw
 				CodeStatement cs = new CodeConditionStatement(
 						new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(varName),
@@ -95,6 +96,41 @@ namespace Ender
 								new CodeAssignStatement(new CodeVariableReferenceExpression(rawName),
 									new CodePropertyReferenceExpression(new CodeVariableReferenceExpression(varName), "Raw"))
 							}
+						);
+				csc.Add(cs);
+			}
+			return csc;
+		}
+		// Generate the pre statement in the form:
+		// if ((rRaw == IntPtr.Zero)) {
+		//     r = null;
+		// }
+		// else {
+		//     r = new Enesim.Matrix ();
+		//     r.Raw = rRaw;
+		// }
+		public override CodeStatementCollection UnmanagedPreStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			CodeStatementCollection csc = new CodeStatementCollection();
+
+			csc.Add(new CodeVariableDeclarationStatement(ManagedType(generator), varName));
+			if (direction == ArgDirection.IN)
+			{
+				string rawName = varName + "Raw"; 
+				CodeStatement cs = new CodeConditionStatement(
+						new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(rawName),
+							CodeBinaryOperatorType.IdentityEquality,
+							new CodeTypeReferenceExpression("IntPtr.Zero")),
+								new CodeStatement[] {
+									new CodeAssignStatement(new CodeVariableReferenceExpression(varName),
+									new CodePrimitiveExpression(null))
+								},
+								new CodeStatement[] {
+									new CodeAssignStatement(new CodeVariableReferenceExpression(varName),
+									Construct(generator, rawName, direction, transfer))
+								}
 						);
 				csc.Add(cs);
 			}
@@ -124,12 +160,33 @@ namespace Ender
 						);
 				csc.Add(cs);
 			}
+			else
+			{
+				csc.Add(new CodeAssignStatement(
+						new CodeVariableReferenceExpression(varName),
+						new CodeObjectCreateExpression(
+							new CodeTypeReference(generator.ConvertFullName(Name)))));
+				csc.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(new CodeVariableReferenceExpression(varName), "Raw"), new CodeVariableReferenceExpression(rawName)));
+			}
 			return csc;
+		}
+
+		// FullName
+		public override string ManagedType(Generator generator)
+		{
+			return generator.ConvertFullName(Name);
 		}
 
 		public override string UnmanagedName(string name)
 		{
 			return name + "Raw";
+		}
+
+		// new FullName();
+		public override CodeExpression Construct(Generator generator,
+				string from, ArgDirection direction, ItemTransfer transfer)
+		{
+			return new CodeObjectCreateExpression(ManagedType(generator));
 		}
 
 		#endregion

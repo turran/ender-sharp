@@ -125,6 +125,13 @@ namespace Ender
 			}
 		}
 
+		// Generate the pre statement in the form:
+		// if ((rRaw == IntPtr.Zero)) {
+		//     r = null;
+		// }
+		// else {
+		//     r = new Enesim.Renderer(rRaw, false/true);
+		// }
 		public override CodeStatementCollection UnmanagedPreStatements(
 				Generator generator, string varName,
 				ArgDirection direction, ItemTransfer transfer)
@@ -168,10 +175,16 @@ namespace Ender
 		public override CodeExpression Construct(Generator generator,
 				string from, ArgDirection direction, ItemTransfer transfer)
 		{
+			bool incRef;
+
+			if (transfer == ItemTransfer.FULL)
+				incRef = false;
+			else
+				incRef = true;
 			return new CodeObjectCreateExpression(ManagedType(generator),
 					new CodeExpression[] {
 						new CodeVariableReferenceExpression(from),
-						new CodePrimitiveExpression(false)
+						new CodePrimitiveExpression(incRef)
 					});
 		}
 		#endregion

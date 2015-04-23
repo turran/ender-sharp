@@ -111,5 +111,30 @@ namespace Ender
 
 			return new CodeTypeReference(i.ManagedType(generator));
 		}
+
+		// The expression to pass into the Pinvoke method for this arg
+		public CodeExpression GenerateExpression(Generator generator)
+		{
+			CodeVariableReferenceExpression ret;
+			Item i = ArgType;
+			if (i == null)
+			{
+				Console.WriteLine("[ERR] Invalid arg " + Name);
+				ret = new CodeVariableReferenceExpression();
+				ret.VariableName = generator.Provider.CreateValidIdentifier(Name);
+				if (Direction == ArgDirection.OUT)
+					return new CodeDirectionExpression(FieldDirection.Out, ret);
+				else
+					return ret;
+			}
+			else
+			{
+				ret = new CodeVariableReferenceExpression(i.UnmanagedName(Name));
+				if (Direction == ArgDirection.OUT && i.Type != ItemType.STRUCT)
+					return new CodeDirectionExpression(FieldDirection.Out, ret);
+				else
+					return ret;
+			}
+		}
 	}
 }

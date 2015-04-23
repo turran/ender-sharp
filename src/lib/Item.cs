@@ -253,6 +253,12 @@ namespace Ender
 		{
 			return new CodeVariableReferenceExpression(from);
 		}
+
+		public virtual CodeObject Generate(Generator generator)
+		{
+			return null;
+		}
+
 		#region IDisposable
 		public void Dispose()
 		{

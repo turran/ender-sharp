@@ -28,13 +28,13 @@ namespace Ender
 		static extern IntPtr ender_item_function_ret_get(IntPtr i);
 		[DllImport("libender.dll")]
 		static extern FunctionFlag ender_item_function_flags_get(IntPtr i);
-/*
-EAPI Ender_Item * ender_item_function_args_at(Ender_Item *i, int idx);
-EAPI int ender_item_function_args_count(Ender_Item *i);
-Eina_Bool ender_item_function_call(Ender_Item *i,
-		Ender_Value *args, Ender_Value *retval);
-EAPI int ender_item_function_throw_position_get(Ender_Item *i);
-*/
+		/*
+		EAPI Ender_Item * ender_item_function_args_at(Ender_Item *i, int idx);
+		EAPI int ender_item_function_args_count(Ender_Item *i);
+		Eina_Bool ender_item_function_call(Ender_Item *i,
+				Ender_Value *args, Ender_Value *retval);
+		EAPI int ender_item_function_throw_position_get(Ender_Item *i);
+		*/
 		internal Function()
 		{
 		}
@@ -191,27 +191,27 @@ EAPI int ender_item_function_throw_position_get(Ender_Item *i);
 			ci.Method = new CodeMethodReferenceExpression(null, cbName);
 
 			// Now generate the cb args
-#if foo
 			if (args != null)
 			{
 				foreach (Arg a in args)
 				{
 					// Add the expression to the invoke function
-					CodeExpression ce = GeneratePinvokeArgExpression(a);
+					CodeExpression ce = new CodeVariableReferenceExpression(a.Name);
 					if (ce != null)
 						ci.Parameters.Add(ce);
 				}
 			}
 
 			// Now the return value prototype
-			CodeTypeReference ret = GenerateRet(f.Ret);
+			CodeTypeReference ret = GenerateRet(generator);
 			if (ret != null)
 			{
 				CodeVariableDeclarationStatement cvs;
 				// Add the return value
-				Item argType = f.Ret.ArgType;
-				string retType = argType.UnmanagedType(this, f.Ret.Direction, f.Ret.Transfer);
-				cvs = new CodeVariableDeclarationStatement(retType, "retSharp", ci);
+				Arg argRet = Ret;
+				Item argType = argRet.ArgType;
+				string retType = argType.UnmanagedType(generator, argRet.Direction, argRet.Transfer);
+				cvs = new CodeVariableDeclarationStatement(retType, "retInternal", ci);
 				csc.Add(cvs);
 			}
 			else
@@ -223,10 +223,9 @@ EAPI int ender_item_function_throw_position_get(Ender_Item *i);
 			// Finally the return value
 			if (ret != null)
 			{
-				CodeStatement cs = new CodeMethodReturnStatement(new CodeVariableReferenceExpression("retSharp"));
+				CodeStatement cs = new CodeMethodReturnStatement(new CodeVariableReferenceExpression("retInternal"));
 				csc.Add(cs);
 			}
-#endif
 			return csc;
 		}
 
