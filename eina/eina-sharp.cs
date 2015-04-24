@@ -19,6 +19,13 @@ namespace Eina {
         
         private RectangleStruct rawStruct;
         
+        public Rectangle() {
+        }
+        
+        public Rectangle(System.IntPtr i, bool owned) {
+            rawStruct = ((RectangleStruct)(Marshal.PtrToStructure(i, typeof(RectangleStruct))));
+        }
+        
         public IntPtr Raw {
             get {
                 System.IntPtr raw;

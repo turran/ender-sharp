@@ -764,6 +764,27 @@ namespace Ender
 			// Add the generated type into our hash
 			processed[s.Name] = co;
 
+			// Add a generic constructor
+			CodeConstructor cc = new CodeConstructor();
+			cc.Attributes = MemberAttributes.Public;
+			co.Members.Add(cc);
+
+			// Add a constructor to pass directly the raw
+			cc = new CodeConstructor();
+			cc.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IntPtr), "i"));
+			cc.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "owned"));
+			// Marshal the raw
+			// TODO In case is owned, do a copy
+			cc.Statements.Add(new CodeAssignStatement(new CodeVariableReferenceExpression("rawStruct"),
+					new CodeCastExpression(ConvertName(s.Identifier) + "Struct",
+						new CodeMethodInvokeExpression(new CodeTypeReferenceExpression("Marshal"), "PtrToStructure", new CodeExpression[] {
+							new CodeVariableReferenceExpression("i"),
+							new CodeTypeOfExpression(new CodeTypeReference(ConvertName(s.Identifier) + "Struct"))
+						})
+					)));
+			cc.Attributes = MemberAttributes.Public;
+			co.Members.Add(cc);
+
 			// Add a property to get/set Raw
 			CodeMemberProperty cmprop = new CodeMemberProperty();
 			cmprop.Attributes = MemberAttributes.Public | MemberAttributes.Final;
@@ -969,7 +990,7 @@ namespace Ender
 					cc.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("owned"));
 				}
 				// must be protected
-				cc.Attributes = MemberAttributes.FamilyOrAssembly;
+				cc.Attributes = MemberAttributes.Public;
 				// Invoke the Initialize
 				CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
 				ci.Method = new CodeMethodReferenceExpression(null, "Initialize");

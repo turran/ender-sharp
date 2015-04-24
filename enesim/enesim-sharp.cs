@@ -129,7 +129,7 @@ internal delegate System.Boolean DamageInternal(System.IntPtr rRaw, System.IntPt
         protected Renderer() {
         }
         
-        protected internal Renderer(System.IntPtr i, bool owned) {
+        public Renderer(System.IntPtr i, bool owned) {
             Initialize(i, owned);
         }
         
@@ -231,7 +231,7 @@ internal delegate System.Boolean DamageInternal(System.IntPtr rRaw, System.IntPt
         public Enesim.Renderer Mask {
             get {
                 System.IntPtr ret = enesim_renderer_mask_get(raw);
-                return new Enesim.Renderer(ret, true);
+                return new Enesim.Renderer(ret, false);
             }
             set {
                 Enesim.Renderer mask;
@@ -427,7 +427,7 @@ if ((areaRaw == IntPtr.Zero)) {
     area = null;
 }
 else {
-    area = new Eina.Rectangle();
+    area = new Eina.Rectangle(areaRaw, false);
 }
 bool retInternal = cb(r, area, past, data);
 return retInternal;
@@ -500,7 +500,7 @@ private static extern void enesim_renderer_dispmap_x_channel_set(System.IntPtr s
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_dispmap_y_channel_set(System.IntPtr selfRaw, Enesim.ChannelEnum channel);
             
-            protected internal Dispmap(System.IntPtr i, bool owned) : 
+            public Dispmap(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -639,7 +639,7 @@ private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr sel
             protected Shape() {
             }
             
-            protected internal Shape(System.IntPtr i, bool owned) : 
+            public Shape(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -895,6 +895,13 @@ private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr sel
                 
                 private StrokeDashStruct rawStruct;
                 
+                public StrokeDash() {
+                }
+                
+                public StrokeDash(System.IntPtr i, bool owned) {
+                    rawStruct = ((StrokeDashStruct)(Marshal.PtrToStructure(i, typeof(StrokeDashStruct))));
+                }
+                
                 public IntPtr Raw {
                     get {
                         System.IntPtr raw;
@@ -963,7 +970,7 @@ private static extern void enesim_renderer_figure_polygon_close(System.IntPtr se
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_figure_clear(System.IntPtr selfRaw);
             
-            protected internal Figure(System.IntPtr i, bool owned) : 
+            public Figure(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -1004,7 +1011,7 @@ private static extern void enesim_renderer_gradient_repeat_mode_set(System.IntPt
             protected Gradient() {
             }
             
-            protected internal Gradient(System.IntPtr i, bool owned) : 
+            public Gradient(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -1072,7 +1079,7 @@ private static extern System.Double enesim_renderer_gradient_radial_radius_get(S
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_gradient_radial_radius_set(System.IntPtr selfRaw, System.Double radius);
                 
-                protected internal Radial(System.IntPtr i, bool owned) : 
+                public Radial(System.IntPtr i, bool owned) : 
                         base(i, owned) {
                     Initialize(i, owned);
                 }
@@ -1184,7 +1191,7 @@ private static extern System.Double enesim_renderer_gradient_linear_y1_get(Syste
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_gradient_linear_y1_set(System.IntPtr selfRaw, System.Double y1);
                 
-                protected internal Linear(System.IntPtr i, bool owned) : 
+                public Linear(System.IntPtr i, bool owned) : 
                         base(i, owned) {
                     Initialize(i, owned);
                 }
@@ -1255,6 +1262,13 @@ private static extern void enesim_renderer_gradient_linear_y1_set(System.IntPtr 
                 
                 private StopStruct rawStruct;
                 
+                public Stop() {
+                }
+                
+                public Stop(System.IntPtr i, bool owned) {
+                    rawStruct = ((StopStruct)(Marshal.PtrToStructure(i, typeof(StopStruct))));
+                }
+                
                 public IntPtr Raw {
                     get {
                         System.IntPtr raw;
@@ -1322,7 +1336,7 @@ private static extern System.UInt32 enesim_renderer_background_color_get(System.
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_background_color_set(System.IntPtr selfRaw, System.UInt32 colorRaw);
             
-            protected internal Background(System.IntPtr i, bool owned) : 
+            public Background(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -1376,7 +1390,7 @@ private static extern System.Double enesim_renderer_ellipse_radius_y_get(System.
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_ellipse_radius_y_set(System.IntPtr selfRaw, System.Double rad);
             
-            protected internal Ellipse(System.IntPtr i, bool owned) : 
+            public Ellipse(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -1480,7 +1494,7 @@ private static extern System.Double enesim_renderer_stripes_odd_thickness_get(Sy
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_stripes_odd_thickness_set(System.IntPtr selfRaw, System.Double thickness);
             
-            protected internal Stripes(System.IntPtr i, bool owned) : 
+            public Stripes(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -1507,7 +1521,7 @@ private static extern void enesim_renderer_stripes_odd_thickness_set(System.IntP
             public Enesim.Renderer EvenRenderer {
                 get {
                     System.IntPtr ret = enesim_renderer_stripes_even_renderer_get(raw);
-                    return new Enesim.Renderer(ret, true);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer paint;
@@ -1552,7 +1566,7 @@ private static extern void enesim_renderer_stripes_odd_thickness_set(System.IntP
             public Enesim.Renderer OddRenderer {
                 get {
                     System.IntPtr ret = enesim_renderer_stripes_odd_renderer_get(raw);
-                    return new Enesim.Renderer(ret, true);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer paint;
@@ -1590,7 +1604,7 @@ private static extern System.IntPtr enesim_renderer_path_inner_path_get(System.I
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_path_inner_path_set(System.IntPtr selfRaw, System.IntPtr pathRaw);
             
-            protected internal Path(System.IntPtr i, bool owned) : 
+            public Path(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -1603,7 +1617,7 @@ private static extern void enesim_renderer_path_inner_path_set(System.IntPtr sel
             public Enesim.Path InnerPath {
                 get {
                     System.IntPtr ret = enesim_renderer_path_inner_path_get(raw);
-                    return new Enesim.Path(ret, true);
+                    return new Enesim.Path(ret, false);
                 }
                 set {
                     Enesim.Path path;
@@ -1641,7 +1655,7 @@ private static extern void enesim_renderer_raddist_x_set(System.IntPtr selfRaw, 
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_raddist_y_set(System.IntPtr selfRaw, System.Double oy);
             
-            protected internal Raddist(System.IntPtr i, bool owned) : 
+            public Raddist(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -1740,7 +1754,7 @@ private static extern System.UInt32 enesim_renderer_grid_border_color_get(System
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_grid_border_color_set(System.IntPtr selfRaw, System.UInt32 colorRaw);
             
-            protected internal Grid(System.IntPtr i, bool owned) : 
+            public Grid(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -1842,7 +1856,7 @@ private static extern void enesim_renderer_perlin_xfrequency_set(System.IntPtr s
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_perlin_yfrequency_set(System.IntPtr selfRaw, System.Double freq);
             
-            protected internal Perlin(System.IntPtr i, bool owned) : 
+            public Perlin(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -1920,7 +1934,7 @@ private static extern void enesim_renderer_compound_background_color_set(System.
 
 internal delegate System.Boolean ForeachLayerInternal(System.IntPtr rRaw, System.IntPtr layerRaw, System.IntPtr data);
             
-            protected internal Compound(System.IntPtr i, bool owned) : 
+            public Compound(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -2048,7 +2062,7 @@ private static extern void enesim_renderer_compound_layer_renderer_set(System.In
 private static extern void enesim_renderer_compound_layer_rop_set(System.IntPtr selfRaw, Enesim.RopEnum rop);
 ~Layer() { Dispose(false); }
                 
-                protected internal Layer(System.IntPtr i, bool owned) {
+                public Layer(System.IntPtr i, bool owned) {
                     Initialize(i, owned);
                 }
                 
@@ -2131,7 +2145,7 @@ private static extern System.Int32 enesim_renderer_checker_height_get(System.Int
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_checker_height_set(System.IntPtr selfRaw, System.Int32 height);
             
-            protected internal Checker(System.IntPtr i, bool owned) : 
+            public Checker(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -2219,7 +2233,7 @@ private static extern System.Double enesim_renderer_line_y1_get(System.IntPtr se
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_line_y1_set(System.IntPtr selfRaw, System.Double y1);
             
-            protected internal Line(System.IntPtr i, bool owned) : 
+            public Line(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -2311,7 +2325,7 @@ private static extern System.Double enesim_renderer_blur_radius_y_get(System.Int
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_blur_radius_y_set(System.IntPtr selfRaw, System.Double ry);
             
-            protected internal Blur(System.IntPtr i, bool owned) : 
+            public Blur(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -2324,7 +2338,7 @@ private static extern void enesim_renderer_blur_radius_y_set(System.IntPtr selfR
             public Enesim.Surface SourceSurface {
                 get {
                     System.IntPtr ret = enesim_renderer_blur_source_surface_get(raw);
-                    return new Enesim.Surface(ret, true);
+                    return new Enesim.Surface(ret, false);
                 }
                 set {
                     Enesim.Surface src;
@@ -2343,7 +2357,7 @@ private static extern void enesim_renderer_blur_radius_y_set(System.IntPtr selfR
             public Enesim.Renderer SourceRenderer {
                 get {
                     System.IntPtr ret = enesim_renderer_blur_source_renderer_get(raw);
-                    return new Enesim.Renderer(ret, true);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer sr;
@@ -2464,7 +2478,7 @@ private static extern System.Double enesim_renderer_rectangle_height_get(System.
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_rectangle_height_set(System.IntPtr selfRaw, System.Double h);
             
-            protected internal Rectangle(System.IntPtr i, bool owned) : 
+            public Rectangle(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -2644,7 +2658,7 @@ private static extern System.IntPtr enesim_renderer_image_source_surface_get(Sys
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_image_source_surface_set(System.IntPtr selfRaw, System.IntPtr srcRaw);
             
-            protected internal Image(System.IntPtr i, bool owned) : 
+            public Image(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -2705,7 +2719,7 @@ private static extern void enesim_renderer_image_source_surface_set(System.IntPt
             public Enesim.Surface SourceSurface {
                 get {
                     System.IntPtr ret = enesim_renderer_image_source_surface_get(raw);
-                    return new Enesim.Surface(ret, true);
+                    return new Enesim.Surface(ret, false);
                 }
                 set {
                     Enesim.Surface src;
@@ -2769,7 +2783,7 @@ private static extern Enesim.RepeatModeEnum enesim_renderer_pattern_repeat_mode_
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_pattern_repeat_mode_set(System.IntPtr selfRaw, Enesim.RepeatModeEnum mode);
             
-            protected internal Pattern(System.IntPtr i, bool owned) : 
+            public Pattern(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -2782,7 +2796,7 @@ private static extern void enesim_renderer_pattern_repeat_mode_set(System.IntPtr
             public Enesim.Renderer SourceRenderer {
                 get {
                     System.IntPtr ret = enesim_renderer_pattern_source_renderer_get(raw);
-                    return new Enesim.Renderer(ret, true);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer source;
@@ -2801,7 +2815,7 @@ private static extern void enesim_renderer_pattern_repeat_mode_set(System.IntPtr
             public Enesim.Surface SourceSurface {
                 get {
                     System.IntPtr ret = enesim_renderer_pattern_source_surface_get(raw);
-                    return new Enesim.Surface(ret, true);
+                    return new Enesim.Surface(ret, false);
                 }
             }
             
@@ -2850,7 +2864,7 @@ private static extern System.Double enesim_renderer_circle_radius_get(System.Int
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_circle_radius_set(System.IntPtr selfRaw, System.Double radius);
             
-            protected internal Circle(System.IntPtr i, bool owned) : 
+            public Circle(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -2938,7 +2952,7 @@ private static extern void enesim_renderer_clipper_size_set(System.IntPtr selfRa
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_clipper_size_get(System.IntPtr selfRaw, out System.Int32 w, out System.Int32 h);
             
-            protected internal Clipper(System.IntPtr i, bool owned) : 
+            public Clipper(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -2961,7 +2975,7 @@ private static extern void enesim_renderer_clipper_size_get(System.IntPtr selfRa
             
             public Enesim.Renderer GetClipped() {
                 System.IntPtr ret = enesim_renderer_clipper_clipped_get(raw);
-                return new Enesim.Renderer(ret, true);
+                return new Enesim.Renderer(ret, false);
             }
             
             public void SetX(int x) {
@@ -3034,7 +3048,7 @@ private static extern System.IntPtr enesim_renderer_transition_target_get(System
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_transition_target_set(System.IntPtr selfRaw, System.IntPtr r1Raw);
             
-            protected internal Transition(System.IntPtr i, bool owned) : 
+            public Transition(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -3104,7 +3118,7 @@ private static extern System.IntPtr enesim_renderer_proxy_proxied_get(System.Int
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_proxy_proxied_set(System.IntPtr selfRaw, System.IntPtr proxiedRaw);
             
-            protected internal Proxy(System.IntPtr i, bool owned) : 
+            public Proxy(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -3117,7 +3131,7 @@ private static extern void enesim_renderer_proxy_proxied_set(System.IntPtr selfR
             public Enesim.Renderer Proxied {
                 get {
                     System.IntPtr ret = enesim_renderer_proxy_proxied_get(raw);
-                    return new Enesim.Renderer(ret, true);
+                    return new Enesim.Renderer(ret, false);
                 }
                 set {
                     Enesim.Renderer proxied;
@@ -3143,7 +3157,7 @@ private static extern System.IntPtr enesim_renderer_importer_buffer_get(System.I
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_importer_buffer_set(System.IntPtr selfRaw, System.IntPtr bufferRaw);
             
-            protected internal Importer(System.IntPtr i, bool owned) : 
+            public Importer(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -3156,7 +3170,7 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
             public Enesim.Buffer Buffer {
                 get {
                     System.IntPtr ret = enesim_renderer_importer_buffer_get(raw);
-                    return new Enesim.Buffer(ret, true);
+                    return new Enesim.Buffer(ret, false);
                 }
                 set {
                     Enesim.Buffer buffer;
@@ -3252,7 +3266,7 @@ private static extern Enesim.AplhaHintEnum enesim_buffer_alpha_hint_get(System.I
 
 internal delegate void FreeInternal(System.IntPtr buffer_data, System.IntPtr data);
         
-        protected internal Buffer(System.IntPtr i, bool owned) {
+        public Buffer(System.IntPtr i, bool owned) {
             Initialize(i, owned);
         }
         
@@ -3456,6 +3470,13 @@ free_func(buffer_data, data);
             
             private SwData32bppStruct rawStruct;
             
+            public SwData32bpp() {
+            }
+            
+            public SwData32bpp(System.IntPtr i, bool owned) {
+                rawStruct = ((SwData32bppStruct)(Marshal.PtrToStructure(i, typeof(SwData32bppStruct))));
+            }
+            
             public IntPtr Raw {
                 get {
                     System.IntPtr raw;
@@ -3513,6 +3534,13 @@ free_func(buffer_data, data);
         public class SwData24bpp {
             
             private SwData24bppStruct rawStruct;
+            
+            public SwData24bpp() {
+            }
+            
+            public SwData24bpp(System.IntPtr i, bool owned) {
+                rawStruct = ((SwData24bppStruct)(Marshal.PtrToStructure(i, typeof(SwData24bppStruct))));
+            }
             
             public IntPtr Raw {
                 get {
@@ -3572,6 +3600,13 @@ free_func(buffer_data, data);
             
             private SwDataRgb565Struct rawStruct;
             
+            public SwDataRgb565() {
+            }
+            
+            public SwDataRgb565(System.IntPtr i, bool owned) {
+                rawStruct = ((SwDataRgb565Struct)(Marshal.PtrToStructure(i, typeof(SwDataRgb565Struct))));
+            }
+            
             public IntPtr Raw {
                 get {
                     System.IntPtr raw;
@@ -3630,6 +3665,13 @@ free_func(buffer_data, data);
             
             private SwDataStruct rawStruct;
             
+            public SwData() {
+            }
+            
+            public SwData(System.IntPtr i, bool owned) {
+                rawStruct = ((SwDataStruct)(Marshal.PtrToStructure(i, typeof(SwDataStruct))));
+            }
+            
             public IntPtr Raw {
                 get {
                     System.IntPtr raw;
@@ -3661,6 +3703,13 @@ free_func(buffer_data, data);
         public class SwDataA8 {
             
             private SwDataA8Struct rawStruct;
+            
+            public SwDataA8() {
+            }
+            
+            public SwDataA8(System.IntPtr i, bool owned) {
+                rawStruct = ((SwDataA8Struct)(Marshal.PtrToStructure(i, typeof(SwDataA8Struct))));
+            }
             
             public IntPtr Raw {
                 get {
@@ -4045,7 +4094,7 @@ private static extern void enesim_surface_alpha_hint_set(System.IntPtr selfRaw, 
 private static extern Enesim.AplhaHintEnum enesim_surface_alpha_hint_get(System.IntPtr selfRaw);
 ~Surface() { Dispose(false); }
         
-        protected internal Surface(System.IntPtr i, bool owned) {
+        public Surface(System.IntPtr i, bool owned) {
             Initialize(i, owned);
         }
         
@@ -4233,7 +4282,7 @@ private static extern System.IntPtr enesim_stream_buffer_static_new(System.IntPt
 private static extern System.IntPtr enesim_stream_base64_new(System.IntPtr dRaw);
 ~Stream() { Dispose(false); }
         
-        protected internal Stream(System.IntPtr i, bool owned) {
+        public Stream(System.IntPtr i, bool owned) {
             Initialize(i, owned);
         }
         
@@ -4244,11 +4293,6 @@ private static extern System.IntPtr enesim_stream_base64_new(System.IntPtr dRaw)
         
         public Stream(System.IntPtr buffer, System.IntPtr len) {
             System.IntPtr ret = enesim_stream_buffer_new(buffer, len);
-            Initialize(ret, false);
-        }
-        
-        public Stream(System.IntPtr buffer, System.IntPtr len) {
-            System.IntPtr ret = enesim_stream_buffer_static_new(buffer, len);
             Initialize(ret, false);
         }
         
@@ -4360,7 +4404,7 @@ private static extern void enesim_path_arc_to(System.IntPtr selfRaw, System.Doub
 private static extern void enesim_path_close(System.IntPtr selfRaw);
 ~Path() { Dispose(false); }
         
-        protected internal Path(System.IntPtr i, bool owned) {
+        public Path(System.IntPtr i, bool owned) {
             Initialize(i, owned);
         }
         
@@ -4451,6 +4495,13 @@ private static extern void enesim_path_close(System.IntPtr selfRaw);
             
             private CommandStruct rawStruct;
             
+            public Command() {
+            }
+            
+            public Command(System.IntPtr i, bool owned) {
+                rawStruct = ((CommandStruct)(Marshal.PtrToStructure(i, typeof(CommandStruct))));
+            }
+            
             public IntPtr Raw {
                 get {
                     System.IntPtr raw;
@@ -4469,7 +4520,7 @@ private static extern void enesim_path_close(System.IntPtr selfRaw);
                     Enesim.Path.Command.Definition ret;
                     System.IntPtr retRaw;
                     retRaw = Enesim.Path.Command.Definition.CreateRaw();
-                    return new Enesim.Path.Command.Definition();
+                    return new Enesim.Path.Command.Definition(retRaw, true);
                 }
                 set {
                     System.IntPtr valueRaw;
@@ -4523,6 +4574,13 @@ private static extern void enesim_path_close(System.IntPtr selfRaw);
                 
                 private CloseStruct rawStruct;
                 
+                public Close() {
+                }
+                
+                public Close(System.IntPtr i, bool owned) {
+                    rawStruct = ((CloseStruct)(Marshal.PtrToStructure(i, typeof(CloseStruct))));
+                }
+                
                 public IntPtr Raw {
                     get {
                         System.IntPtr raw;
@@ -4567,6 +4625,13 @@ private static extern void enesim_path_close(System.IntPtr selfRaw);
             public class Definition {
                 
                 private DefinitionStruct rawStruct;
+                
+                public Definition() {
+                }
+                
+                public Definition(System.IntPtr i, bool owned) {
+                    rawStruct = ((DefinitionStruct)(Marshal.PtrToStructure(i, typeof(DefinitionStruct))));
+                }
                 
                 public IntPtr Raw {
                     get {
@@ -4616,7 +4681,7 @@ private static extern void enesim_pool_unref(System.IntPtr selfRaw);
 private static extern System.IntPtr enesim_pool_eina_new(IntPtr mp);
 ~Pool() { Dispose(false); }
         
-        protected internal Pool(System.IntPtr i, bool owned) {
+        public Pool(System.IntPtr i, bool owned) {
             Initialize(i, owned);
         }
         
@@ -4655,7 +4720,7 @@ private static extern System.IntPtr enesim_pool_eina_new(IntPtr mp);
         
         public static Enesim.Pool GetDefault() {
             System.IntPtr ret = enesim_pool_default_get();
-            return new Enesim.Pool(ret, true);
+            return new Enesim.Pool(ret, false);
         }
         
         public void SetDefault() {
@@ -4709,7 +4774,7 @@ private static extern System.Boolean enesim_converter_surface(System.IntPtr sRaw
         }
     }
     
-    public class Log : IDisposable {
+    public partial class Log : IDisposable {
         
         protected IntPtr raw;
         
@@ -4720,9 +4785,7 @@ private static extern System.IntPtr enesim_log_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_log_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_log_add(System.IntPtr selfRaw, System.String _string);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_log_add_parametric(System.IntPtr selfRaw, System.String file, System.String function, System.Int32 line, System.IntPtr fmt, IntPtr args);
+private static extern System.IntPtr enesim_log_add(System.IntPtr selfRaw, System.String str);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_log_dump(System.IntPtr selfRaw);
 ~Log() { Dispose(false); }
@@ -4730,7 +4793,7 @@ private static extern void enesim_log_dump(System.IntPtr selfRaw);
         protected Log() {
         }
         
-        protected internal Log(System.IntPtr i, bool owned) {
+        public Log(System.IntPtr i, bool owned) {
             Initialize(i, owned);
         }
         
@@ -4762,13 +4825,8 @@ private static extern void enesim_log_dump(System.IntPtr selfRaw);
             }
         }
         
-        public Enesim.Log Add(string _string) {
-            System.IntPtr ret = enesim_log_add(raw, @string);
-            return new Enesim.Log(ret, false);
-        }
-        
-        public Enesim.Log AddParametric(string file, string function, int line, string fmt, System.IntPtr args) {
-            System.IntPtr ret = enesim_log_add_parametric(raw, file, function, line, fmt, args);
+        public Enesim.Log Add(string str) {
+            System.IntPtr ret = enesim_log_add(raw, str);
             return new Enesim.Log(ret, false);
         }
         
@@ -4793,6 +4851,13 @@ private static extern void enesim_log_dump(System.IntPtr selfRaw);
     public class Matrix {
         
         private MatrixStruct rawStruct;
+        
+        public Matrix() {
+        }
+        
+        public Matrix(System.IntPtr i, bool owned) {
+            rawStruct = ((MatrixStruct)(Marshal.PtrToStructure(i, typeof(MatrixStruct))));
+        }
         
         public IntPtr Raw {
             get {
@@ -4996,6 +5061,13 @@ private static extern void enesim_log_dump(System.IntPtr selfRaw);
         
         private RectangleStruct rawStruct;
         
+        public Rectangle() {
+        }
+        
+        public Rectangle(System.IntPtr i, bool owned) {
+            rawStruct = ((RectangleStruct)(Marshal.PtrToStructure(i, typeof(RectangleStruct))));
+        }
+        
         public IntPtr Raw {
             get {
                 System.IntPtr raw;
@@ -5079,6 +5151,13 @@ private static extern void enesim_log_dump(System.IntPtr selfRaw);
     public class MatrixF16p16 {
         
         private MatrixF16p16Struct rawStruct;
+        
+        public MatrixF16p16() {
+        }
+        
+        public MatrixF16p16(System.IntPtr i, bool owned) {
+            rawStruct = ((MatrixF16p16Struct)(Marshal.PtrToStructure(i, typeof(MatrixF16p16Struct))));
+        }
         
         public IntPtr Raw {
             get {
@@ -5255,6 +5334,13 @@ private static extern void enesim_log_dump(System.IntPtr selfRaw);
     public class Quad {
         
         private QuadStruct rawStruct;
+        
+        public Quad() {
+        }
+        
+        public Quad(System.IntPtr i, bool owned) {
+            rawStruct = ((QuadStruct)(Marshal.PtrToStructure(i, typeof(QuadStruct))));
+        }
         
         public IntPtr Raw {
             get {
@@ -5545,11 +5631,11 @@ private static extern System.IntPtr enesim_text_buffer_ref(System.IntPtr selfRaw
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_text_buffer_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_text_buffer_string_set(System.IntPtr selfRaw, System.String _string, System.Int32 length);
+private static extern void enesim_text_buffer_string_set(System.IntPtr selfRaw, System.String str, System.Int32 length);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_text_buffer_string_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_text_buffer_string_insert(System.IntPtr selfRaw, System.String _string, System.Int32 length, System.IntPtr offset);
+private static extern System.Int32 enesim_text_buffer_string_insert(System.IntPtr selfRaw, System.String str, System.Int32 length, System.IntPtr offset);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Int32 enesim_text_buffer_string_delete(System.IntPtr selfRaw, System.Int32 length, System.IntPtr offset);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -5559,7 +5645,7 @@ private static extern System.Int32 enesim_text_buffer_string_length(System.IntPt
         protected Buffer() {
         }
         
-        protected internal Buffer(System.IntPtr i, bool owned) {
+        public Buffer(System.IntPtr i, bool owned) {
             Initialize(i, owned);
         }
         
@@ -5591,8 +5677,8 @@ private static extern System.Int32 enesim_text_buffer_string_length(System.IntPt
             }
         }
         
-        public void SetString(string _string, int length) {
-            enesim_text_buffer_string_set(raw, @string, length);
+        public void SetString(string str, int length) {
+            enesim_text_buffer_string_set(raw, str, length);
         }
         
         public string GetString() {
@@ -5600,8 +5686,8 @@ private static extern System.Int32 enesim_text_buffer_string_length(System.IntPt
             return Marshal.PtrToStringAnsi(ret);
         }
         
-        public int StringInsert(string _string, int length, System.IntPtr offset) {
-            int ret = enesim_text_buffer_string_insert(raw, @string, length, offset);
+        public int StringInsert(string str, int length, System.IntPtr offset) {
+            int ret = enesim_text_buffer_string_insert(raw, str, length, offset);
             return ret;
         }
         
@@ -5630,7 +5716,7 @@ private static extern void enesim_text_buffer_smart_clear(System.IntPtr selfRaw)
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Boolean enesim_text_buffer_smart_is_dirty(System.IntPtr selfRaw);
             
-            protected internal Smart(System.IntPtr i, bool owned) : 
+            public Smart(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -5682,7 +5768,7 @@ private static extern System.Boolean enesim_text_buffer_smart_is_dirty(System.In
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_text_buffer_simple_new(System.Int32 initial_length);
             
-            protected internal Simple(System.IntPtr i, bool owned) : 
+            public Simple(System.IntPtr i, bool owned) : 
                     base(i, owned) {
                 Initialize(i, owned);
             }
@@ -5714,7 +5800,7 @@ private static extern System.Int32 enesim_text_font_max_ascent_get(System.IntPtr
 private static extern System.Int32 enesim_text_font_max_descent_get(System.IntPtr selfRaw);
 ~Font() { Dispose(false); }
         
-        protected internal Font(System.IntPtr i, bool owned) {
+        public Font(System.IntPtr i, bool owned) {
             Initialize(i, owned);
         }
         
@@ -5800,7 +5886,7 @@ private static extern void enesim_text_engine_unref(System.IntPtr selfRaw);
         protected Engine() {
         }
         
-        protected internal Engine(System.IntPtr i, bool owned) {
+        public Engine(System.IntPtr i, bool owned) {
             Initialize(i, owned);
         }
         

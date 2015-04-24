@@ -196,13 +196,6 @@ namespace Ender
 				else
 					incRef = false;
 			}
-			else if (direction == ArgDirection.OUT)
-			{
-				if (transfer == ItemTransfer.FULL)
-					incRef = false;
-				else
-					incRef = true;
-			}
 			return new CodeObjectCreateExpression(ManagedType(generator),
 					new CodeExpression[] {
 						new CodeVariableReferenceExpression(from),
