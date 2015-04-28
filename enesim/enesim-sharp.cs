@@ -3909,9 +3909,9 @@ free_func(buffer_data, data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_image_dispatch();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_image_info_get(System.IntPtr sRaw, System.String mime, IntPtr w, IntPtr h, Enesim.Buffer.FormatEnum.Enum sfmt, System.String options, out System.Int32 errRaw);
+private static extern System.Boolean enesim_image_info_get(System.IntPtr sRaw, System.String mime, out System.Int32 w, out System.Int32 h, out Enesim.Buffer.FormatEnum.Enum sfmt, System.String options, out System.Int32 errRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_image_load(out System.IntPtr sRaw, System.String mime, System.IntPtr bRaw, System.IntPtr mpoolRaw, System.String options, System.Int32 errRaw);
+private static extern System.Boolean enesim_image_load(System.IntPtr sRaw, System.String mime, out System.IntPtr bRaw, System.IntPtr mpoolRaw, System.String options, out System.Int32 errRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_image_load_async(System.IntPtr sRaw, System.String mime, System.IntPtr bRaw, System.IntPtr mpoolRaw, Enesim.Image.CallbackInternal cbRaw, System.IntPtr user_data, System.String options);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -3925,7 +3925,7 @@ internal delegate void CallbackInternal(System.IntPtr rRaw, System.IntPtr data, 
             enesim_image_dispatch();
         }
         
-        public static bool GetInfo(Enesim.Stream s, string mime, System.IntPtr w, System.IntPtr h, Enesim.Buffer.FormatEnum.Enum sfmt, string options, out Eina.Error err) {
+        public static bool GetInfo(Enesim.Stream s, string mime, out int w, out int h, out Enesim.Buffer.FormatEnum.Enum sfmt, string options, out Eina.Error err) {
             System.IntPtr sRaw;
             if ((s == null)) {
                 sRaw = IntPtr.Zero;
@@ -3934,20 +3934,20 @@ internal delegate void CallbackInternal(System.IntPtr rRaw, System.IntPtr data, 
                 sRaw = s.Raw;
             }
             int errRaw;
-            bool ret = enesim_image_info_get(sRaw, mime, w, h, sfmt, options, out  errRaw);
+            bool ret = enesim_image_info_get(sRaw, mime, out  w, out  h, out  sfmt, options, out  errRaw);
             err = errRaw;
             return ret;
         }
         
-        public static bool Load(out Enesim.Stream s, string mime, Enesim.Buffer b, Enesim.Pool mpool, string options, Eina.Error err) {
+        public static bool Load(Enesim.Stream s, string mime, out Enesim.Buffer b, Enesim.Pool mpool, string options, out Eina.Error err) {
             System.IntPtr sRaw;
-            System.IntPtr bRaw;
-            if ((b == null)) {
-                bRaw = IntPtr.Zero;
+            if ((s == null)) {
+                sRaw = IntPtr.Zero;
             }
             else {
-                bRaw = b.Raw;
+                sRaw = s.Raw;
             }
+            System.IntPtr bRaw;
             System.IntPtr mpoolRaw;
             if ((mpool == null)) {
                 mpoolRaw = IntPtr.Zero;
@@ -3956,9 +3956,9 @@ internal delegate void CallbackInternal(System.IntPtr rRaw, System.IntPtr data, 
                 mpoolRaw = mpool.Raw;
             }
             int errRaw;
-            errRaw = err;
-            bool ret = enesim_image_load(out  sRaw, mime, bRaw, mpoolRaw, options, errRaw);
-            s = new Enesim.Stream(sRaw, false);
+            bool ret = enesim_image_load(sRaw, mime, out  bRaw, mpoolRaw, options, out  errRaw);
+            b = new Enesim.Buffer(bRaw, false);
+            err = errRaw;
             return ret;
         }
         
@@ -4057,9 +4057,9 @@ cb(r, data, success, error);
         public class File {
             
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_image_file_info_get(System.String file, IntPtr w, IntPtr h, Enesim.Buffer.FormatEnum.Enum sfmt, System.String options, out System.Int32 errRaw);
+private static extern System.Boolean enesim_image_file_info_get(System.String file, out System.Int32 w, out System.Int32 h, out Enesim.Buffer.FormatEnum.Enum sfmt, System.String options, out System.Int32 errRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_image_file_load(System.String file, System.IntPtr bRaw, System.IntPtr mpoolRaw, System.String options, out System.Int32 errRaw);
+private static extern System.Boolean enesim_image_file_load(System.String file, out System.IntPtr bRaw, System.IntPtr mpoolRaw, System.String options, out System.Int32 errRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_image_file_load_async(System.String file, System.IntPtr bRaw, System.IntPtr mpoolRaw, Enesim.Image.CallbackInternal cbRaw, System.IntPtr user_data, System.String options);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -4067,21 +4067,15 @@ private static extern System.Boolean enesim_image_file_save(System.String file, 
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_image_file_save_async(System.String file, System.IntPtr bRaw, Enesim.Image.CallbackInternal cbRaw, System.IntPtr user_data, System.String options);
             
-            public static bool GetInfo(string file, System.IntPtr w, System.IntPtr h, Enesim.Buffer.FormatEnum.Enum sfmt, string options, out Eina.Error err) {
+            public static bool GetInfo(string file, out int w, out int h, out Enesim.Buffer.FormatEnum.Enum sfmt, string options, out Eina.Error err) {
                 int errRaw;
-                bool ret = enesim_image_file_info_get(file, w, h, sfmt, options, out  errRaw);
+                bool ret = enesim_image_file_info_get(file, out  w, out  h, out  sfmt, options, out  errRaw);
                 err = errRaw;
                 return ret;
             }
             
-            public static bool Load(string file, Enesim.Buffer b, Enesim.Pool mpool, string options, out Eina.Error err) {
+            public static bool Load(string file, out Enesim.Buffer b, Enesim.Pool mpool, string options, out Eina.Error err) {
                 System.IntPtr bRaw;
-                if ((b == null)) {
-                    bRaw = IntPtr.Zero;
-                }
-                else {
-                    bRaw = b.Raw;
-                }
                 System.IntPtr mpoolRaw;
                 if ((mpool == null)) {
                     mpoolRaw = IntPtr.Zero;
@@ -4090,7 +4084,8 @@ private static extern void enesim_image_file_save_async(System.String file, Syst
                     mpoolRaw = mpool.Raw;
                 }
                 int errRaw;
-                bool ret = enesim_image_file_load(file, bRaw, mpoolRaw, options, out  errRaw);
+                bool ret = enesim_image_file_load(file, out  bRaw, mpoolRaw, options, out  errRaw);
+                b = new Enesim.Buffer(bRaw, false);
                 err = errRaw;
                 return ret;
             }
