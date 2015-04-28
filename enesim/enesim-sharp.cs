@@ -3207,6 +3207,142 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         }
     }
     
+    public class Stream : IDisposable {
+        
+        protected IntPtr raw;
+        
+        private bool disposed;
+        
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_stream_ref(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_stream_unref(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_stream_read(System.IntPtr selfRaw, System.IntPtr buffer, System.IntPtr len);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_stream_write(System.IntPtr selfRaw, System.IntPtr buffer, System.IntPtr len);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_stream_length(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_stream_mmap(System.IntPtr selfRaw, out System.IntPtr size);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_stream_munmap(System.IntPtr selfRaw, System.IntPtr ptr);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_stream_reset(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_stream_uri_get(System.IntPtr selfRaw);
+~Stream() { Dispose(false); }
+        
+        protected Stream() {
+        }
+        
+        public Stream(System.IntPtr i, bool owned) {
+            Initialize(i, owned);
+        }
+        
+        public System.IntPtr Raw {
+            get {
+                return this.raw;
+            }
+        }
+        
+        public virtual void Dispose() {
+            Dispose(false);
+            GC.SuppressFinalize(this);
+        }
+        
+        protected virtual void Dispose(bool disposing) {
+            if (disposed) {
+            }
+            else {
+                enesim_stream_unref(raw);
+                raw = IntPtr.Zero;
+                disposed = false;
+            }
+        }
+        
+        protected virtual void Initialize(System.IntPtr i, bool owned) {
+            raw = i;
+            if (owned) {
+                enesim_stream_ref(i);
+            }
+        }
+        
+        public System.IntPtr Read(System.IntPtr buffer, System.IntPtr len) {
+            System.IntPtr ret = enesim_stream_read(raw, buffer, len);
+            return ret;
+        }
+        
+        public System.IntPtr Write(System.IntPtr buffer, System.IntPtr len) {
+            System.IntPtr ret = enesim_stream_write(raw, buffer, len);
+            return ret;
+        }
+        
+        public System.IntPtr Length() {
+            System.IntPtr ret = enesim_stream_length(raw);
+            return ret;
+        }
+        
+        public System.IntPtr Mmap(out System.IntPtr size) {
+            System.IntPtr ret = enesim_stream_mmap(raw, out  size);
+            return ret;
+        }
+        
+        public void Munmap(System.IntPtr ptr) {
+            enesim_stream_munmap(raw, ptr);
+        }
+        
+        public void Reset() {
+            enesim_stream_reset(raw);
+        }
+        
+        public string GetUri() {
+            System.IntPtr ret = enesim_stream_uri_get(raw);
+            return Marshal.PtrToStringAnsi(ret);
+        }
+        
+        public class Buffer : Stream {
+            
+            public delegate void Free(System.IntPtr b);
+            
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_stream_buffer_new(System.IntPtr buffer, System.IntPtr len, Enesim.Stream.Buffer.FreeInternal free_cbRaw);
+
+internal delegate void FreeInternal(System.IntPtr b);
+            
+            public Buffer(System.IntPtr i, bool owned) : 
+                    base(i, owned) {
+                Initialize(i, owned);
+            }
+            
+            public Buffer(System.IntPtr buffer, System.IntPtr len, Enesim.Stream.Buffer.Free free_cb) {
+
+Enesim.Stream.Buffer.FreeInternal free_cbRaw = (System.IntPtr b) => {
+free_cb(b);
+
+};
+                System.IntPtr ret = enesim_stream_buffer_new(buffer, len, free_cbRaw);
+                Initialize(ret, false);
+            }
+        }
+        
+        public class File : Stream {
+            
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_stream_file_new(System.String file, System.String mode);
+            
+            public File(System.IntPtr i, bool owned) : 
+                    base(i, owned) {
+                Initialize(i, owned);
+            }
+            
+            public File(string file, string mode) {
+                System.IntPtr ret = enesim_stream_file_new(file, mode);
+                Initialize(ret, false);
+            }
+        }
+    }
+    
     public enum AplhaHintEnum {
         
         Normal,
@@ -4245,128 +4381,6 @@ free_func(buffer_data, data);
         public Enesim.AplhaHintEnum GetAlphaHint() {
             Enesim.AplhaHintEnum ret = enesim_surface_alpha_hint_get(raw);
             return ret;
-        }
-    }
-    
-    public class Stream : IDisposable {
-        
-        protected IntPtr raw;
-        
-        private bool disposed;
-        
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_ref(System.IntPtr selfRaw);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_stream_unref(System.IntPtr selfRaw);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_read(System.IntPtr selfRaw, System.IntPtr buffer, System.IntPtr len);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_write(System.IntPtr selfRaw, System.IntPtr buffer, System.IntPtr len);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_length(System.IntPtr selfRaw);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_mmap(System.IntPtr selfRaw, out System.IntPtr size);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_stream_munmap(System.IntPtr selfRaw, System.IntPtr ptr);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_stream_reset(System.IntPtr selfRaw);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_uri_get(System.IntPtr selfRaw);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_file_new(System.String file, System.String mode);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_buffer_new(System.IntPtr buffer, System.IntPtr len);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_buffer_static_new(System.IntPtr buffer, System.IntPtr len);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_base64_new(System.IntPtr dRaw);
-~Stream() { Dispose(false); }
-        
-        public Stream(System.IntPtr i, bool owned) {
-            Initialize(i, owned);
-        }
-        
-        public Stream(string file, string mode) {
-            System.IntPtr ret = enesim_stream_file_new(file, mode);
-            Initialize(ret, false);
-        }
-        
-        public Stream(System.IntPtr buffer, System.IntPtr len) {
-            System.IntPtr ret = enesim_stream_buffer_new(buffer, len);
-            Initialize(ret, false);
-        }
-        
-        public Stream(Enesim.Stream d) {
-            System.IntPtr dRaw;
-            if ((d == null)) {
-                dRaw = IntPtr.Zero;
-            }
-            else {
-                dRaw = d.Raw;
-            }
-            System.IntPtr ret = enesim_stream_base64_new(dRaw);
-            Initialize(ret, false);
-        }
-        
-        public System.IntPtr Raw {
-            get {
-                return this.raw;
-            }
-        }
-        
-        public virtual void Dispose() {
-            Dispose(false);
-            GC.SuppressFinalize(this);
-        }
-        
-        protected virtual void Dispose(bool disposing) {
-            if (disposed) {
-            }
-            else {
-                enesim_stream_unref(raw);
-                raw = IntPtr.Zero;
-                disposed = false;
-            }
-        }
-        
-        protected virtual void Initialize(System.IntPtr i, bool owned) {
-            raw = i;
-            if (owned) {
-                enesim_stream_ref(i);
-            }
-        }
-        
-        public System.IntPtr Read(System.IntPtr buffer, System.IntPtr len) {
-            System.IntPtr ret = enesim_stream_read(raw, buffer, len);
-            return ret;
-        }
-        
-        public System.IntPtr Write(System.IntPtr buffer, System.IntPtr len) {
-            System.IntPtr ret = enesim_stream_write(raw, buffer, len);
-            return ret;
-        }
-        
-        public System.IntPtr Length() {
-            System.IntPtr ret = enesim_stream_length(raw);
-            return ret;
-        }
-        
-        public System.IntPtr Mmap(out System.IntPtr size) {
-            System.IntPtr ret = enesim_stream_mmap(raw, out  size);
-            return ret;
-        }
-        
-        public void Munmap(System.IntPtr ptr) {
-            enesim_stream_munmap(raw, ptr);
-        }
-        
-        public void Reset() {
-            enesim_stream_reset(raw);
-        }
-        
-        public string GetUri() {
-            System.IntPtr ret = enesim_stream_uri_get(raw);
-            return Marshal.PtrToStringAnsi(ret);
         }
     }
     
