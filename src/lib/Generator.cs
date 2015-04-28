@@ -6,20 +6,6 @@ using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Runtime.InteropServices;
 
-/*
- * For callbacks, dont create pinvoke functions
- * For functions/methods that have a callback parameter, we need to:
- * 1. make the pinvoke be in the form static extern foo(int a, int b, FunctionCb);
- *    where FunctionCb must be the internal version of the callbackw with the C proto (done)
- * 2. create a delegate on the class with the C# form (done)
- * 3. On the body of foo, create an anonymous function that will translate the stuff
- *    from C# to C and viceversa
-      Enesim.Renderer.DamageInternal cbinternal = (IntPtr ir, IntPtr iarea, bool ipast, IntPtr idata) => {
-          return cb(new Enesim.Renderer(ir, false), new Eina.Rectangle(), ipast, idata);
-      };
-      bool ret = enesim_renderer_damages_get(raw, cbinternal, data);
- */
-
 namespace Ender
 {
 	public class Generator
