@@ -16,6 +16,12 @@ namespace Ender
 		static extern IntPtr ender_item_object_functions_get(IntPtr i);
 		[DllImport("libender.dll")]
 		static extern IntPtr ender_item_object_props_get(IntPtr i);
+		[DllImport("libender.dll")]
+		static extern bool ender_item_object_ref(IntPtr i, IntPtr o);
+		[DllImport("libender.dll")]
+		static extern bool ender_item_object_unref(IntPtr i, IntPtr o);
+		[DllImport("libender.dll")]
+		static extern IntPtr ender_item_object_downcast(IntPtr i, IntPtr o);
 
 		internal Object()
 		{
@@ -73,6 +79,25 @@ namespace Ender
 				return list;
 
 			}
+		}
+
+		public bool Ref(IntPtr o)
+		{
+			return ender_item_object_ref(raw, o);
+		}
+
+		public bool Unref(IntPtr o)
+		{
+			return ender_item_object_unref(raw, o);
+		}
+
+		public Item Downcast(IntPtr o)
+		{
+			IntPtr ret = ender_item_object_downcast(raw, o);
+			if (ret == IntPtr.Zero)
+				return null;
+			else
+				return Item.Create(ret);
 		}
 
 		#region Item interface
