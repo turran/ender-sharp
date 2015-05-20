@@ -6,10 +6,8 @@ datarootdir=@datarootdir@
 datadir=@datadir@/@PACKAGE@
 pkgincludedir=@pkgincludedir@-@VMAJ@
 
-Name: Ender Js SM
-Description: JavaScript bindings for Ender (SpiderMonkey based)
-Requires.private: @ender_js_sm_requirements_private@
-Requires: @ender_js_sm_requirements@
+Name: ender-sharp
+Description: Ender .NET Bindings
+Requires: @ender_sharp_requirements@
 Version: @VERSION@
-Libs: -L${libdir} -lender_js_sm
-Cflags: -I${pkgincludedir}
+Libs: -r${libdir}/cli/ender-sharp/ender-sharp.dll
