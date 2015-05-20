@@ -31,6 +31,58 @@ namespace Ender
 		}
 
 		#region Item interface
+		public override CodeStatementCollection ManagedPreStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			CodeStatementCollection csc = null;
+			if (ValueType == ValueType.STRING &&
+					transfer == ItemTransfer.NONE &&
+					direction == ArgDirection.OUT)
+			{
+				string rawName = varName + "Raw"; 
+
+				csc = new CodeStatementCollection();
+				csc.Add(new CodeVariableDeclarationStatement(typeof(IntPtr), rawName));
+			}
+			return csc;
+		}
+
+		public override CodeStatementCollection ManagedPostStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			CodeStatementCollection csc = null;
+			if (ValueType == ValueType.STRING &&
+					transfer == ItemTransfer.NONE &&
+					direction == ArgDirection.OUT)
+			{
+				string rawName = varName + "Raw"; 
+
+				csc = new CodeStatementCollection();
+				CodeStatement cs = new CodeAssignStatement(new CodeVariableReferenceExpression(varName),
+						Construct(generator, rawName, direction, transfer));
+				csc.Add(cs);
+			}
+			return csc;
+
+		}
+
+		public override string UnmanagedName(string name,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			if (ValueType == ValueType.STRING &&
+					transfer == ItemTransfer.NONE &&
+					direction == ArgDirection.OUT)
+			{
+				return name + "Raw";
+			}
+			else
+			{
+				return name;
+			}
+		}
+
 		public override string ManagedType(Generator generator)
 		{
 			System.Type st;
