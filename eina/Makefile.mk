@@ -8,7 +8,8 @@ eina-sharp.cs:
 eina_BIN = eina-sharp.dll
 eina_SRC = $(top_srcdir)/eina/eina-sharp.cs
 
-noinst_DATA += $(eina_BIN)
+einalibdir = $(libdir)/eina-sharp
+einalib_DATA = $(output_DIR)/$(eina_BIN)
 
 $(eina_BIN): $(eina_SRC) $(output_DIR)
 	$(CSC) -nowarn:169 -unsafe -target:library -debug $(eina_SRC) \

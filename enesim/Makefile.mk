@@ -8,7 +8,8 @@ enesim-sharp.cs:
 enesim_BIN = enesim-sharp.dll
 enesim_SRC = $(top_srcdir)/enesim/enesim-sharp.cs
 
-noinst_DATA += $(enesim_BIN)
+enesimlibdir = $(libdir)/enesim-sharp
+enesimlib_DATA = $(output_DIR)/$(enesim_BIN)
 
 $(enesim_BIN): $(eina_BIN) $(enesim_SRC) $(output_DIR)
 	$(CSC) -nowarn:169 -unsafe -target:library -debug $(enesim_SRC) \
