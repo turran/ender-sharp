@@ -25,8 +25,8 @@ $(lib_BIN): $(lib_SRC) $(output_DIR)
 
 install-data-local:
 	echo "$(GACUTIL) /i $(lib_BIN) /f $(GACUTIL_FLAGS)";  \
-        $(GACUTIL) /i $(lib_BIN) /f $(GACUTIL_FLAGS) || exit 1;
+        $(GACUTIL) /i $(output_DIR)/$(lib_BIN) /f $(GACUTIL_FLAGS) || exit 1;
 
 uninstall-local:
 	echo "$(GACUTIL) /u $(lib_BIN) $(GACUTIL_FLAGS)"; \
-        $(GACUTIL) /u $(lib_BIN) $(GACUTIL_FLAGS) || exit 1;
+        $(GACUTIL) /u $(output_DIR)/$(lib_BIN) $(GACUTIL_FLAGS) || exit 1;
