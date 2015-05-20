@@ -33,7 +33,7 @@ public class EnderSharp
 		Name: {LIB}-sharp
 		Description: {LIB} .NET Binding
 		Version: {VERSION}
-		Libs: -r:${libdir}/cli/{LIB}.dll
+		Libs: -r:${libdir}/cli/{LIB}-sharp/{LIB}.dll
 		Requires: {DEPS}";
 
 		string pcFile = toReplace.Replace("\t", "");
