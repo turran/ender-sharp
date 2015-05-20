@@ -133,7 +133,8 @@ namespace Ender
 			return i.UnmanagedType(generator, direction, transfer);
 		}
 
-		public override string UnmanagedName(string name)
+		public override string UnmanagedName(string name,
+				ArgDirection direction, ItemTransfer transfer)
 		{
 			Item i = FinalDefType;
 			if (i.Type == ItemType.BASIC)

@@ -244,7 +244,8 @@ namespace Ender
 			return generator.ConvertFullName(Name) + "Internal";
 		}
 
-		public override string UnmanagedName(string name)
+		public override string UnmanagedName(string name,
+				ArgDirection direction, ItemTransfer transfer)
 		{
 			return name + "Raw";
 		}
@@ -264,7 +265,7 @@ namespace Ender
 				generator.Provider.GenerateCodeFromStatement(cs, bodyWriter, new CodeGeneratorOptions());
 			}
 			string unmanagedType = UnmanagedType(generator, ArgDirection.IN, ItemTransfer.NONE);
-			string unmanagedName = UnmanagedName(varName);
+			string unmanagedName = UnmanagedName(varName, ArgDirection.IN, ItemTransfer.NONE);
 			string delegateString = string.Format("\n{0} {1} = ({2}) => {{\n{3}\n}};",
 					unmanagedType, unmanagedName, argsString, bodyWriter.ToString());
 

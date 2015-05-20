@@ -235,6 +235,7 @@ namespace Ender
 		{
 			switch (i.Type)
 			{
+				case ItemType.BASIC:
 				case ItemType.DEF:
 				case ItemType.OBJECT:
 				case ItemType.STRUCT:
@@ -259,6 +260,7 @@ namespace Ender
 		{
 			switch (i.Type)
 			{
+				case ItemType.BASIC:
 				case ItemType.DEF:
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
@@ -881,7 +883,7 @@ namespace Ender
 					{
 						fProp.GetStatements.AddRange(csc);
 					}
-					fProp.GetStatements.Add(new CodeMethodReturnStatement(fType.Construct(this, fType.UnmanagedName("ret"), ArgDirection.IN, ItemTransfer.FULL)));
+					fProp.GetStatements.Add(new CodeMethodReturnStatement(fType.Construct(this, fType.UnmanagedName("ret", ArgDirection.IN, ItemTransfer.FULL), ArgDirection.IN, ItemTransfer.FULL)));
 
 					// The setter
 					csc = fType.ManagedPreStatements(this, "value", ArgDirection.IN, ItemTransfer.NONE);

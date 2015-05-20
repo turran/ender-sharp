@@ -197,7 +197,8 @@ namespace Ender
 			return generator.ConvertFullName(Name);
 		}
 
-		public override string UnmanagedName(string name)
+		public override string UnmanagedName(string name,
+				ArgDirection direction, ItemTransfer transfer)
 		{
 			return name + "Raw";
 		}

@@ -83,7 +83,7 @@ namespace Ender
 			// For structs, the out is irrelevant
 			if (Direction == ArgDirection.OUT && i.Type != ItemType.STRUCT)
 				ret = "out " + ret;
-			ret += " " + generator.Provider.CreateValidIdentifier(i.UnmanagedName(Name));
+			ret += " " + generator.Provider.CreateValidIdentifier(i.UnmanagedName(Name, Direction, Transfer));
 			return ret;
 		}
 
@@ -129,7 +129,7 @@ namespace Ender
 			}
 			else
 			{
-				ret = new CodeVariableReferenceExpression(i.UnmanagedName(Name));
+				ret = new CodeVariableReferenceExpression(i.UnmanagedName(Name, Direction, Transfer));
 				if (Direction == ArgDirection.OUT && i.Type != ItemType.STRUCT)
 					return new CodeDirectionExpression(FieldDirection.Out, ret);
 				else

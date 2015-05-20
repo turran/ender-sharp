@@ -243,7 +243,8 @@ namespace Ender
 		}
 
 
-		public virtual string UnmanagedName(string name)
+		public virtual string UnmanagedName(string name,
+				ArgDirection direction, ItemTransfer transfer)
 		{
 			return name;
 		}
