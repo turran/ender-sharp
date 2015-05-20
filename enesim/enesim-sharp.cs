@@ -87,6 +87,8 @@ private static extern System.Boolean enesim_renderer_draw_list(System.IntPtr sel
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_default_quality_set(Enesim.QualityEnum quality);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean enesim_renderer_type_get(System.IntPtr selfRaw, out System.IntPtr libRaw, out System.String name);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_name_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_name_set(System.IntPtr selfRaw, System.String name);
@@ -477,6 +479,13 @@ return retInternal;
         
         public static void SetDefaultQuality(Enesim.QualityEnum quality) {
             enesim_renderer_default_quality_set(quality);
+        }
+        
+        public bool GetType(out string lib, out string name) {
+            System.IntPtr libRaw;
+            bool ret = enesim_renderer_type_get(raw, out  libRaw, out  name);
+            lib = Marshal.PtrToStringAnsi(libRaw);
+            return ret;
         }
         
         public class Dispmap : Renderer {
@@ -3231,6 +3240,8 @@ private static extern void enesim_stream_munmap(System.IntPtr selfRaw, System.In
 private static extern void enesim_stream_reset(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_stream_uri_get(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean enesim_stream_type_get(System.IntPtr selfRaw, out System.IntPtr libRaw, out System.IntPtr nameRaw);
 ~Stream() { Dispose(false); }
         
         protected Stream() {
@@ -3299,6 +3310,15 @@ private static extern System.IntPtr enesim_stream_uri_get(System.IntPtr selfRaw)
         public string GetUri() {
             System.IntPtr ret = enesim_stream_uri_get(raw);
             return Marshal.PtrToStringAnsi(ret);
+        }
+        
+        public bool GetType(out string lib, out string name) {
+            System.IntPtr libRaw;
+            System.IntPtr nameRaw;
+            bool ret = enesim_stream_type_get(raw, out  libRaw, out  nameRaw);
+            lib = Marshal.PtrToStringAnsi(libRaw);
+            name = Marshal.PtrToStringAnsi(nameRaw);
+            return ret;
         }
         
         public class Buffer : Stream {
@@ -4379,6 +4399,78 @@ free_func(buffer_data, data);
         }
     }
     
+    public class Pool : IDisposable {
+        
+        protected IntPtr raw;
+        
+        private bool disposed;
+        
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_pool_default_get();
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_pool_default_set(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_pool_ref(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_pool_unref(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean enesim_pool_type_get(System.IntPtr selfRaw, out System.IntPtr libRaw, out System.IntPtr nameRaw);
+~Pool() { Dispose(false); }
+        
+        protected Pool() {
+        }
+        
+        public Pool(System.IntPtr i, bool owned) {
+            Initialize(i, owned);
+        }
+        
+        public System.IntPtr Raw {
+            get {
+                return this.raw;
+            }
+        }
+        
+        public virtual void Dispose() {
+            Dispose(false);
+            GC.SuppressFinalize(this);
+        }
+        
+        protected virtual void Dispose(bool disposing) {
+            if (disposed) {
+            }
+            else {
+                enesim_pool_unref(raw);
+                raw = IntPtr.Zero;
+                disposed = false;
+            }
+        }
+        
+        protected virtual void Initialize(System.IntPtr i, bool owned) {
+            raw = i;
+            if (owned) {
+                enesim_pool_ref(i);
+            }
+        }
+        
+        public static Enesim.Pool GetDefault() {
+            System.IntPtr ret = enesim_pool_default_get();
+            return new Enesim.Pool(ret, false);
+        }
+        
+        public void SetDefault() {
+            enesim_pool_default_set(raw);
+        }
+        
+        public bool GetType(out string lib, out string name) {
+            System.IntPtr libRaw;
+            System.IntPtr nameRaw;
+            bool ret = enesim_pool_type_get(raw, out  libRaw, out  nameRaw);
+            lib = Marshal.PtrToStringAnsi(libRaw);
+            name = Marshal.PtrToStringAnsi(nameRaw);
+            return ret;
+        }
+    }
+    
     public class Path : IDisposable {
         
         protected IntPtr raw;
@@ -4669,71 +4761,6 @@ private static extern void enesim_path_close(System.IntPtr selfRaw);
                 public struct DefinitionStruct {
                 }
             }
-        }
-    }
-    
-    public class Pool : IDisposable {
-        
-        protected IntPtr raw;
-        
-        private bool disposed;
-        
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_pool_default_get();
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_pool_default_set(System.IntPtr selfRaw);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_pool_ref(System.IntPtr selfRaw);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_pool_unref(System.IntPtr selfRaw);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_pool_eina_new(IntPtr mp);
-~Pool() { Dispose(false); }
-        
-        public Pool(System.IntPtr i, bool owned) {
-            Initialize(i, owned);
-        }
-        
-        public Pool(System.IntPtr mp) {
-            System.IntPtr ret = enesim_pool_eina_new(mp);
-            Initialize(ret, false);
-        }
-        
-        public System.IntPtr Raw {
-            get {
-                return this.raw;
-            }
-        }
-        
-        public virtual void Dispose() {
-            Dispose(false);
-            GC.SuppressFinalize(this);
-        }
-        
-        protected virtual void Dispose(bool disposing) {
-            if (disposed) {
-            }
-            else {
-                enesim_pool_unref(raw);
-                raw = IntPtr.Zero;
-                disposed = false;
-            }
-        }
-        
-        protected virtual void Initialize(System.IntPtr i, bool owned) {
-            raw = i;
-            if (owned) {
-                enesim_pool_ref(i);
-            }
-        }
-        
-        public static Enesim.Pool GetDefault() {
-            System.IntPtr ret = enesim_pool_default_get();
-            return new Enesim.Pool(ret, false);
-        }
-        
-        public void SetDefault() {
-            enesim_pool_default_set(raw);
         }
     }
     
@@ -5640,6 +5667,8 @@ private static extern System.IntPtr enesim_text_buffer_ref(System.IntPtr selfRaw
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_text_buffer_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean enesim_text_buffer_type_get(System.IntPtr selfRaw, out System.IntPtr libRaw, out System.IntPtr nameRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_text_buffer_string_set(System.IntPtr selfRaw, System.String str, System.Int32 length);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_text_buffer_string_get(System.IntPtr selfRaw);
@@ -5684,6 +5713,15 @@ private static extern System.Int32 enesim_text_buffer_string_length(System.IntPt
             if (owned) {
                 enesim_text_buffer_ref(i);
             }
+        }
+        
+        public bool GetType(out string lib, out string name) {
+            System.IntPtr libRaw;
+            System.IntPtr nameRaw;
+            bool ret = enesim_text_buffer_type_get(raw, out  libRaw, out  nameRaw);
+            lib = Marshal.PtrToStringAnsi(libRaw);
+            name = Marshal.PtrToStringAnsi(nameRaw);
+            return ret;
         }
         
         public void SetString(string str, int length) {
@@ -5885,11 +5923,11 @@ private static extern System.Int32 enesim_text_font_max_descent_get(System.IntPt
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_text_engine_default_get();
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_text_engine_freetype_get();
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_text_engine_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_text_engine_unref(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean enesim_text_engine_type_get(System.IntPtr selfRaw, out System.IntPtr libRaw, out System.IntPtr nameRaw);
 ~Engine() { Dispose(false); }
         
         protected Engine() {
@@ -5932,9 +5970,13 @@ private static extern void enesim_text_engine_unref(System.IntPtr selfRaw);
             return new Enesim.Text.Engine(ret, false);
         }
         
-        public static Enesim.Text.Engine GetFreetype() {
-            System.IntPtr ret = enesim_text_engine_freetype_get();
-            return new Enesim.Text.Engine(ret, false);
+        public bool GetType(out string lib, out string name) {
+            System.IntPtr libRaw;
+            System.IntPtr nameRaw;
+            bool ret = enesim_text_engine_type_get(raw, out  libRaw, out  nameRaw);
+            lib = Marshal.PtrToStringAnsi(libRaw);
+            name = Marshal.PtrToStringAnsi(nameRaw);
+            return ret;
         }
     }
     

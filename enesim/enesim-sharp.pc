@@ -5,5 +5,5 @@ libdir=${exec_prefix}/lib
 Name: enesim-sharp
 Description: enesim .NET Binding
 Version: 0
-Libs: -r:${libdir}/cli/enesim.dll
+Libs: -r:${libdir}/cli/enesim-sharp/enesim.dll
 Requires: eina-sharp
