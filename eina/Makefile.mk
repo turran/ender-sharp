@@ -13,4 +13,4 @@ einalib_DATA = $(output_DIR)/$(eina_BIN)
 
 $(eina_BIN): $(eina_SRC) $(output_DIR)
 	$(CSC) -nowarn:169 -unsafe -target:library -debug $(eina_SRC) \
-		-out:$(output_DIR)/$(eina_BIN)
+		-out:$(output_DIR)/$(eina_BIN) -keyfile:$(top_srcdir)/eina/eina-sharp.snk
