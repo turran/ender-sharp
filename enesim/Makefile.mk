@@ -13,4 +13,5 @@ enesimlib_DATA = $(output_DIR)/$(enesim_BIN)
 
 $(enesim_BIN): $(eina_BIN) $(enesim_SRC) $(output_DIR)
 	$(CSC) -nowarn:169 -unsafe -target:library -debug $(enesim_SRC) \
-		-r:$(output_DIR)/eina-sharp.dll -out:$(output_DIR)/$(enesim_BIN)
+		-r:$(output_DIR)/eina-sharp.dll -out:$(output_DIR)/$(enesim_BIN) \
+		-keyfile:$(top_srcdir)/enesim/enesim-sharp.snk
