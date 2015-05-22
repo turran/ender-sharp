@@ -17,7 +17,7 @@ $(top_srcdir)/src/lib/Utils.cs \
 $(top_srcdir)/src/lib/Value.cs \
 $(top_srcdir)/src/lib/Generator.cs
 
-$(lib_BIN): $(lib_SRC) $(output_DIR)
+$(output_DIR)/$(lib_BIN): $(lib_SRC) $(output_DIR)
 	$(CSC) -nowarn:169 -unsafe -target:library -debug $(lib_SRC) \
 		-out:$(output_DIR)/$(lib_BIN)
 

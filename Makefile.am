@@ -84,3 +84,15 @@ pkgconfig_DATA += ender-sharp.pc
 
 $(output_DIR):
 	@mkdir -p $(output_DIR)
+
+install-data-local:
+	echo "$(GACUTIL) /i $(output_DIR)/$(eina_BIN) /f $(GACUTIL_FLAGS)";  \
+        $(GACUTIL) /i $(output_DIR)/$(eina_BIN) /f $(GACUTIL_FLAGS) || exit 1;
+	echo "$(GACUTIL) /i $(output_DIR)/$(enesim_BIN) /f $(GACUTIL_FLAGS)";  \
+        $(GACUTIL) /i $(output_DIR)/$(enesim_BIN) /f $(GACUTIL_FLAGS) || exit 1;
+
+uninstall-local:
+	echo "$(GACUTIL) /u $(output_DIR)/$(lib_BIN) $(GACUTIL_FLAGS)"; \
+        $(GACUTIL) /u $(output_DIR)/$(eina_BIN) $(GACUTIL_FLAGS) || exit 1;
+	echo "$(GACUTIL) /u $(output_DIR)/$(lib_BIN) $(GACUTIL_FLAGS)"; \
+        $(GACUTIL) /u $(output_DIR)/$(enesim_BIN) $(GACUTIL_FLAGS) || exit 1;
