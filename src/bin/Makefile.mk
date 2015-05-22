@@ -6,7 +6,7 @@ $(top_srcdir)/src/bin/Options.cs
 src/bin/Options.cs:
 	cp `pkg-config --variable=Sources mono-options` $(top_srcdir)/src/bin/
 
-$(output_DIR)/$(bin_BIN): $(bin_SRC) $(output_DIR)
+$(output_DIR)/$(bin_BIN): $(bin_SRC) $(output_CHECK)
 	$(CSC) -nowarn:169 -unsafe -target:exe $(bin_SRC) \
 		-out:$(output_DIR)/$(bin_BIN) -r:$(output_DIR)/$(PACKAGE).dll
 

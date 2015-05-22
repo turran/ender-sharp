@@ -29,6 +29,8 @@ m4/ltsugar.m4 \
 m4/ltversion.m4
 
 output_DIR = $(top_builddir)/bin
+output_CHECK = $(output_DIR)/.d
+
 lib_LTLIBRARIES =
 check_PROGRAMS =
 EXTRA_DIST =
@@ -82,8 +84,9 @@ pc_verbose_0 = @echo "  PC      " $@;
 
 pkgconfig_DATA += ender-sharp.pc
 
-$(output_DIR):
+$(output_CHECK):
 	@mkdir -p $(output_DIR)
+	@touch $(output_CHECK)
 
 install-data-local:
 	echo "$(GACUTIL) /i $(output_DIR)/$(eina_BIN) /f $(GACUTIL_FLAGS)";  \

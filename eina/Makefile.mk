@@ -11,6 +11,6 @@ eina_SRC = $(top_srcdir)/eina/eina-sharp.cs
 einalibdir = $(libdir)/eina-sharp
 einalib_DATA = $(output_DIR)/$(eina_BIN)
 
-$(output_DIR)/$(eina_BIN): $(eina_SRC) $(output_DIR)
+$(output_DIR)/$(eina_BIN): $(eina_SRC) $(output_CHECK)
 	$(CSC) -nowarn:169 -unsafe -target:library -debug $(eina_SRC) \
 		-out:$(output_DIR)/$(eina_BIN) -keyfile:$(top_srcdir)/eina/eina-sharp.snk
