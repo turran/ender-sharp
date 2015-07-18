@@ -586,6 +586,72 @@ private static extern void enesim_renderer_dispmap_y_channel_set(System.IntPtr s
             }
         }
         
+        public class MapQuad : Renderer {
+            
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_renderer_map_quad_new();
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_map_quad_vertex_color_set(System.IntPtr selfRaw, System.Int32 index, System.UInt32 colorRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.UInt32 enesim_renderer_map_quad_vertex_color_get(System.IntPtr selfRaw, System.Int32 index);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_map_quad_vertex_position_set(System.IntPtr selfRaw, System.Int32 index, System.Double x, System.Double y);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_map_quad_vertex_position_get(System.IntPtr selfRaw, System.Int32 index, System.Double x, System.Double y);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_renderer_map_quad_source_surface_get(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_map_quad_source_surface_set(System.IntPtr selfRaw, System.IntPtr srcRaw);
+            
+            public MapQuad(System.IntPtr i, bool owned) : 
+                    base(i, owned) {
+                Initialize(i, owned);
+            }
+            
+            public MapQuad() {
+                System.IntPtr ret = enesim_renderer_map_quad_new();
+                Initialize(ret, false);
+            }
+            
+            public Enesim.Surface SourceSurface {
+                get {
+                    System.IntPtr ret = enesim_renderer_map_quad_source_surface_get(raw);
+                    return new Enesim.Surface(ret, false);
+                }
+                set {
+                    Enesim.Surface src;
+                    src = value;
+                    System.IntPtr srcRaw;
+                    if ((src == null)) {
+                        srcRaw = IntPtr.Zero;
+                    }
+                    else {
+                        srcRaw = src.Raw;
+                    }
+                    enesim_renderer_map_quad_source_surface_set(raw, srcRaw);
+                }
+            }
+            
+            public void SetVertexColor(int index, Enesim.Argb color) {
+                uint colorRaw;
+                colorRaw = color;
+                enesim_renderer_map_quad_vertex_color_set(raw, index, colorRaw);
+            }
+            
+            public Enesim.Argb GetVertexColor(int index) {
+                uint ret = enesim_renderer_map_quad_vertex_color_get(raw, index);
+                return new Enesim.Argb(ret);
+            }
+            
+            public void SetVertexPosition(int index, double x, double y) {
+                enesim_renderer_map_quad_vertex_position_set(raw, index, x, y);
+            }
+            
+            public void GetVertexPosition(int index, double x, double y) {
+                enesim_renderer_map_quad_vertex_position_get(raw, index, x, y);
+            }
+        }
+        
         public class Shape : Renderer {
             
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -1333,6 +1399,95 @@ private static extern void enesim_renderer_gradient_linear_y1_set(System.IntPtr 
                     
                     public double pos;
                 }
+            }
+        }
+        
+        public class TextSpan : Shape {
+            
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_renderer_text_span_new();
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_text_span_text_set(System.IntPtr selfRaw, System.String str);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_renderer_text_span_text_get(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_text_span_direction_set(System.IntPtr selfRaw, Enesim.Text.DirectionEnum direction);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern Enesim.Text.DirectionEnum enesim_renderer_text_span_direction_get(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_renderer_text_span_buffer_get(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_renderer_text_span_real_buffer_get(System.IntPtr selfRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_text_span_real_buffer_set(System.IntPtr selfRaw, System.IntPtr bRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_renderer_text_span_font_set(System.IntPtr selfRaw, System.IntPtr fontRaw);
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr enesim_renderer_text_span_font_get(System.IntPtr selfRaw);
+            
+            public TextSpan(System.IntPtr i, bool owned) : 
+                    base(i, owned) {
+                Initialize(i, owned);
+            }
+            
+            public TextSpan() {
+                System.IntPtr ret = enesim_renderer_text_span_new();
+                Initialize(ret, false);
+            }
+            
+            public void SetText(string str) {
+                enesim_renderer_text_span_text_set(raw, str);
+            }
+            
+            public string GetText() {
+                System.IntPtr ret = enesim_renderer_text_span_text_get(raw);
+                return Marshal.PtrToStringAnsi(ret);
+            }
+            
+            public void SetDirection(Enesim.Text.DirectionEnum direction) {
+                enesim_renderer_text_span_direction_set(raw, direction);
+            }
+            
+            public Enesim.Text.DirectionEnum GetDirection() {
+                Enesim.Text.DirectionEnum ret = enesim_renderer_text_span_direction_get(raw);
+                return ret;
+            }
+            
+            public Enesim.Text.Buffer GetBuffer() {
+                System.IntPtr ret = enesim_renderer_text_span_buffer_get(raw);
+                return new Enesim.Text.Buffer(ret, false);
+            }
+            
+            public Enesim.Text.Buffer GetRealBuffer() {
+                System.IntPtr ret = enesim_renderer_text_span_real_buffer_get(raw);
+                return new Enesim.Text.Buffer(ret, false);
+            }
+            
+            public void SetRealBuffer(Enesim.Text.Buffer b) {
+                System.IntPtr bRaw;
+                if ((b == null)) {
+                    bRaw = IntPtr.Zero;
+                }
+                else {
+                    bRaw = b.Raw;
+                }
+                enesim_renderer_text_span_real_buffer_set(raw, bRaw);
+            }
+            
+            public void SetFont(Enesim.Text.Font font) {
+                System.IntPtr fontRaw;
+                if ((font == null)) {
+                    fontRaw = IntPtr.Zero;
+                }
+                else {
+                    fontRaw = font.Raw;
+                }
+                enesim_renderer_text_span_font_set(raw, fontRaw);
+            }
+            
+            public Enesim.Text.Font GetFont() {
+                System.IntPtr ret = enesim_renderer_text_span_font_get(raw);
+                return new Enesim.Text.Font(ret, false);
             }
         }
         
@@ -5827,6 +5982,13 @@ private static extern System.IntPtr enesim_text_buffer_simple_new(System.Int32 i
         }
     }
     
+    public enum DirectionEnum {
+        
+        Ltr,
+        
+        Rtl,
+    }
+    
     public class Font : IDisposable {
         
         protected IntPtr raw;
@@ -5978,12 +6140,5 @@ private static extern System.Boolean enesim_text_engine_type_get(System.IntPtr s
             name = Marshal.PtrToStringAnsi(nameRaw);
             return ret;
         }
-    }
-    
-    public enum DirectionEnum {
-        
-        Ltr,
-        
-        Rtl,
     }
 }
