@@ -169,50 +169,6 @@ namespace Ender
 			}
 		}
 
-		private CodeTypeReference GenerateBasic(Basic b)
-		{
-			System.Type st;
-			switch (b.ValueType)
-			{
-				case ValueType.BOOL:
-					st = typeof(bool);
-					break;
-				case ValueType.UINT8:
-					st = typeof(byte);
-					break;
-				case ValueType.INT8:
-					st = typeof(sbyte);
-					break;
-				case ValueType.UINT32:
-					st = typeof(uint);
-					break;
-				case ValueType.INT32:
-					st = typeof(int);
-					break;
-				case ValueType.UINT64:
-					st = typeof(ulong);
-					break;
-				case ValueType.INT64:
-					st = typeof(long);
-					break;
-				case ValueType.DOUBLE:
-					st = typeof(double);
-					break;
-				case ValueType.STRING:
-					st = typeof(string);
-					break;
-				case ValueType.POINTER:
-					st = typeof(IntPtr);
-					break;
-				case ValueType.SIZE:
-					st = typeof(IntPtr);
-					break;
-				default:
-					st = typeof(object);
-					break;
-			}
-			return new CodeTypeReference(st);
-		}
 
 		private CodeTypeReference GenerateProp(Attr attr)
 		{
@@ -306,7 +262,7 @@ namespace Ender
 				// Basic case
 				case ItemType.BASIC:
 					ret = new CodeParameterDeclarationExpression();
-					ret.Type = GenerateBasic((Basic)i);
+					ret.Type = (CodeTypeReference)i.Generate(this);
 					break;
 				case ItemType.FUNCTION:
 					ret = new CodeParameterDeclarationExpression();
@@ -658,7 +614,7 @@ namespace Ender
 				// Basic case
 				case ItemType.BASIC:
 					ret = new CodeMemberField();
-					ret.Type = GenerateBasic((Basic)i);
+					ret.Type = (CodeTypeReference)i.Generate(this);
 					ret.Name = name;
 					ret.Attributes = MemberAttributes.Public;
 					break;
@@ -1060,7 +1016,7 @@ namespace Ender
 		private CodeTypeDeclaration GenerateBasicDef(Def d, Basic b)
 		{
 			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(d.Identifier));
-			CodeTypeReference ct = GenerateBasic(b);
+			CodeTypeReference ct = (CodeTypeReference)b.Generate(this);
 			// Add the basic type as a Value member
 			CodeMemberField valueField = new CodeMemberField(ct, "value");
 			valueField.Attributes = MemberAttributes.Family;
@@ -1068,7 +1024,7 @@ namespace Ender
 			// Add the getter
 			CodeMemberProperty valueProp = new CodeMemberProperty();
 			valueProp.Name = "Value";
-			valueProp.Type = GenerateBasic(b);
+			valueProp.Type = (CodeTypeReference)b.Generate(this);
 			valueProp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 			// Declares a property get statement to return the value of the value IntPtr
 			valueProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "value")));
