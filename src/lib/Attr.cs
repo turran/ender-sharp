@@ -86,6 +86,22 @@ namespace Ender
 					return null;
 			}
 		}
+
+		#region Item interface
+		public override string ManagedType(Generator generator)
+		{
+			Item i = AttrType;
+			if (i == null)
+			{
+				Console.WriteLine("[ERR] Arg '" + Name + "' without a type?");
+				return "System.IntPtr";
+			}
+			else
+			{
+				return i.ManagedType(generator);
+			}
+		}
+		#endregion
 	}
 }
 

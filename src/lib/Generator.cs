@@ -170,21 +170,6 @@ namespace Ender
 		}
 
 
-		private CodeTypeReference GenerateProp(Attr attr)
-		{
-			if (attr == null)
-				return null;
-
-			Item i = attr.AttrType;
-			if (i == null)
-			{
-				Console.WriteLine("[ERR] Arg '" + attr.Name + "' without a type?");
-				return new CodeTypeReference("System.IntPtr");
-			}
-
-			return new CodeTypeReference(i.ManagedType(this));
-		}
-
 		private CodeParameterDeclarationExpression GenerateArg(Arg arg)
 		{
 			CodeParameterDeclarationExpression ret = null;
@@ -764,7 +749,7 @@ namespace Ender
 					CodeMemberProperty fProp = new CodeMemberProperty();
 					fProp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 					fProp.Name = ConvertName(f.Name);
-					fProp.Type = GenerateProp(f);
+					fProp.Type = new CodeTypeReference(f.ManagedType(this));
 					fProp.HasGet = true;
 					fProp.HasSet = true;
 					Item fType = f.AttrType;
@@ -904,7 +889,7 @@ namespace Ender
 					CodeMemberProperty cmp = new CodeMemberProperty();
 					cmp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 					cmp.Name = ConvertName(a.Name);
-					cmp.Type = GenerateProp(a);
+					cmp.Type = new CodeTypeReference(a.ManagedType(this));
 					// For getters/setters we just generate the function body but we need
 					// to declare the input params of the "function" to make it work
 					f = a.Getter;
