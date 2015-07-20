@@ -64,11 +64,6 @@ namespace Ender
 		{
 			return ManagedType(generator);
 		}
-
-		public override CodeObject Generate(Generator generator)
-		{
-			return null;
-		}
 		#endregion
 	}
 }
