@@ -137,10 +137,8 @@ namespace Ender
 			}
 		}
 
-		#region Item interface
-		public override CodeStatementCollection ManagedPreStatements(
-				Generator generator, string varName,
-				ArgDirection direction, ItemTransfer transfer)
+		public CodeStatementCollection ManagedPreStatements(
+				Generator generator)
 		{
 			Item i = ArgType;
 
@@ -148,6 +146,18 @@ namespace Ender
 				return null;
 			return i.ManagedPreStatements(generator, Name, Direction, Transfer);
 		}
+
+		public CodeStatementCollection ManagedPostStatements(
+				Generator generator)
+		{
+			Item i = ArgType;
+
+			if (i == null)
+				return null;
+			return i.ManagedPostStatements(generator, Name, Direction, Transfer);
+		}
+
+		#region Item interface
 		#endregion
 	}
 }

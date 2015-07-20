@@ -185,32 +185,6 @@ namespace Ender
 			return new CodeTypeReference(i.ManagedType(this));
 		}
 
-
-		// The statements needed to convert an arg from Pinvoke to C#
-		private CodeStatementCollection GenerateArgPostStatementFull(Item i, string name, ArgDirection direction, ItemTransfer transfer)
-		{
-			switch (i.Type)
-			{
-				case ItemType.BASIC:
-				case ItemType.DEF:
-				case ItemType.OBJECT:
-				case ItemType.STRUCT:
-					return i.ManagedPostStatements(this, name, direction, transfer);
-				default:
-					return null;
-			}
-		}
-
-		// The statements needed to convert an arg from Pinvoke to C#
-		private CodeStatementCollection GenerateArgPostStatement(Arg arg)
-		{
-			Item i = arg.ArgType;
-
-			if (i == null)
-				return null;
-			return GenerateArgPostStatementFull(i, arg.Name, arg.Direction, arg.Transfer);
-		}
-
 		private CodeParameterDeclarationExpression GenerateArg(Arg arg)
 		{
 			CodeParameterDeclarationExpression ret = null;
@@ -344,7 +318,7 @@ namespace Ender
 					}
 
 					// Add any pre statement we might need
-					CodeStatementCollection cs = a.ManagedPreStatements(this, a.Name, a.Direction, a.Transfer);
+					CodeStatementCollection cs = a.ManagedPreStatements(this);
 					if (cs != null)
 						csc.AddRange(cs);
 				}
@@ -411,7 +385,7 @@ namespace Ender
 					}
 
 					// Add any pre statement we might need
-					CodeStatementCollection cs = GenerateArgPostStatement(a);
+					CodeStatementCollection cs = a.ManagedPostStatements(this);
 					if (cs != null)
 						csc.AddRange(cs);
 				}

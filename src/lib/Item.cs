@@ -203,6 +203,7 @@ namespace Ender
 			Dispose(false);
 		}
 
+		// From c# to pinvoke pre statements
 		public virtual CodeStatementCollection ManagedPreStatements(Generator generator,
 				string varName, ArgDirection direction,
 				ItemTransfer transfer)
@@ -210,6 +211,7 @@ namespace Ender
 			return null;
 		}
 
+		// From c# to pinvoke post statements
 		public virtual CodeStatementCollection ManagedPostStatements(Generator generator,
 				string varName, ArgDirection direction,
 				ItemTransfer transfer)
@@ -217,6 +219,7 @@ namespace Ender
 			return null;
 		}
 
+		// From pinvoke to c# pre statements
 		public virtual CodeStatementCollection UnmanagedPreStatements(Generator generator,
 				string varName, ArgDirection direction,
 				ItemTransfer transfer)
@@ -224,6 +227,7 @@ namespace Ender
 			return null;
 		}
 
+		// From pinvoke to c# post statements
 		public virtual CodeStatementCollection UnmanagedPostStatements(Generator generator,
 				string varName, ArgDirection direction,
 				ItemTransfer transfer)
