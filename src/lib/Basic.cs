@@ -161,51 +161,6 @@ namespace Ender
 				return new CodeVariableReferenceExpression(from);
 			}	
 		}
-
-		public override CodeObject Generate(Generator generator)
-		{
-			System.Type st;
-			switch (ValueType)
-			{
-				case ValueType.BOOL:
-					st = typeof(bool);
-					break;
-				case ValueType.UINT8:
-					st = typeof(byte);
-					break;
-				case ValueType.INT8:
-					st = typeof(sbyte);
-					break;
-				case ValueType.UINT32:
-					st = typeof(uint);
-					break;
-				case ValueType.INT32:
-					st = typeof(int);
-					break;
-				case ValueType.UINT64:
-					st = typeof(ulong);
-					break;
-				case ValueType.INT64:
-					st = typeof(long);
-					break;
-				case ValueType.DOUBLE:
-					st = typeof(double);
-					break;
-				case ValueType.STRING:
-					st = typeof(string);
-					break;
-				case ValueType.POINTER:
-					st = typeof(IntPtr);
-					break;
-				case ValueType.SIZE:
-					st = typeof(IntPtr);
-					break;
-				default:
-					st = typeof(object);
-					break;
-			}
-			return new CodeTypeReference(st);
-		}
 		#endregion
 	}
 }

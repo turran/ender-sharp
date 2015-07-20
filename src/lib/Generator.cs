@@ -195,7 +195,7 @@ namespace Ender
 				// Basic case
 				case ItemType.BASIC:
 					ret = new CodeParameterDeclarationExpression();
-					ret.Type = (CodeTypeReference)i.Generate(this);
+					ret.Type = new CodeTypeReference(i.ManagedType(this));
 					break;
 				case ItemType.FUNCTION:
 					ret = new CodeParameterDeclarationExpression();
@@ -547,7 +547,7 @@ namespace Ender
 				// Basic case
 				case ItemType.BASIC:
 					ret = new CodeMemberField();
-					ret.Type = (CodeTypeReference)i.Generate(this);
+					ret.Type = new CodeTypeReference(i.ManagedType(this));
 					ret.Name = name;
 					ret.Attributes = MemberAttributes.Public;
 					break;
@@ -949,7 +949,7 @@ namespace Ender
 		private CodeTypeDeclaration GenerateBasicDef(Def d, Basic b)
 		{
 			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(d.Identifier));
-			CodeTypeReference ct = (CodeTypeReference)b.Generate(this);
+			CodeTypeReference ct = new CodeTypeReference(b.ManagedType(this));
 			// Add the basic type as a Value member
 			CodeMemberField valueField = new CodeMemberField(ct, "value");
 			valueField.Attributes = MemberAttributes.Family;
@@ -957,7 +957,7 @@ namespace Ender
 			// Add the getter
 			CodeMemberProperty valueProp = new CodeMemberProperty();
 			valueProp.Name = "Value";
-			valueProp.Type = (CodeTypeReference)b.Generate(this);
+			valueProp.Type = new CodeTypeReference(b.ManagedType(this));
 			valueProp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 			// Declares a property get statement to return the value of the value IntPtr
 			valueProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "value")));
