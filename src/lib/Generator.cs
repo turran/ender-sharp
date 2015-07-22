@@ -61,69 +61,6 @@ namespace Ender
 					Utils.Case.PASCAL, Utils.Notation.ENGLISH);
 		}
 
-		/* for a given item, generate all the namespaces and items
-		 * on the name hierarchy
-		 * foo.bar.myobject => ns(Foo) -> ns(Bar) -> object(MyObject)
-		 */
-		private CodeObject GenerateParentObjects(Item item)
-		{
-			CodeObject parent = null;
-			string[] namespaces = item.Namespace.Split('.');
-			int count = 0;
-
-			foreach (string ns in namespaces)
-			{
-				string name = String.Join(".", namespaces, 0, count + 1);
-				Item i = lib.FindItem(name);
-
-				// First look into our cache
-				if (processed.ContainsKey(name))
-				{
-					parent = processed[name];
-				}
-				else
-				{
-					// We create or either a namespace or what the GenerateComplexItem returns
-					if (i == null)
-					{
-						// No parent, namespace for sure
-						if (parent == null)
-						{
-							CodeNamespace cns = new CodeNamespace(ConvertFullName(name));
-							cu.Namespaces.Add(cns);
-							parent = cns;
-							// Add it to the dict of processed
-							processed[name] = cns;
-						}
-						// Namespace parent, new namespace but with the '.'
-						// to mark a sub namespace
-						else if (parent.GetType() == typeof(CodeNamespace))
-						{
-							CodeNamespace cns = new CodeNamespace(ConvertFullName(name));
-							cu.Namespaces.Add(cns);
-							parent = cns;
-							// Add it to the dict of processed
-							processed[name] = cns;
-						}
-						// We do support sub classes
-						else
-						{
-							CodeTypeDeclaration ty = new CodeTypeDeclaration(ConvertName(ns));
-							parent = ty;
-							// Add it to the dict of processed
-							processed[name] = ty;
-						}
-					}
-					else
-					{
-						parent = GenerateComplexItem(i);
-					}
-				}
-				count++;				
-			}
-			return parent;
-		}
-
 		private void GenerateDisposable(CodeTypeDeclaration co, Function unrefFunc)
 		{
 			if (provider.Supports(GeneratorSupport.DeclareInterfaces))
@@ -204,7 +141,7 @@ namespace Ender
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
 					ret = new CodeParameterDeclarationExpression();
-					ret.Type = new CodeTypeReference(ConvertFullName(i.Name));
+					ret.Type = new CodeTypeReference(i.ManagedType(this));
 					break;
 				// TODO same as basic?
 				case ItemType.CONSTANT:
@@ -217,12 +154,12 @@ namespace Ender
 					if (ce.IsEnum)
 					{
 						ret = new CodeParameterDeclarationExpression();
-						ret.Type = new CodeTypeReference(ConvertFullName(i.Name) + "Enum");
+						ret.Type = new CodeTypeReference(i.ClassName);
 					}
 					else
 					{
 						ret = new CodeParameterDeclarationExpression();
-						ret.Type = new CodeTypeReference(ConvertFullName(i.Name) + "Enum" + ".Enum");
+						ret.Type = new CodeTypeReference(i.ClassName + ".Enum");
 					}
 					break;
 				case ItemType.DEF:
@@ -503,7 +440,7 @@ namespace Ender
 		{
 			Console.WriteLine("Generating enum " + e.Name);
 			// Get the real item name
-			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(e.Identifier) + "Enum");
+			CodeTypeDeclaration co = new CodeTypeDeclaration(e.ClassName);
 			CodeTypeDeclaration coEnum;
 			if (e.Functions != null)
 			{
@@ -637,7 +574,7 @@ namespace Ender
 
 			Console.WriteLine("Generating struct " + s.Name);
 			// Get the real item name
-			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(s.Identifier));
+			CodeTypeDeclaration co = new CodeTypeDeclaration(s.ClassName);
 			// Add the generated type into our hash
 			processed[s.Name] = co;
 
@@ -1079,7 +1016,7 @@ namespace Ender
 			bool isStaticClass = false;
 			bool isPartial = false;
 
-			Console.WriteLine("Generating object " + o.Name + " ... " + o.ClassName);
+			Console.WriteLine("Generating object " + o.Name);
 			// Do nothing if cannot ref an object
 			Object tmp = o;
 			while (tmp != null && !hasRef && !hasUnref)
@@ -1133,7 +1070,7 @@ namespace Ender
 			}
 
 			// Get the real item name
-			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(o.Identifier));
+			CodeTypeDeclaration co = new CodeTypeDeclaration(o.ClassName);
 			// Add the generated type into our hash
 			processed[o.Name] = co;
 
@@ -1227,18 +1164,34 @@ namespace Ender
 			}
 		}
 
+		private CodeNamespace GenerateNamespace(Item item)
+		{
+			// generate the namespace the item belongs to
+			string ns = item.NSName;
+			CodeNamespace cns;
+			if (processed.ContainsKey(ns))
+			{
+				cns = (CodeNamespace)processed[ns];
+			}
+			else
+			{
+ 				cns = new CodeNamespace(ns);
+				cu.Namespaces.Add(cns);
+				processed[ns] = cns;
+			}
+			return cns;
+		}
+
 		private CodeObject GenerateComplexItem(Item item)
 		{
 			CodeObject ret = null;
-			CodeObject parent;
 
 			// check if the item has been already processed
 			if (processed.ContainsKey(item.Name))
 				return processed[item.Name];
 
-			// generate all the parent classes/namespaces
-			parent = GenerateParentObjects(item);
-			if (parent == null)
+			CodeNamespace cns = GenerateNamespace(item);
+			if (cns == null)
 			{
 				Console.WriteLine("[ERR] Impossible to generate parent for '" + item.Name + "'");
 				return null;
@@ -1281,22 +1234,7 @@ namespace Ender
 			}
 
 			// Add it to the parent object
-			if (parent.GetType() == typeof(CodeNamespace))
-			{
-				// We can not add namespaces into another namespace
-				if (ret.GetType() == typeof(CodeNamespace))
-					cu.Namespaces.Add((CodeNamespace)ret);
-				else
-				{
-					CodeNamespace ns = (CodeNamespace)parent;
-					ns.Types.Add((CodeTypeDeclaration)ret);
-				}
-			}
-			else
-			{
-				CodeTypeDeclaration ty = (CodeTypeDeclaration)parent;
-				ty.Members.Add((CodeTypeDeclaration)ret);
-			}
+			cns.Types.Add((CodeTypeDeclaration)ret);
 			return ret;
 		}
 
@@ -1323,34 +1261,31 @@ namespace Ender
 			// Get the parent namespace or object for functions and callbacks
 			foreach (Function f in items)
 			{
-				string mainName;
-				CodeTypeDeclaration main;
-				CodeObject parent;
-
 				if (skip.Contains(f.Name))
 				{
 					Console.WriteLine("Skipping function '" + f.Name + "'");
 					continue;
 				}
-
 				Console.WriteLine("Generating function '" + f.Name + "'");
-				parent = GenerateParentObjects(f);
+
+				CodeSnippetTypeMember pinvoke = f.GeneratePinvoke(this);
+				if (pinvoke == null)
+				{
+					Console.WriteLine("[ERR] Impossible to generate the pinvoke for '" + f.Name + "'");
+				}
+
+				Item parent = Lib.FindItem(f.Namespace);
 				if (parent == null)
 				{
-					Console.WriteLine("[ERR] Impossible to generate parent for '" + f.Name + "'");
-				}
-				else
-				{
-					CodeSnippetTypeMember pinvoke = null;
-
-					pinvoke = f.GeneratePinvoke(this);
-
-					// For functions on namespace add the Main
-					if (parent.GetType() == typeof(CodeNamespace))
+					CodeNamespace cns = GenerateNamespace(f);
+					if (cns == null)
 					{
-						CodeNamespace ns = (CodeNamespace)parent;
-
-						mainName = ns.Name + ".Main";
+						Console.WriteLine("[ERR] Impossible to generate namespace for '" + f.Name + "'");
+					}
+					else
+					{
+						CodeTypeDeclaration main;
+						string mainName = cns.Name + ".Main";
 
 						// Create our Main class
 						if (processed.ContainsKey(mainName))
@@ -1359,22 +1294,24 @@ namespace Ender
 						{
 							main = new CodeTypeDeclaration("Main");
 							processed[mainName] = main;
-							ns.Types.Add(main);
+							cns.Types.Add(main);
 						}
-
-						if (pinvoke != null)
-							main.Members.Add(pinvoke);
-
 						CodeTypeMember ret = GenerateFunction(f);
+						main.Members.Add(pinvoke);
 						main.Members.Add(ret);
 					}
-					// For functions on an object just add it
+				}
+				else
+				{
+					CodeTypeDeclaration ty = (CodeTypeDeclaration)GenerateComplexItem(parent);
+					if (ty == null)
+					{
+						Console.WriteLine("[ERR] Impossible to generate parent for '" + f.Name + "'");
+					}
 					else
 					{
-						CodeTypeDeclaration ty = (CodeTypeDeclaration)parent;
-						if (pinvoke != null)
-							ty.Members.Add(pinvoke);
 						CodeTypeMember ret = GenerateFunction(f);
+						ty.Members.Add(pinvoke);
 						ty.Members.Add(ret);
 					}
 				}
