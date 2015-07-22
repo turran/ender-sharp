@@ -319,6 +319,15 @@ namespace Ender
 			}
 		}
 
+		public virtual string NSName
+		{
+			get {
+				string nsName = QualifiedName;
+				int idx = nsName.LastIndexOf('.');
+				return nsName.Substring(0, idx);
+			}
+		}
+
 		#region IDisposable
 		public void Dispose()
 		{
