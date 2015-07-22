@@ -241,6 +241,7 @@ namespace Ender
 		public override string UnmanagedType(Generator generator,
 				ArgDirection direction, ItemTransfer transfer)
 		{
+			//return ClassName + "Internal";
 			return generator.ConvertFullName(Name) + "Internal";
 		}
 

@@ -53,7 +53,7 @@ namespace Ender
 		public override string ManagedType(Generator generator)
 		{
 			List funcs = Functions;
-			string ret = generator.ConvertFullName(Name) + "Enum";
+			string ret = QualifiedName;
 			if (funcs != null)
 				ret += ".Enum";
 			return ret;
