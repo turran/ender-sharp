@@ -109,6 +109,14 @@ namespace Ender
 			}
 		}
 
+		public Lib Lib
+		{
+			get {
+				IntPtr l = ender_item_lib_get(raw);
+				return new Lib(l);
+			}
+		}
+
 		public ItemType Type
 		{
 			get {
@@ -257,6 +265,58 @@ namespace Ender
 				string from, ArgDirection direction, ItemTransfer transfer)
 		{
 			return new CodeVariableReferenceExpression(from);
+		}
+
+		public virtual string QualifiedName
+		{
+			get {
+				int idx = Name.LastIndexOf('.');
+				string prefix = Name.Substring(0, idx);
+				string className = Name.Substring(idx + 1, Name.Length - (idx + 1));
+
+				while (Lib.FindItem(prefix) != null)
+				{
+					idx = prefix.LastIndexOf('.');
+
+					string tmp = prefix;
+					prefix = tmp.Substring(0, idx);
+
+					string newClassName = tmp.Substring(idx + 1, tmp.Length - (idx + 1));
+					string oldClassName = className.Substring(0, 1).ToUpper() + className.Substring(1, className.Length - 1);
+					className = newClassName + oldClassName;
+
+				}
+
+				int fromIndex = 0;
+				while ((idx = className.IndexOf("_", fromIndex)) != -1)
+				{
+						className = className.Substring(0, idx) +
+								className.Substring(idx + 1, 1).ToUpper() + 
+								className.Substring(idx + 2, className.Length - (idx + 2));
+						fromIndex = idx;
+				}
+
+				className = className.Substring(0, 1).ToUpper() + className.Substring(1, className.Length - 1);
+				// Finally camelize the prefix too
+				string[] prefixes = prefix.Split('.');
+				for (int i = 0; i < prefixes.Length; i++)
+				{
+					string p = prefixes[i];
+					prefixes[i] = p.Substring(0, 1).ToUpper() + p.Substring(1, p.Length - 1);
+				}
+				prefix = String.Join(".", prefixes);
+
+				return prefix + "." + className;
+			}
+		}
+
+		public virtual string ClassName
+		{
+			get {
+				string qName = QualifiedName;
+				int idx = qName.LastIndexOf('.');
+				return qName.Substring(idx + 1, qName.Length - (idx + 1));
+			}
 		}
 
 		#region IDisposable

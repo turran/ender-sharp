@@ -63,7 +63,7 @@ namespace Ender
 
 		/* for a given item, generate all the namespaces and items
 		 * on the name hierarchy
-		 * foo.bar.myobject => ns(foo) -> ns(bar) -> object(MyObject)
+		 * foo.bar.myobject => ns(Foo) -> ns(Bar) -> object(MyObject)
 		 */
 		private CodeObject GenerateParentObjects(Item item)
 		{
@@ -1079,7 +1079,7 @@ namespace Ender
 			bool isStaticClass = false;
 			bool isPartial = false;
 
-			Console.WriteLine("Generating object " + o.Name);
+			Console.WriteLine("Generating object " + o.Name + " ... " + o.ClassName);
 			// Do nothing if cannot ref an object
 			Object tmp = o;
 			while (tmp != null && !hasRef && !hasUnref)
