@@ -439,7 +439,7 @@ return retInternal;
             return ret;
         }
         
-        public bool Draw(Enesim.Surface s, Rop rop, Eina.Rectangle clip, int x, int y, out Enesim.Log log) {
+        public bool Draw(Enesim.Surface s, Enesim.Rop rop, Eina.Rectangle clip, int x, int y, out Enesim.Log log) {
             System.IntPtr sRaw;
             if ((s == null)) {
                 sRaw = IntPtr.Zero;
@@ -463,7 +463,7 @@ return retInternal;
             return ret;
         }
         
-        public bool DrawList(Enesim.Surface s, Rop rop, System.IntPtr clips, int x, int y, out Enesim.Log log) {
+        public bool DrawList(Enesim.Surface s, Enesim.Rop rop, System.IntPtr clips, int x, int y, out Enesim.Log log) {
             System.IntPtr sRaw;
             if ((s == null)) {
                 sRaw = IntPtr.Zero;
@@ -477,7 +477,7 @@ return retInternal;
             return ret;
         }
         
-        public static void SetDefaultQuality(Quality quality) {
+        public static void SetDefaultQuality(Enesim.Quality quality) {
             enesim_renderer_default_quality_set(quality);
         }
         
@@ -728,12 +728,12 @@ private static extern Enesim.AplhaHint enesim_surface_alpha_hint_get(System.IntP
             Initialize(i, owned);
         }
         
-        public Surface(Format.Enum f, uint w, uint h) {
+        public Surface(Enesim.Format.Enum f, uint w, uint h) {
             System.IntPtr ret = enesim_surface_new(f, w, h);
             Initialize(ret, false);
         }
         
-        public Surface(Format.Enum f, uint w, uint h, bool copy, System.IntPtr sw_data, System.IntPtr stride, Enesim.Buffer.Free free_func, System.IntPtr free_func_data) {
+        public Surface(Enesim.Format.Enum f, uint w, uint h, bool copy, System.IntPtr sw_data, System.IntPtr stride, Enesim.Buffer.Free free_func, System.IntPtr free_func_data) {
 
 Enesim.Buffer.FreeInternal free_funcRaw = (System.IntPtr buffer_data, System.IntPtr data) => {
 free_func(buffer_data, data);
@@ -743,7 +743,7 @@ free_func(buffer_data, data);
             Initialize(ret, false);
         }
         
-        public Surface(Format.Enum f, uint w, uint h, Enesim.Pool p) {
+        public Surface(Enesim.Format.Enum f, uint w, uint h, Enesim.Pool p) {
             System.IntPtr pRaw;
             if ((p == null)) {
                 pRaw = IntPtr.Zero;
@@ -755,7 +755,7 @@ free_func(buffer_data, data);
             Initialize(ret, false);
         }
         
-        public Surface(Format.Enum fmt, uint w, uint h, Enesim.Pool p, bool copy, System.IntPtr sw_data, System.IntPtr stride, Enesim.Buffer.Free free_func, System.IntPtr free_func_data) {
+        public Surface(Enesim.Format.Enum fmt, uint w, uint h, Enesim.Pool p, bool copy, System.IntPtr sw_data, System.IntPtr stride, Enesim.Buffer.Free free_func, System.IntPtr free_func_data) {
             System.IntPtr pRaw;
             if ((p == null)) {
                 pRaw = IntPtr.Zero;
@@ -868,7 +868,7 @@ free_func(buffer_data, data);
             enesim_surface_unlock(raw);
         }
         
-        public void SetAlphaHint(AplhaHint hint) {
+        public void SetAlphaHint(Enesim.AplhaHint hint) {
             enesim_surface_alpha_hint_set(raw, hint);
         }
         
@@ -1292,7 +1292,7 @@ private static extern System.Boolean enesim_stream_type_get(System.IntPtr selfRa
         public delegate void Free(System.IntPtr b);
         
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr enesim_stream_buffer_new(System.IntPtr buffer, System.IntPtr len, Enesim.Stream.Buffer.FreeInternal free_cbRaw);
+private static extern System.IntPtr enesim_stream_buffer_new(System.IntPtr buffer, System.IntPtr len, Enesim.StreamBuffer.FreeInternal free_cbRaw);
 
 internal delegate void FreeInternal(System.IntPtr b);
         
@@ -1301,9 +1301,9 @@ internal delegate void FreeInternal(System.IntPtr b);
             Initialize(i, owned);
         }
         
-        public StreamBuffer(System.IntPtr buffer, System.IntPtr len, Enesim.Stream.Buffer.Free free_cb) {
+        public StreamBuffer(System.IntPtr buffer, System.IntPtr len, Enesim.StreamBuffer.Free free_cb) {
 
-Enesim.Stream.Buffer.FreeInternal free_cbRaw = (System.IntPtr b) => {
+Enesim.StreamBuffer.FreeInternal free_cbRaw = (System.IntPtr b) => {
 free_cb(b);
 
 };
@@ -1404,7 +1404,7 @@ private static extern System.IntPtr enesim_renderer_text_span_font_get(System.In
             return Marshal.PtrToStringAnsi(ret);
         }
         
-        public void SetDirection(Direction direction) {
+        public void SetDirection(Enesim.Text.Direction direction) {
             enesim_renderer_text_span_direction_set(raw, direction);
         }
         
@@ -2044,9 +2044,9 @@ private static extern void enesim_renderer_compound_layer_remove(System.IntPtr s
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_compound_layer_clear(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_compound_layer_foreach(System.IntPtr selfRaw, Enesim.Renderer.Compound.ForeachLayerInternal cbRaw, System.IntPtr user_data);
+private static extern void enesim_renderer_compound_layer_foreach(System.IntPtr selfRaw, Enesim.RendererCompound.ForeachLayerInternal cbRaw, System.IntPtr user_data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_compound_layer_reverse_foreach(System.IntPtr selfRaw, Enesim.Renderer.Compound.ForeachLayerInternal cbRaw, System.IntPtr user_data);
+private static extern void enesim_renderer_compound_layer_reverse_foreach(System.IntPtr selfRaw, Enesim.RendererCompound.ForeachLayerInternal cbRaw, System.IntPtr user_data);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Boolean enesim_renderer_compound_background_enable_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -2120,9 +2120,9 @@ internal delegate System.Boolean ForeachLayerInternal(System.IntPtr rRaw, System
             enesim_renderer_compound_layer_clear(raw);
         }
         
-        public void LayerForeach(Enesim.Renderer.Compound.ForeachLayer cb, System.IntPtr user_data) {
+        public void LayerForeach(Enesim.RendererCompound.ForeachLayer cb, System.IntPtr user_data) {
 
-Enesim.Renderer.Compound.ForeachLayerInternal cbRaw = (System.IntPtr rRaw, System.IntPtr layerRaw, System.IntPtr data) => {
+Enesim.RendererCompound.ForeachLayerInternal cbRaw = (System.IntPtr rRaw, System.IntPtr layerRaw, System.IntPtr data) => {
 Enesim.Renderer r;
 if ((rRaw == IntPtr.Zero)) {
     r = null;
@@ -2144,9 +2144,9 @@ return retInternal;
             enesim_renderer_compound_layer_foreach(raw, cbRaw, user_data);
         }
         
-        public void LayerReverseForeach(Enesim.Renderer.Compound.ForeachLayer cb, System.IntPtr user_data) {
+        public void LayerReverseForeach(Enesim.RendererCompound.ForeachLayer cb, System.IntPtr user_data) {
 
-Enesim.Renderer.Compound.ForeachLayerInternal cbRaw = (System.IntPtr rRaw, System.IntPtr layerRaw, System.IntPtr data) => {
+Enesim.RendererCompound.ForeachLayerInternal cbRaw = (System.IntPtr rRaw, System.IntPtr layerRaw, System.IntPtr data) => {
 Enesim.Renderer r;
 if ((rRaw == IntPtr.Zero)) {
     r = null;
@@ -3160,12 +3160,12 @@ internal delegate void FreeInternal(System.IntPtr buffer_data, System.IntPtr dat
             Initialize(i, owned);
         }
         
-        public Buffer(BufferFormat.Enum f, uint w, uint h) {
+        public Buffer(Enesim.BufferFormat.Enum f, uint w, uint h) {
             System.IntPtr ret = enesim_buffer_new(f, w, h);
             Initialize(ret, false);
         }
         
-        public Buffer(BufferFormat.Enum f, uint w, uint h, bool copy, Enesim.BufferSwData sw_data, Enesim.Buffer.Free free_func, System.IntPtr free_func_data) {
+        public Buffer(Enesim.BufferFormat.Enum f, uint w, uint h, bool copy, Enesim.BufferSwData sw_data, Enesim.Buffer.Free free_func, System.IntPtr free_func_data) {
             System.IntPtr sw_dataRaw;
             if ((sw_data == null)) {
                 sw_dataRaw = IntPtr.Zero;
@@ -3185,7 +3185,7 @@ free_func(buffer_data, data);
             Initialize(ret, false);
         }
         
-        public Buffer(BufferFormat.Enum f, uint w, uint h, Enesim.Pool p) {
+        public Buffer(Enesim.BufferFormat.Enum f, uint w, uint h, Enesim.Pool p) {
             System.IntPtr pRaw;
             if ((p == null)) {
                 pRaw = IntPtr.Zero;
@@ -3197,7 +3197,7 @@ free_func(buffer_data, data);
             Initialize(ret, false);
         }
         
-        public Buffer(BufferFormat.Enum f, uint w, uint h, Enesim.Pool p, bool copy, Enesim.BufferSwData sw_data, Enesim.Buffer.Free free_func, System.IntPtr free_func_data) {
+        public Buffer(Enesim.BufferFormat.Enum f, uint w, uint h, Enesim.Pool p, bool copy, Enesim.BufferSwData sw_data, Enesim.Buffer.Free free_func, System.IntPtr free_func_data) {
             System.IntPtr pRaw;
             if ((p == null)) {
                 pRaw = IntPtr.Zero;
@@ -3284,7 +3284,7 @@ free_func(buffer_data, data);
             System.IntPtr dataRaw;
             dataRaw = Enesim.BufferSwData.CreateRaw();
             bool ret = enesim_buffer_sw_data_get(raw, dataRaw);
-            data = new Enesim.Buffer.SwData();
+            data = new Enesim.BufferSwData();
             data.Raw = dataRaw;
             return ret;
         }
@@ -3293,7 +3293,7 @@ free_func(buffer_data, data);
             System.IntPtr dataRaw;
             dataRaw = Enesim.BufferSwData.CreateRaw();
             bool ret = enesim_buffer_map(raw, dataRaw);
-            data = new Enesim.Buffer.SwData();
+            data = new Enesim.BufferSwData();
             data.Raw = dataRaw;
             return ret;
         }
@@ -3321,7 +3321,7 @@ free_func(buffer_data, data);
             enesim_buffer_unlock(raw);
         }
         
-        public void SetAlphaHint(AplhaHint hint) {
+        public void SetAlphaHint(Enesim.AplhaHint hint) {
             enesim_buffer_alpha_hint_set(raw, hint);
         }
         
@@ -3558,7 +3558,7 @@ private static extern System.Boolean enesim_image_file_save(System.String file, 
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_image_file_save_async(System.String file, System.IntPtr bRaw, Enesim.Image.CallbackInternal cbRaw, System.IntPtr user_data, System.String options);
         
-        public static bool GetInfo(string file, out int w, out int h, out BufferFormat.Enum sfmt, string options, out Eina.Error err) {
+        public static bool GetInfo(string file, out int w, out int h, out Enesim.BufferFormat.Enum sfmt, string options, out Eina.Error err) {
             int errRaw;
             bool ret = enesim_image_file_info_get(file, out  w, out  h, out  sfmt, options, out  errRaw);
             err = errRaw;
@@ -3952,7 +3952,7 @@ internal delegate void CallbackInternal(System.IntPtr rRaw, System.IntPtr data, 
             enesim_image_dispatch();
         }
         
-        public static bool GetInfo(Enesim.Stream s, string mime, out int w, out int h, out BufferFormat.Enum sfmt, string options, out Eina.Error err) {
+        public static bool GetInfo(Enesim.Stream s, string mime, out int w, out int h, out Enesim.BufferFormat.Enum sfmt, string options, out Eina.Error err) {
             System.IntPtr sRaw;
             if ((s == null)) {
                 sRaw = IntPtr.Zero;
@@ -4666,6 +4666,97 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         }
     }
     
+    public class PathCommandScubicTo {
+        
+        private ScubicToStruct rawStruct;
+        
+        public PathCommandScubicTo() {
+        }
+        
+        public PathCommandScubicTo(System.IntPtr i, bool owned) {
+            rawStruct = ((ScubicToStruct)(Marshal.PtrToStructure(i, typeof(ScubicToStruct))));
+        }
+        
+        public IntPtr Raw {
+            get {
+                System.IntPtr raw;
+                raw = CreateRaw();
+                Marshal.StructureToPtr(rawStruct, raw, false);
+                return raw;
+            }
+            set {
+                rawStruct = ((ScubicToStruct)(Marshal.PtrToStructure(value, typeof(ScubicToStruct))));
+                DestroyRaw(value);
+            }
+        }
+        
+        public double X {
+            get {
+                double ret;
+                ret = this.rawStruct.x;
+                return ret;
+            }
+            set {
+                this.rawStruct.x = value;
+            }
+        }
+        
+        public double Y {
+            get {
+                double ret;
+                ret = this.rawStruct.y;
+                return ret;
+            }
+            set {
+                this.rawStruct.y = value;
+            }
+        }
+        
+        public double CtrlX {
+            get {
+                double ret;
+                ret = this.rawStruct.ctrl_x;
+                return ret;
+            }
+            set {
+                this.rawStruct.ctrl_x = value;
+            }
+        }
+        
+        public double CtrlY {
+            get {
+                double ret;
+                ret = this.rawStruct.ctrl_y;
+                return ret;
+            }
+            set {
+                this.rawStruct.ctrl_y = value;
+            }
+        }
+        
+        public static System.IntPtr CreateRaw() {
+            System.IntPtr raw;
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(ScubicToStruct)));
+            return raw;
+        }
+        
+        public static void DestroyRaw(System.IntPtr raw) {
+            Marshal.FreeHGlobal(raw);
+        }
+        
+        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct ScubicToStruct {
+            
+            public double x;
+            
+            public double y;
+            
+            public double ctrl_x;
+            
+            public double ctrl_y;
+        }
+    }
+    
     public class BufferSwData24bpp {
         
         private SwData24bppStruct rawStruct;
@@ -4969,7 +5060,202 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public struct CommandStruct {
             
-            public Enesim.Path.Command.Definition data;
+            public Enesim.PathCommandDefinition data;
+        }
+    }
+    
+    public class PathCommandSquadraticTo {
+        
+        private SquadraticToStruct rawStruct;
+        
+        public PathCommandSquadraticTo() {
+        }
+        
+        public PathCommandSquadraticTo(System.IntPtr i, bool owned) {
+            rawStruct = ((SquadraticToStruct)(Marshal.PtrToStructure(i, typeof(SquadraticToStruct))));
+        }
+        
+        public IntPtr Raw {
+            get {
+                System.IntPtr raw;
+                raw = CreateRaw();
+                Marshal.StructureToPtr(rawStruct, raw, false);
+                return raw;
+            }
+            set {
+                rawStruct = ((SquadraticToStruct)(Marshal.PtrToStructure(value, typeof(SquadraticToStruct))));
+                DestroyRaw(value);
+            }
+        }
+        
+        public double X {
+            get {
+                double ret;
+                ret = this.rawStruct.x;
+                return ret;
+            }
+            set {
+                this.rawStruct.x = value;
+            }
+        }
+        
+        public double Y {
+            get {
+                double ret;
+                ret = this.rawStruct.y;
+                return ret;
+            }
+            set {
+                this.rawStruct.y = value;
+            }
+        }
+        
+        public static System.IntPtr CreateRaw() {
+            System.IntPtr raw;
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(SquadraticToStruct)));
+            return raw;
+        }
+        
+        public static void DestroyRaw(System.IntPtr raw) {
+            Marshal.FreeHGlobal(raw);
+        }
+        
+        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct SquadraticToStruct {
+            
+            public double x;
+            
+            public double y;
+        }
+    }
+    
+    public class PathCommandArcTo {
+        
+        private ArcToStruct rawStruct;
+        
+        public PathCommandArcTo() {
+        }
+        
+        public PathCommandArcTo(System.IntPtr i, bool owned) {
+            rawStruct = ((ArcToStruct)(Marshal.PtrToStructure(i, typeof(ArcToStruct))));
+        }
+        
+        public IntPtr Raw {
+            get {
+                System.IntPtr raw;
+                raw = CreateRaw();
+                Marshal.StructureToPtr(rawStruct, raw, false);
+                return raw;
+            }
+            set {
+                rawStruct = ((ArcToStruct)(Marshal.PtrToStructure(value, typeof(ArcToStruct))));
+                DestroyRaw(value);
+            }
+        }
+        
+        public double Rx {
+            get {
+                double ret;
+                ret = this.rawStruct.rx;
+                return ret;
+            }
+            set {
+                this.rawStruct.rx = value;
+            }
+        }
+        
+        public double Ry {
+            get {
+                double ret;
+                ret = this.rawStruct.ry;
+                return ret;
+            }
+            set {
+                this.rawStruct.ry = value;
+            }
+        }
+        
+        public double Angle {
+            get {
+                double ret;
+                ret = this.rawStruct.angle;
+                return ret;
+            }
+            set {
+                this.rawStruct.angle = value;
+            }
+        }
+        
+        public double X {
+            get {
+                double ret;
+                ret = this.rawStruct.x;
+                return ret;
+            }
+            set {
+                this.rawStruct.x = value;
+            }
+        }
+        
+        public double Y {
+            get {
+                double ret;
+                ret = this.rawStruct.y;
+                return ret;
+            }
+            set {
+                this.rawStruct.y = value;
+            }
+        }
+        
+        public bool Large {
+            get {
+                bool ret;
+                ret = this.rawStruct.large;
+                return ret;
+            }
+            set {
+                this.rawStruct.large = value;
+            }
+        }
+        
+        public bool Sweep {
+            get {
+                bool ret;
+                ret = this.rawStruct.sweep;
+                return ret;
+            }
+            set {
+                this.rawStruct.sweep = value;
+            }
+        }
+        
+        public static System.IntPtr CreateRaw() {
+            System.IntPtr raw;
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(ArcToStruct)));
+            return raw;
+        }
+        
+        public static void DestroyRaw(System.IntPtr raw) {
+            Marshal.FreeHGlobal(raw);
+        }
+        
+        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct ArcToStruct {
+            
+            public double rx;
+            
+            public double ry;
+            
+            public double angle;
+            
+            public double x;
+            
+            public double y;
+            
+            public bool large;
+            
+            public bool sweep;
         }
     }
     
@@ -5038,6 +5324,123 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         }
     }
     
+    public class PathCommandCubicTo {
+        
+        private CubicToStruct rawStruct;
+        
+        public PathCommandCubicTo() {
+        }
+        
+        public PathCommandCubicTo(System.IntPtr i, bool owned) {
+            rawStruct = ((CubicToStruct)(Marshal.PtrToStructure(i, typeof(CubicToStruct))));
+        }
+        
+        public IntPtr Raw {
+            get {
+                System.IntPtr raw;
+                raw = CreateRaw();
+                Marshal.StructureToPtr(rawStruct, raw, false);
+                return raw;
+            }
+            set {
+                rawStruct = ((CubicToStruct)(Marshal.PtrToStructure(value, typeof(CubicToStruct))));
+                DestroyRaw(value);
+            }
+        }
+        
+        public double X {
+            get {
+                double ret;
+                ret = this.rawStruct.x;
+                return ret;
+            }
+            set {
+                this.rawStruct.x = value;
+            }
+        }
+        
+        public double Y {
+            get {
+                double ret;
+                ret = this.rawStruct.y;
+                return ret;
+            }
+            set {
+                this.rawStruct.y = value;
+            }
+        }
+        
+        public double CtrlX0 {
+            get {
+                double ret;
+                ret = this.rawStruct.ctrl_x0;
+                return ret;
+            }
+            set {
+                this.rawStruct.ctrl_x0 = value;
+            }
+        }
+        
+        public double CtrlY0 {
+            get {
+                double ret;
+                ret = this.rawStruct.ctrl_y0;
+                return ret;
+            }
+            set {
+                this.rawStruct.ctrl_y0 = value;
+            }
+        }
+        
+        public double CtrlX1 {
+            get {
+                double ret;
+                ret = this.rawStruct.ctrl_x1;
+                return ret;
+            }
+            set {
+                this.rawStruct.ctrl_x1 = value;
+            }
+        }
+        
+        public double CtrlY1 {
+            get {
+                double ret;
+                ret = this.rawStruct.ctrl_y1;
+                return ret;
+            }
+            set {
+                this.rawStruct.ctrl_y1 = value;
+            }
+        }
+        
+        public static System.IntPtr CreateRaw() {
+            System.IntPtr raw;
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(CubicToStruct)));
+            return raw;
+        }
+        
+        public static void DestroyRaw(System.IntPtr raw) {
+            Marshal.FreeHGlobal(raw);
+        }
+        
+        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct CubicToStruct {
+            
+            public double x;
+            
+            public double y;
+            
+            public double ctrl_x0;
+            
+            public double ctrl_y0;
+            
+            public double ctrl_x1;
+            
+            public double ctrl_y1;
+        }
+    }
+    
     public class PathCommandClose {
         
         private CloseStruct rawStruct;
@@ -5090,15 +5493,15 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         }
     }
     
-    public class ImageProviderDescriptor {
+    public class PathCommandMoveTo {
         
-        private DescriptorStruct rawStruct;
+        private MoveToStruct rawStruct;
         
-        public ImageProviderDescriptor() {
+        public PathCommandMoveTo() {
         }
         
-        public ImageProviderDescriptor(System.IntPtr i, bool owned) {
-            rawStruct = ((DescriptorStruct)(Marshal.PtrToStructure(i, typeof(DescriptorStruct))));
+        public PathCommandMoveTo(System.IntPtr i, bool owned) {
+            rawStruct = ((MoveToStruct)(Marshal.PtrToStructure(i, typeof(MoveToStruct))));
         }
         
         public IntPtr Raw {
@@ -5109,222 +5512,36 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
                 return raw;
             }
             set {
-                rawStruct = ((DescriptorStruct)(Marshal.PtrToStructure(value, typeof(DescriptorStruct))));
+                rawStruct = ((MoveToStruct)(Marshal.PtrToStructure(value, typeof(MoveToStruct))));
                 DestroyRaw(value);
             }
         }
         
-        public System.IntPtr GetVersion {
+        public double X {
             get {
-                System.IntPtr ret;
-
-Enesim.Image.Provider.GetVersionInternal retRaw = () => {
-int retInternal = ret();
-return retInternal;
-
-};
-                return retRaw;
+                double ret;
+                ret = this.rawStruct.x;
+                return ret;
             }
             set {
-
-Enesim.Image.Provider.GetVersionInternal valueRaw = () => {
-int retInternal = value();
-return retInternal;
-
-};
+                this.rawStruct.x = value;
             }
         }
         
-        public System.IntPtr GetName {
+        public double Y {
             get {
-                System.IntPtr ret;
-
-Enesim.Image.Provider.GetNameInternal retRaw = () => {
-System.IntPtr retInternal = ret();
-return retInternal;
-
-};
-                return retRaw;
+                double ret;
+                ret = this.rawStruct.y;
+                return ret;
             }
             set {
-
-Enesim.Image.Provider.GetNameInternal valueRaw = () => {
-System.IntPtr retInternal = value();
-return retInternal;
-
-};
-            }
-        }
-        
-        public System.IntPtr OptionsParse {
-            get {
-                System.IntPtr ret;
-
-Enesim.Image.Provider.OptionsParseInternal retRaw = () => {
-System.IntPtr retInternal = ret();
-return retInternal;
-
-};
-                return retRaw;
-            }
-            set {
-
-Enesim.Image.Provider.OptionsParseInternal valueRaw = () => {
-System.IntPtr retInternal = value();
-return retInternal;
-
-};
-            }
-        }
-        
-        public System.IntPtr OptionsFree {
-            get {
-                System.IntPtr ret;
-
-Enesim.Image.Provider.OptionsFreeInternal retRaw = () => {
-ret();
-
-};
-                return retRaw;
-            }
-            set {
-
-Enesim.Image.Provider.OptionsFreeInternal valueRaw = () => {
-value();
-
-};
-            }
-        }
-        
-        public System.IntPtr Loadable {
-            get {
-                System.IntPtr ret;
-
-Enesim.Image.Provider.LoadableInternal retRaw = () => {
-bool retInternal = ret();
-return retInternal;
-
-};
-                return retRaw;
-            }
-            set {
-
-Enesim.Image.Provider.LoadableInternal valueRaw = () => {
-bool retInternal = value();
-return retInternal;
-
-};
-            }
-        }
-        
-        public System.IntPtr Saveable {
-            get {
-                System.IntPtr ret;
-
-Enesim.Image.Provider.SaveableInternal retRaw = () => {
-bool retInternal = ret();
-return retInternal;
-
-};
-                return retRaw;
-            }
-            set {
-
-Enesim.Image.Provider.SaveableInternal valueRaw = () => {
-bool retInternal = value();
-return retInternal;
-
-};
-            }
-        }
-        
-        public System.IntPtr GetInfo {
-            get {
-                System.IntPtr ret;
-
-Enesim.Image.Provider.GetInfoInternal retRaw = () => {
-bool retInternal = ret();
-return retInternal;
-
-};
-                return retRaw;
-            }
-            set {
-
-Enesim.Image.Provider.GetInfoInternal valueRaw = () => {
-bool retInternal = value();
-return retInternal;
-
-};
-            }
-        }
-        
-        public System.IntPtr GetFormats {
-            get {
-                System.IntPtr ret;
-
-Enesim.Image.Provider.GetFormatsInternal retRaw = () => {
-int retInternal = ret();
-return retInternal;
-
-};
-                return retRaw;
-            }
-            set {
-
-Enesim.Image.Provider.GetFormatsInternal valueRaw = () => {
-int retInternal = value();
-return retInternal;
-
-};
-            }
-        }
-        
-        public System.IntPtr Load {
-            get {
-                System.IntPtr ret;
-
-Enesim.Image.Provider.LoadInternal retRaw = () => {
-bool retInternal = ret();
-return retInternal;
-
-};
-                return retRaw;
-            }
-            set {
-
-Enesim.Image.Provider.LoadInternal valueRaw = () => {
-bool retInternal = value();
-return retInternal;
-
-};
-            }
-        }
-        
-        public System.IntPtr Save {
-            get {
-                System.IntPtr ret;
-
-Enesim.Image.Provider.SaveInternal retRaw = () => {
-bool retInternal = ret();
-return retInternal;
-
-};
-                return retRaw;
-            }
-            set {
-
-Enesim.Image.Provider.SaveInternal valueRaw = () => {
-bool retInternal = value();
-return retInternal;
-
-};
+                this.rawStruct.y = value;
             }
         }
         
         public static System.IntPtr CreateRaw() {
             System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(DescriptorStruct)));
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(MoveToStruct)));
             return raw;
         }
         
@@ -5333,7 +5550,11 @@ return retInternal;
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct DescriptorStruct {
+        public struct MoveToStruct {
+            
+            public double x;
+            
+            public double y;
         }
     }
     
@@ -5399,6 +5620,71 @@ return retInternal;
             public double length;
             
             public double gap;
+        }
+    }
+    
+    public class PathCommandLineTo {
+        
+        private LineToStruct rawStruct;
+        
+        public PathCommandLineTo() {
+        }
+        
+        public PathCommandLineTo(System.IntPtr i, bool owned) {
+            rawStruct = ((LineToStruct)(Marshal.PtrToStructure(i, typeof(LineToStruct))));
+        }
+        
+        public IntPtr Raw {
+            get {
+                System.IntPtr raw;
+                raw = CreateRaw();
+                Marshal.StructureToPtr(rawStruct, raw, false);
+                return raw;
+            }
+            set {
+                rawStruct = ((LineToStruct)(Marshal.PtrToStructure(value, typeof(LineToStruct))));
+                DestroyRaw(value);
+            }
+        }
+        
+        public double X {
+            get {
+                double ret;
+                ret = this.rawStruct.x;
+                return ret;
+            }
+            set {
+                this.rawStruct.x = value;
+            }
+        }
+        
+        public double Y {
+            get {
+                double ret;
+                ret = this.rawStruct.y;
+                return ret;
+            }
+            set {
+                this.rawStruct.y = value;
+            }
+        }
+        
+        public static System.IntPtr CreateRaw() {
+            System.IntPtr raw;
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(LineToStruct)));
+            return raw;
+        }
+        
+        public static void DestroyRaw(System.IntPtr raw) {
+            Marshal.FreeHGlobal(raw);
+        }
+        
+        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct LineToStruct {
+            
+            public double x;
+            
+            public double y;
         }
     }
     
@@ -5633,6 +5919,97 @@ return retInternal;
             public double zy;
             
             public double zz;
+        }
+    }
+    
+    public class PathCommandQuadraticTo {
+        
+        private QuadraticToStruct rawStruct;
+        
+        public PathCommandQuadraticTo() {
+        }
+        
+        public PathCommandQuadraticTo(System.IntPtr i, bool owned) {
+            rawStruct = ((QuadraticToStruct)(Marshal.PtrToStructure(i, typeof(QuadraticToStruct))));
+        }
+        
+        public IntPtr Raw {
+            get {
+                System.IntPtr raw;
+                raw = CreateRaw();
+                Marshal.StructureToPtr(rawStruct, raw, false);
+                return raw;
+            }
+            set {
+                rawStruct = ((QuadraticToStruct)(Marshal.PtrToStructure(value, typeof(QuadraticToStruct))));
+                DestroyRaw(value);
+            }
+        }
+        
+        public double X {
+            get {
+                double ret;
+                ret = this.rawStruct.x;
+                return ret;
+            }
+            set {
+                this.rawStruct.x = value;
+            }
+        }
+        
+        public double Y {
+            get {
+                double ret;
+                ret = this.rawStruct.y;
+                return ret;
+            }
+            set {
+                this.rawStruct.y = value;
+            }
+        }
+        
+        public double CtrlX {
+            get {
+                double ret;
+                ret = this.rawStruct.ctrl_x;
+                return ret;
+            }
+            set {
+                this.rawStruct.ctrl_x = value;
+            }
+        }
+        
+        public double CtrlY {
+            get {
+                double ret;
+                ret = this.rawStruct.ctrl_y;
+                return ret;
+            }
+            set {
+                this.rawStruct.ctrl_y = value;
+            }
+        }
+        
+        public static System.IntPtr CreateRaw() {
+            System.IntPtr raw;
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(QuadraticToStruct)));
+            return raw;
+        }
+        
+        public static void DestroyRaw(System.IntPtr raw) {
+            Marshal.FreeHGlobal(raw);
+        }
+        
+        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct QuadraticToStruct {
+            
+            public double x;
+            
+            public double y;
+            
+            public double ctrl_x;
+            
+            public double ctrl_y;
         }
     }
     
@@ -6030,30 +6407,6 @@ private static extern void enesim_argb_components_to(System.UInt32 argbRaw, out 
             return v.value;
         }
     }
-    
-    public class Main {
-        
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_shutdown();
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_init();
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_version_get(out System.UInt32 major, out System.UInt32 minor, out System.UInt32 micro);
-        
-        public static int Shutdown() {
-            int ret = enesim_shutdown();
-            return ret;
-        }
-        
-        public static int Init() {
-            int ret = enesim_init();
-            return ret;
-        }
-        
-        public static void GetVersion(out uint major, out uint minor, out uint micro) {
-            enesim_version_get(out  major, out  minor, out  micro);
-        }
-    }
 }
 namespace Enesim.Text {
     
@@ -6389,706 +6742,30 @@ private static extern System.Boolean enesim_text_engine_type_get(System.IntPtr s
         }
     }
 }
-namespace Enesim.Path.Command.Scubic {
+namespace Enesim.Main {
     
-    
-    public class To {
-        
-        private ToStruct rawStruct;
-        
-        public To() {
-        }
-        
-        public To(System.IntPtr i, bool owned) {
-            rawStruct = ((ToStruct)(Marshal.PtrToStructure(i, typeof(ToStruct))));
-        }
-        
-        public IntPtr Raw {
-            get {
-                System.IntPtr raw;
-                raw = CreateRaw();
-                Marshal.StructureToPtr(rawStruct, raw, false);
-                return raw;
-            }
-            set {
-                rawStruct = ((ToStruct)(Marshal.PtrToStructure(value, typeof(ToStruct))));
-                DestroyRaw(value);
-            }
-        }
-        
-        public double X {
-            get {
-                double ret;
-                ret = this.rawStruct.x;
-                return ret;
-            }
-            set {
-                this.rawStruct.x = value;
-            }
-        }
-        
-        public double Y {
-            get {
-                double ret;
-                ret = this.rawStruct.y;
-                return ret;
-            }
-            set {
-                this.rawStruct.y = value;
-            }
-        }
-        
-        public double CtrlX {
-            get {
-                double ret;
-                ret = this.rawStruct.ctrl_x;
-                return ret;
-            }
-            set {
-                this.rawStruct.ctrl_x = value;
-            }
-        }
-        
-        public double CtrlY {
-            get {
-                double ret;
-                ret = this.rawStruct.ctrl_y;
-                return ret;
-            }
-            set {
-                this.rawStruct.ctrl_y = value;
-            }
-        }
-        
-        public static System.IntPtr CreateRaw() {
-            System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(ToStruct)));
-            return raw;
-        }
-        
-        public static void DestroyRaw(System.IntPtr raw) {
-            Marshal.FreeHGlobal(raw);
-        }
-        
-        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct ToStruct {
-            
-            public double x;
-            
-            public double y;
-            
-            public double ctrl_x;
-            
-            public double ctrl_y;
-        }
-    }
-}
-namespace Enesim.Path.Command.Arc {
-    
-    
-    public class To {
-        
-        private ToStruct rawStruct;
-        
-        public To() {
-        }
-        
-        public To(System.IntPtr i, bool owned) {
-            rawStruct = ((ToStruct)(Marshal.PtrToStructure(i, typeof(ToStruct))));
-        }
-        
-        public IntPtr Raw {
-            get {
-                System.IntPtr raw;
-                raw = CreateRaw();
-                Marshal.StructureToPtr(rawStruct, raw, false);
-                return raw;
-            }
-            set {
-                rawStruct = ((ToStruct)(Marshal.PtrToStructure(value, typeof(ToStruct))));
-                DestroyRaw(value);
-            }
-        }
-        
-        public double Rx {
-            get {
-                double ret;
-                ret = this.rawStruct.rx;
-                return ret;
-            }
-            set {
-                this.rawStruct.rx = value;
-            }
-        }
-        
-        public double Ry {
-            get {
-                double ret;
-                ret = this.rawStruct.ry;
-                return ret;
-            }
-            set {
-                this.rawStruct.ry = value;
-            }
-        }
-        
-        public double Angle {
-            get {
-                double ret;
-                ret = this.rawStruct.angle;
-                return ret;
-            }
-            set {
-                this.rawStruct.angle = value;
-            }
-        }
-        
-        public double X {
-            get {
-                double ret;
-                ret = this.rawStruct.x;
-                return ret;
-            }
-            set {
-                this.rawStruct.x = value;
-            }
-        }
-        
-        public double Y {
-            get {
-                double ret;
-                ret = this.rawStruct.y;
-                return ret;
-            }
-            set {
-                this.rawStruct.y = value;
-            }
-        }
-        
-        public bool Large {
-            get {
-                bool ret;
-                ret = this.rawStruct.large;
-                return ret;
-            }
-            set {
-                this.rawStruct.large = value;
-            }
-        }
-        
-        public bool Sweep {
-            get {
-                bool ret;
-                ret = this.rawStruct.sweep;
-                return ret;
-            }
-            set {
-                this.rawStruct.sweep = value;
-            }
-        }
-        
-        public static System.IntPtr CreateRaw() {
-            System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(ToStruct)));
-            return raw;
-        }
-        
-        public static void DestroyRaw(System.IntPtr raw) {
-            Marshal.FreeHGlobal(raw);
-        }
-        
-        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct ToStruct {
-            
-            public double rx;
-            
-            public double ry;
-            
-            public double angle;
-            
-            public double x;
-            
-            public double y;
-            
-            public bool large;
-            
-            public bool sweep;
-        }
-    }
-}
-namespace Enesim.Path.Command.Line {
-    
-    
-    public class To {
-        
-        private ToStruct rawStruct;
-        
-        public To() {
-        }
-        
-        public To(System.IntPtr i, bool owned) {
-            rawStruct = ((ToStruct)(Marshal.PtrToStructure(i, typeof(ToStruct))));
-        }
-        
-        public IntPtr Raw {
-            get {
-                System.IntPtr raw;
-                raw = CreateRaw();
-                Marshal.StructureToPtr(rawStruct, raw, false);
-                return raw;
-            }
-            set {
-                rawStruct = ((ToStruct)(Marshal.PtrToStructure(value, typeof(ToStruct))));
-                DestroyRaw(value);
-            }
-        }
-        
-        public double X {
-            get {
-                double ret;
-                ret = this.rawStruct.x;
-                return ret;
-            }
-            set {
-                this.rawStruct.x = value;
-            }
-        }
-        
-        public double Y {
-            get {
-                double ret;
-                ret = this.rawStruct.y;
-                return ret;
-            }
-            set {
-                this.rawStruct.y = value;
-            }
-        }
-        
-        public static System.IntPtr CreateRaw() {
-            System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(ToStruct)));
-            return raw;
-        }
-        
-        public static void DestroyRaw(System.IntPtr raw) {
-            Marshal.FreeHGlobal(raw);
-        }
-        
-        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct ToStruct {
-            
-            public double x;
-            
-            public double y;
-        }
-    }
-}
-namespace Enesim.Path.Command.Quadratic {
-    
-    
-    public class To {
-        
-        private ToStruct rawStruct;
-        
-        public To() {
-        }
-        
-        public To(System.IntPtr i, bool owned) {
-            rawStruct = ((ToStruct)(Marshal.PtrToStructure(i, typeof(ToStruct))));
-        }
-        
-        public IntPtr Raw {
-            get {
-                System.IntPtr raw;
-                raw = CreateRaw();
-                Marshal.StructureToPtr(rawStruct, raw, false);
-                return raw;
-            }
-            set {
-                rawStruct = ((ToStruct)(Marshal.PtrToStructure(value, typeof(ToStruct))));
-                DestroyRaw(value);
-            }
-        }
-        
-        public double X {
-            get {
-                double ret;
-                ret = this.rawStruct.x;
-                return ret;
-            }
-            set {
-                this.rawStruct.x = value;
-            }
-        }
-        
-        public double Y {
-            get {
-                double ret;
-                ret = this.rawStruct.y;
-                return ret;
-            }
-            set {
-                this.rawStruct.y = value;
-            }
-        }
-        
-        public double CtrlX {
-            get {
-                double ret;
-                ret = this.rawStruct.ctrl_x;
-                return ret;
-            }
-            set {
-                this.rawStruct.ctrl_x = value;
-            }
-        }
-        
-        public double CtrlY {
-            get {
-                double ret;
-                ret = this.rawStruct.ctrl_y;
-                return ret;
-            }
-            set {
-                this.rawStruct.ctrl_y = value;
-            }
-        }
-        
-        public static System.IntPtr CreateRaw() {
-            System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(ToStruct)));
-            return raw;
-        }
-        
-        public static void DestroyRaw(System.IntPtr raw) {
-            Marshal.FreeHGlobal(raw);
-        }
-        
-        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct ToStruct {
-            
-            public double x;
-            
-            public double y;
-            
-            public double ctrl_x;
-            
-            public double ctrl_y;
-        }
-    }
-}
-namespace Enesim.Image.Finder {
-    
-    
-    public class Descriptor {
-        
-        private DescriptorStruct rawStruct;
-        
-        public Descriptor() {
-        }
-        
-        public Descriptor(System.IntPtr i, bool owned) {
-            rawStruct = ((DescriptorStruct)(Marshal.PtrToStructure(i, typeof(DescriptorStruct))));
-        }
-        
-        public IntPtr Raw {
-            get {
-                System.IntPtr raw;
-                raw = CreateRaw();
-                Marshal.StructureToPtr(rawStruct, raw, false);
-                return raw;
-            }
-            set {
-                rawStruct = ((DescriptorStruct)(Marshal.PtrToStructure(value, typeof(DescriptorStruct))));
-                DestroyRaw(value);
-            }
-        }
-        
-        public static System.IntPtr CreateRaw() {
-            System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(DescriptorStruct)));
-            return raw;
-        }
-        
-        public static void DestroyRaw(System.IntPtr raw) {
-            Marshal.FreeHGlobal(raw);
-        }
-        
-        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct DescriptorStruct {
-        }
-    }
     
     public class Main {
         
-        public delegate string ExtensionFrom();
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Int32 enesim_shutdown();
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Int32 enesim_init();
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_version_get(out System.UInt32 major, out System.UInt32 minor, out System.UInt32 micro);
         
-        public delegate string DataFrom();
-        
-        public delegate int GetVersion();
-        
-
-internal delegate System.IntPtr ExtensionFromInternal();
-
-internal delegate System.IntPtr DataFromInternal();
-
-internal delegate System.Int32 GetVersionInternal();
-    }
-}
-namespace Enesim.Path.Command.Move {
-    
-    
-    public class To {
-        
-        private ToStruct rawStruct;
-        
-        public To() {
+        public static int Shutdown() {
+            int ret = enesim_shutdown();
+            return ret;
         }
         
-        public To(System.IntPtr i, bool owned) {
-            rawStruct = ((ToStruct)(Marshal.PtrToStructure(i, typeof(ToStruct))));
+        public static int Init() {
+            int ret = enesim_init();
+            return ret;
         }
         
-        public IntPtr Raw {
-            get {
-                System.IntPtr raw;
-                raw = CreateRaw();
-                Marshal.StructureToPtr(rawStruct, raw, false);
-                return raw;
-            }
-            set {
-                rawStruct = ((ToStruct)(Marshal.PtrToStructure(value, typeof(ToStruct))));
-                DestroyRaw(value);
-            }
-        }
-        
-        public double X {
-            get {
-                double ret;
-                ret = this.rawStruct.x;
-                return ret;
-            }
-            set {
-                this.rawStruct.x = value;
-            }
-        }
-        
-        public double Y {
-            get {
-                double ret;
-                ret = this.rawStruct.y;
-                return ret;
-            }
-            set {
-                this.rawStruct.y = value;
-            }
-        }
-        
-        public static System.IntPtr CreateRaw() {
-            System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(ToStruct)));
-            return raw;
-        }
-        
-        public static void DestroyRaw(System.IntPtr raw) {
-            Marshal.FreeHGlobal(raw);
-        }
-        
-        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct ToStruct {
-            
-            public double x;
-            
-            public double y;
-        }
-    }
-}
-namespace Enesim.Path.Command.Cubic {
-    
-    
-    public class To {
-        
-        private ToStruct rawStruct;
-        
-        public To() {
-        }
-        
-        public To(System.IntPtr i, bool owned) {
-            rawStruct = ((ToStruct)(Marshal.PtrToStructure(i, typeof(ToStruct))));
-        }
-        
-        public IntPtr Raw {
-            get {
-                System.IntPtr raw;
-                raw = CreateRaw();
-                Marshal.StructureToPtr(rawStruct, raw, false);
-                return raw;
-            }
-            set {
-                rawStruct = ((ToStruct)(Marshal.PtrToStructure(value, typeof(ToStruct))));
-                DestroyRaw(value);
-            }
-        }
-        
-        public double X {
-            get {
-                double ret;
-                ret = this.rawStruct.x;
-                return ret;
-            }
-            set {
-                this.rawStruct.x = value;
-            }
-        }
-        
-        public double Y {
-            get {
-                double ret;
-                ret = this.rawStruct.y;
-                return ret;
-            }
-            set {
-                this.rawStruct.y = value;
-            }
-        }
-        
-        public double CtrlX0 {
-            get {
-                double ret;
-                ret = this.rawStruct.ctrl_x0;
-                return ret;
-            }
-            set {
-                this.rawStruct.ctrl_x0 = value;
-            }
-        }
-        
-        public double CtrlY0 {
-            get {
-                double ret;
-                ret = this.rawStruct.ctrl_y0;
-                return ret;
-            }
-            set {
-                this.rawStruct.ctrl_y0 = value;
-            }
-        }
-        
-        public double CtrlX1 {
-            get {
-                double ret;
-                ret = this.rawStruct.ctrl_x1;
-                return ret;
-            }
-            set {
-                this.rawStruct.ctrl_x1 = value;
-            }
-        }
-        
-        public double CtrlY1 {
-            get {
-                double ret;
-                ret = this.rawStruct.ctrl_y1;
-                return ret;
-            }
-            set {
-                this.rawStruct.ctrl_y1 = value;
-            }
-        }
-        
-        public static System.IntPtr CreateRaw() {
-            System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(ToStruct)));
-            return raw;
-        }
-        
-        public static void DestroyRaw(System.IntPtr raw) {
-            Marshal.FreeHGlobal(raw);
-        }
-        
-        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct ToStruct {
-            
-            public double x;
-            
-            public double y;
-            
-            public double ctrl_x0;
-            
-            public double ctrl_y0;
-            
-            public double ctrl_x1;
-            
-            public double ctrl_y1;
-        }
-    }
-}
-namespace Enesim.Path.Command.Squadratic {
-    
-    
-    public class To {
-        
-        private ToStruct rawStruct;
-        
-        public To() {
-        }
-        
-        public To(System.IntPtr i, bool owned) {
-            rawStruct = ((ToStruct)(Marshal.PtrToStructure(i, typeof(ToStruct))));
-        }
-        
-        public IntPtr Raw {
-            get {
-                System.IntPtr raw;
-                raw = CreateRaw();
-                Marshal.StructureToPtr(rawStruct, raw, false);
-                return raw;
-            }
-            set {
-                rawStruct = ((ToStruct)(Marshal.PtrToStructure(value, typeof(ToStruct))));
-                DestroyRaw(value);
-            }
-        }
-        
-        public double X {
-            get {
-                double ret;
-                ret = this.rawStruct.x;
-                return ret;
-            }
-            set {
-                this.rawStruct.x = value;
-            }
-        }
-        
-        public double Y {
-            get {
-                double ret;
-                ret = this.rawStruct.y;
-                return ret;
-            }
-            set {
-                this.rawStruct.y = value;
-            }
-        }
-        
-        public static System.IntPtr CreateRaw() {
-            System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(ToStruct)));
-            return raw;
-        }
-        
-        public static void DestroyRaw(System.IntPtr raw) {
-            Marshal.FreeHGlobal(raw);
-        }
-        
-        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct ToStruct {
-            
-            public double x;
-            
-            public double y;
+        public static void GetVersion(out uint major, out uint minor, out uint micro) {
+            enesim_version_get(out  major, out  minor, out  micro);
         }
     }
 }
