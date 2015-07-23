@@ -211,6 +211,21 @@ namespace Ender
 			Dispose(false);
 		}
 
+		#region Helper functions
+		public string FullQualifiedName
+		{
+			get {
+				string className;
+				string nsName;
+
+				QualifiedName(out className, out nsName);
+				return nsName + "." + className;
+			}
+		}
+
+		#endregion
+
+		#region Virtual methods
 		// From c# to pinvoke pre statements
 		public virtual CodeStatementCollection ManagedPreStatements(Generator generator,
 				string varName, ArgDirection direction,
@@ -267,66 +282,45 @@ namespace Ender
 			return new CodeVariableReferenceExpression(from);
 		}
 
-		public virtual string QualifiedName
+		public virtual void QualifiedName(out string className, out string nsName)
 		{
-			get {
-				int idx = Name.LastIndexOf('.');
-				string prefix = Name.Substring(0, idx);
-				string className = Name.Substring(idx + 1, Name.Length - (idx + 1));
+			int idx = Name.LastIndexOf('.');
+			nsName = Name.Substring(0, idx);
+			className = Name.Substring(idx + 1, Name.Length - (idx + 1));
 
-				while (Lib.FindItem(prefix) != null)
-				{
-					idx = prefix.LastIndexOf('.');
+			while (Lib.FindItem(nsName) != null)
+			{
+				idx = nsName.LastIndexOf('.');
 
-					string tmp = prefix;
-					prefix = tmp.Substring(0, idx);
+				string tmp = nsName;
+				nsName = tmp.Substring(0, idx);
 
-					string newClassName = tmp.Substring(idx + 1, tmp.Length - (idx + 1));
-					string oldClassName = className.Substring(0, 1).ToUpper() + className.Substring(1, className.Length - 1);
-					className = newClassName + oldClassName;
+				string newClassName = tmp.Substring(idx + 1, tmp.Length - (idx + 1));
+				string oldClassName = className.Substring(0, 1).ToUpper() + className.Substring(1, className.Length - 1);
+				className = newClassName + oldClassName;
 
-				}
-
-				int fromIndex = 0;
-				while ((idx = className.IndexOf("_", fromIndex)) != -1)
-				{
-						className = className.Substring(0, idx) +
-								className.Substring(idx + 1, 1).ToUpper() + 
-								className.Substring(idx + 2, className.Length - (idx + 2));
-						fromIndex = idx;
-				}
-
-				className = className.Substring(0, 1).ToUpper() + className.Substring(1, className.Length - 1);
-				// Finally camelize the prefix too
-				string[] prefixes = prefix.Split('.');
-				for (int i = 0; i < prefixes.Length; i++)
-				{
-					string p = prefixes[i];
-					prefixes[i] = p.Substring(0, 1).ToUpper() + p.Substring(1, p.Length - 1);
-				}
-				prefix = String.Join(".", prefixes);
-
-				return prefix + "." + className;
 			}
-		}
 
-		public virtual string ClassName
-		{
-			get {
-				string qName = QualifiedName;
-				int idx = qName.LastIndexOf('.');
-				return qName.Substring(idx + 1, qName.Length - (idx + 1));
+			int fromIndex = 0;
+			while ((idx = className.IndexOf("_", fromIndex)) != -1)
+			{
+					className = className.Substring(0, idx) +
+							className.Substring(idx + 1, 1).ToUpper() + 
+							className.Substring(idx + 2, className.Length - (idx + 2));
+					fromIndex = idx;
 			}
-		}
 
-		public virtual string NSName
-		{
-			get {
-				string nsName = QualifiedName;
-				int idx = nsName.LastIndexOf('.');
-				return nsName.Substring(0, idx);
+			className = className.Substring(0, 1).ToUpper() + className.Substring(1, className.Length - 1);
+			// Finally camelize the nsName too
+			string[] nsNamees = nsName.Split('.');
+			for (int i = 0; i < nsNamees.Length; i++)
+			{
+				string p = nsNamees[i];
+				nsNamees[i] = p.Substring(0, 1).ToUpper() + p.Substring(1, p.Length - 1);
 			}
+			nsName = String.Join(".", nsNamees);
 		}
+		#endregion
 
 		#region IDisposable
 		public void Dispose()

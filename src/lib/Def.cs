@@ -123,7 +123,7 @@ namespace Ender
 
 		public override string ManagedType(Generator generator)
 		{
-			return generator.ConvertFullName(Name);
+			return FullQualifiedName;
 		}
 
 		public override string UnmanagedType(Generator generator,
@@ -155,7 +155,7 @@ namespace Ender
 			if (i.Type == ItemType.BASIC)
 			{
 				return new CodeObjectCreateExpression(
-					new CodeTypeReference(generator.ConvertFullName(Name)),
+					new CodeTypeReference(ManagedType(generator)),
 					new CodeVariableReferenceExpression(from));
 			}
 			else

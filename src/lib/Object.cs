@@ -194,7 +194,7 @@ namespace Ender
 		// FullName
 		public override string ManagedType(Generator generator)
 		{
-			return QualifiedName;
+			return FullQualifiedName;
 		}
 
 		public override string UnmanagedName(string name,

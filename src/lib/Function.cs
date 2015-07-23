@@ -238,11 +238,15 @@ namespace Ender
 		}
 
 		#region Item interface
+		public override string ManagedType(Generator generator)
+		{
+			return FullQualifiedName;
+		}
+
 		public override string UnmanagedType(Generator generator,
 				ArgDirection direction, ItemTransfer transfer)
 		{
-			//return ClassName + "Internal";
-			return generator.ConvertFullName(Name) + "Internal";
+			return FullQualifiedName + "Internal";
 		}
 
 		public override string UnmanagedName(string name,
@@ -273,6 +277,24 @@ namespace Ender
 			csc = new CodeStatementCollection();
 			csc.Add(new CodeSnippetStatement(delegateString));
 			return csc;
+		}
+	
+		public override void QualifiedName(out string className, out string nsName)
+		{
+			Item parent = Lib.FindItem(Namespace);
+
+			if (parent == null)
+			{
+				base.QualifiedName(out className, out nsName);
+				nsName = nsName + ".Main";
+			}
+			else
+			{
+				parent.QualifiedName(out className, out nsName);
+				nsName = nsName + "." + className;
+				className = Utils.Convert(Identifier, Utils.Case.UNDERSCORE, Lib.Notation,
+					Utils.Case.PASCAL, Utils.Notation.ENGLISH);
+			}
 		}
 		#endregion
 	}

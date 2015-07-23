@@ -165,7 +165,7 @@ namespace Ender
 				csc.Add(new CodeAssignStatement(
 						new CodeVariableReferenceExpression(varName),
 						new CodeObjectCreateExpression(
-							new CodeTypeReference(generator.ConvertFullName(Name)))));
+							new CodeTypeReference(ManagedType(generator)))));
 				csc.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(new CodeVariableReferenceExpression(varName), "Raw"), new CodeVariableReferenceExpression(rawName)));
 			}
 			return csc;
@@ -174,7 +174,7 @@ namespace Ender
 		// FullName
 		public override string ManagedType(Generator generator)
 		{
-			return QualifiedName;
+			return FullQualifiedName;
 		}
 
 		public override string UnmanagedName(string name,

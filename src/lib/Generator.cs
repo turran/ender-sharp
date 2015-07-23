@@ -136,7 +136,7 @@ namespace Ender
 					break;
 				case ItemType.FUNCTION:
 					ret = new CodeParameterDeclarationExpression();
-					ret.Type = new CodeTypeReference(ConvertFullName(i.Name));
+					ret.Type = new CodeTypeReference(i.ManagedType(this));
 					break;
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
@@ -154,12 +154,12 @@ namespace Ender
 					if (ce.IsEnum)
 					{
 						ret = new CodeParameterDeclarationExpression();
-						ret.Type = new CodeTypeReference(i.ClassName);
+						ret.Type = new CodeTypeReference(i.ManagedType(this));
 					}
 					else
 					{
 						ret = new CodeParameterDeclarationExpression();
-						ret.Type = new CodeTypeReference(i.ClassName + ".Enum");
+						ret.Type = new CodeTypeReference(i.ManagedType(this));
 					}
 					break;
 				case ItemType.DEF:
@@ -439,8 +439,13 @@ namespace Ender
 		private CodeTypeDeclaration GenerateEnum(Enum e)
 		{
 			Console.WriteLine("Generating enum " + e.Name);
+
 			// Get the real item name
-			CodeTypeDeclaration co = new CodeTypeDeclaration(e.ClassName);
+			string className;
+			string nsName;
+			e.QualifiedName(out className, out nsName);
+			CodeTypeDeclaration co = new CodeTypeDeclaration(className);
+
 			CodeTypeDeclaration coEnum;
 			if (e.Functions != null)
 			{
@@ -495,7 +500,7 @@ namespace Ender
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
 					ret = new CodeMemberField();
-					ret.Type = new CodeTypeReference(ConvertFullName(iName));
+					ret.Type = new CodeTypeReference(i.ManagedType(this));
 					ret.Name = name;
 					ret.Attributes = MemberAttributes.Public;
 					break;
@@ -574,7 +579,10 @@ namespace Ender
 
 			Console.WriteLine("Generating struct " + s.Name);
 			// Get the real item name
-			CodeTypeDeclaration co = new CodeTypeDeclaration(s.ClassName);
+			string className;
+			string nsName;
+			s.QualifiedName(out className, out nsName);
+			CodeTypeDeclaration co = new CodeTypeDeclaration(className);
 			// Add the generated type into our hash
 			processed[s.Name] = co;
 
@@ -1070,7 +1078,10 @@ namespace Ender
 			}
 
 			// Get the real item name
-			CodeTypeDeclaration co = new CodeTypeDeclaration(o.ClassName);
+			string className;
+			string nsName;
+			o.QualifiedName(out className, out nsName);
+			CodeTypeDeclaration co = new CodeTypeDeclaration(className);
 			// Add the generated type into our hash
 			processed[o.Name] = co;
 
@@ -1167,17 +1178,20 @@ namespace Ender
 		private CodeNamespace GenerateNamespace(Item item)
 		{
 			// generate the namespace the item belongs to
-			string ns = item.NSName;
+			string nsName;
+			string className;
+
+			item.QualifiedName(out className, out nsName);
 			CodeNamespace cns;
-			if (processed.ContainsKey(ns))
+			if (processed.ContainsKey(nsName))
 			{
-				cns = (CodeNamespace)processed[ns];
+				cns = (CodeNamespace)processed[nsName];
 			}
 			else
 			{
- 				cns = new CodeNamespace(ns);
+ 				cns = new CodeNamespace(nsName);
 				cu.Namespaces.Add(cns);
-				processed[ns] = cns;
+				processed[nsName] = cns;
 			}
 			return cns;
 		}
