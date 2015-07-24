@@ -17,6 +17,7 @@ namespace Ender
 		UNREF     = (1 << 4),
 		CALLBACK  = (1 << 5),
 		VALUE_OF  = (1 << 6),
+		DOWNCAST  = (1 << 7),
 	}
 
 	public class Function : Item
