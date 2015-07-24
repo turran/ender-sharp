@@ -18,18 +18,18 @@ namespace Enesim {
     
     public enum Rop {
         
-        Blend,
+        Blend = 0,
         
-        Fill,
+        Fill = 1,
     }
     
     public enum Quality {
         
-        Best,
+        Best = 0,
         
-        Good,
+        Good = 1,
         
-        Fast,
+        Fast = 2,
     }
     
     public class Renderer : IDisposable {
@@ -73,7 +73,7 @@ private static extern System.Boolean enesim_renderer_destination_bounds_get(Syst
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Boolean enesim_renderer_destination_bounds_get_extended(System.IntPtr selfRaw, System.IntPtr prevRaw, System.IntPtr currRaw, System.Int32 x, System.Int32 y, out System.IntPtr logRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.RendererFeature enesim_renderer_features_get(System.IntPtr selfRaw);
+private static extern System.Int32 enesim_renderer_features_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Boolean enesim_renderer_is_inside(System.IntPtr selfRaw, System.Double x, System.Double y);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -399,8 +399,8 @@ internal delegate System.Boolean DamageInternal(System.IntPtr rRaw, System.IntPt
             return ret;
         }
         
-        public Enesim.RendererFeature GetFeatures() {
-            Enesim.RendererFeature ret = enesim_renderer_features_get(raw);
+        public int GetFeatures() {
+            int ret = enesim_renderer_features_get(raw);
             return ret;
         }
         
@@ -657,21 +657,21 @@ private static extern void enesim_renderer_map_quad_source_surface_set(System.In
         
         public enum Enum {
             
-            None,
+            None = 0,
             
-            Argb8888,
+            Argb8888 = 1,
             
-            A8,
+            A8 = 2,
         }
     }
     
     public enum AplhaHint {
         
-        Normal,
+        Normal = 0,
         
-        Sparse,
+        Sparse = 1,
         
-        Opaque,
+        Opaque = 2,
     }
     
     public class Surface : IDisposable {
@@ -881,7 +881,7 @@ free_func(buffer_data, data);
     public class RendererShape : Renderer {
         
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.RendererShapeFeature enesim_renderer_shape_shape_features_get(System.IntPtr selfRaw);
+private static extern System.Int32 enesim_renderer_shape_shape_features_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_shape_stroke_dash_add_simple(System.IntPtr selfRaw, System.Double length, System.Double gap);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -933,9 +933,9 @@ private static extern Enesim.RendererShapeFillRule enesim_renderer_shape_fill_ru
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_shape_fill_rule_set(System.IntPtr selfRaw, Enesim.RendererShapeFillRule rule);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern Enesim.RendererShapeDrawMode enesim_renderer_shape_draw_mode_get(System.IntPtr selfRaw);
+private static extern System.Int32 enesim_renderer_shape_draw_mode_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr selfRaw, Enesim.RendererShapeDrawMode draw_mode);
+private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr selfRaw, System.Int32 draw_mode);
         
         protected RendererShape() {
         }
@@ -1083,20 +1083,20 @@ private static extern void enesim_renderer_shape_draw_mode_set(System.IntPtr sel
             }
         }
         
-        public Enesim.RendererShapeDrawMode DrawMode {
+        public int DrawMode {
             get {
-                Enesim.RendererShapeDrawMode ret = enesim_renderer_shape_draw_mode_get(raw);
+                int ret = enesim_renderer_shape_draw_mode_get(raw);
                 return ret;
             }
             set {
-                Enesim.RendererShapeDrawMode draw_mode;
+                int draw_mode;
                 draw_mode = value;
                 enesim_renderer_shape_draw_mode_set(raw, draw_mode);
             }
         }
         
-        public Enesim.RendererShapeFeature GetShapeFeatures() {
-            Enesim.RendererShapeFeature ret = enesim_renderer_shape_shape_features_get(raw);
+        public int GetShapeFeatures() {
+            int ret = enesim_renderer_shape_shape_features_get(raw);
             return ret;
         }
         
@@ -3084,25 +3084,25 @@ private static extern void enesim_renderer_pattern_repeat_mode_set(System.IntPtr
         
         public enum Enum {
             
-            Rgb565,
+            Rgb565 = 0,
             
-            Argb8888,
+            Argb8888 = 1,
             
-            Argb8888Pre,
+            Argb8888Pre = 2,
             
-            Xrgb8888,
+            Xrgb8888 = 3,
             
-            Rgb888,
+            Rgb888 = 4,
             
-            Bgr888,
+            Bgr888 = 5,
             
-            A8,
+            A8 = 6,
             
-            Gray,
+            Gray = 7,
             
-            Cmyk,
+            Cmyk = 8,
             
-            CmykAdobe,
+            CmykAdobe = 9,
         }
     }
     
@@ -4347,167 +4347,167 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
     
     public enum Channel {
         
-        Red,
+        Red = 0,
         
-        Green,
+        Green = 1,
         
-        Blue,
+        Blue = 2,
         
-        Alpha,
+        Alpha = 3,
         
-        Luminance,
+        Luminance = 4,
     }
     
     public enum MatrixType {
         
-        Identity,
+        Identity = 0,
         
-        Affine,
+        Affine = 1,
         
-        Projective,
+        Projective = 2,
     }
     
     public enum Backend {
         
-        Invalid,
+        Invalid = 0,
         
-        Software,
+        Software = 1,
         
-        Opencl,
+        Opencl = 2,
         
-        Opengl,
+        Opengl = 3,
     }
     
     public enum RendererFeature {
         
-        Translate,
+        Translate = 1,
         
-        Affine,
+        Affine = 2,
         
-        Projective,
+        Projective = 4,
         
-        A8,
+        A8 = 8,
         
-        Argb8888,
+        Argb8888 = 16,
         
-        Quality,
+        Quality = 32,
         
-        BackendSoftware,
+        BackendSoftware = 64,
         
-        BackendOpengl,
+        BackendOpengl = 128,
     }
     
     public enum Priority {
         
-        None,
+        None = 0,
         
-        Marginal,
+        Marginal = 64,
         
-        Secondary,
+        Secondary = 128,
         
-        Primary,
+        Primary = 256,
     }
     
     public enum PathCommandType {
         
-        MoveTo,
+        MoveTo = 0,
         
-        LineTo,
+        LineTo = 1,
         
-        QuadraticTo,
+        QuadraticTo = 2,
         
-        SquadraticTo,
+        SquadraticTo = 3,
         
-        CubicTo,
+        CubicTo = 4,
         
-        ScubicTo,
+        ScubicTo = 5,
         
-        ArcTo,
+        ArcTo = 6,
         
-        Close,
+        Close = 7,
         
-        Types,
+        Types = 8,
     }
     
     public enum RendererShapeStrokeLocation {
         
-        Inside,
+        Inside = 0,
         
-        Outside,
+        Outside = 1,
         
-        Center,
+        Center = 2,
     }
     
     public enum RendererShapeStrokeJoin {
         
-        Miter,
+        Miter = 0,
         
-        Round,
+        Round = 1,
         
-        Bevel,
+        Bevel = 2,
     }
     
     public enum RendererShapeFillRule {
         
-        NonZero,
+        NonZero = 0,
         
-        EvenOdd,
+        EvenOdd = 1,
     }
     
     public enum RendererBlurChannel {
         
-        Color,
+        Color = 0,
         
-        Alpha,
+        Alpha = 1,
     }
     
     public enum Angle {
         
-        None,
+        None = 0,
         
-        Cw90,
+        Cw90 = 1,
         
-        Cw180,
+        Cw180 = 2,
         
-        Cw270,
+        Cw270 = 3,
     }
     
     public enum RendererShapeFeature {
         
-        FillRenderer,
+        FillRenderer = 1,
         
-        StrokeRenderer,
+        StrokeRenderer = 2,
         
-        StrokeLocation,
+        StrokeLocation = 4,
         
-        StrokeDash,
+        StrokeDash = 8,
     }
     
     public enum RendererShapeDrawMode {
         
-        Fill,
+        Fill = 1,
         
-        Stroke,
+        Stroke = 2,
     }
     
     public enum RendererShapeStrokeCap {
         
-        Butt,
+        Butt = 0,
         
-        Round,
+        Round = 1,
         
-        Square,
+        Square = 2,
     }
     
     public enum RepeatMode {
         
-        Restrict,
+        Restrict = 0,
         
-        Pad,
+        Pad = 1,
         
-        Reflect,
+        Reflect = 2,
         
-        Repeat,
+        Repeat = 3,
     }
     
     public class BufferSwData32bpp {
@@ -6568,9 +6568,9 @@ private static extern System.Boolean enesim_text_buffer_smart_is_dirty(System.In
     
     public enum Direction {
         
-        Ltr,
+        Ltr = 0,
         
-        Rtl,
+        Rtl = 1,
     }
     
     public class Font : IDisposable {
