@@ -10,7 +10,7 @@ namespace Ender
 		[DllImport("libender.dll")]
 		static extern IntPtr ender_item_constant_type_get(IntPtr i);
 		[DllImport("libender.dll")]
-		static extern IntPtr ender_item_constant_value_get(IntPtr i, out IntPtr v);
+		static extern IntPtr ender_item_constant_value_get(IntPtr i, IntPtr v);
 
 		internal Constant()
 		{
@@ -29,6 +29,16 @@ namespace Ender
 			get {
 				IntPtr t = ender_item_constant_type_get(raw);
 				return Item.Create(t);
+			}
+		}
+
+		public Value Value
+		{
+			get {
+				IntPtr valueRaw = Value.CreateRaw();
+				ender_item_constant_value_get(raw, valueRaw);
+				Value v = new Value(valueRaw, true);
+				return v;
 			}
 		}
 	}
