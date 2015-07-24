@@ -1156,6 +1156,16 @@ namespace Ender
 						co.Members.Add(cm);
 				}
 			}
+			// Geneate the downcast function if needed
+			// public static Enesim.Renderer Downcast(IntPtr raw, bool owned)
+			// Ender.Lib  lib = Ender.Lib.Find("enesim");
+			// Object o = (Object)lib.FindItem(name);
+			// Item downcastedItem = o.Downcast(raw);
+			// Class downcastedClass = Type.GetType(downcastedItem.QualifiedName);
+			// ConstructorInfo ctorInfo = downcastedClass.GetConstructor(IntPtr, bool);
+			// if (ctorInfo)
+			// Enesim.Renderer ret = ctorInfo.Invoke(raw, owned);
+			// return ret;
 
 			return co;
 		}
