@@ -213,6 +213,8 @@ namespace Ender
 				string from, ArgDirection direction, ItemTransfer transfer)
 		{
 			bool incRef = false;
+			bool hasCtor = false;
+			bool hasDowncast = false;
 
 
 			if (direction == ArgDirection.IN)
@@ -222,11 +224,43 @@ namespace Ender
 				else
 					incRef = false;
 			}
-			return new CodeObjectCreateExpression(ManagedType(generator),
-					new CodeExpression[] {
-						new CodeVariableReferenceExpression(from),
-						new CodePrimitiveExpression(incRef)
-					});
+
+			// Check if there is no ctor to call the downcast instead
+			// of the ctor directly
+			foreach (Function f in Functions)
+			{
+				if ((f.Flags & FunctionFlag.CTOR) == FunctionFlag.CTOR)
+				{
+					hasCtor = true;
+					break;
+				}
+
+				if ((f.Flags & FunctionFlag.DOWNCAST) == FunctionFlag.DOWNCAST)
+				{
+					hasDowncast = true;
+				}
+			}
+
+			if (!hasCtor && hasDowncast)
+			{
+				return new CodeMethodInvokeExpression(
+						new CodeMethodReferenceExpression(
+								new CodeTypeReferenceExpression(ManagedType(generator)),
+								"Downcast"),
+						new CodeExpression[] {
+							new CodeVariableReferenceExpression(from),
+							new CodePrimitiveExpression(incRef)
+						});
+			}
+			else
+			{
+
+				return new CodeObjectCreateExpression(ManagedType(generator),
+						new CodeExpression[] {
+							new CodeVariableReferenceExpression(from),
+							new CodePrimitiveExpression(incRef)
+						});
+			}
 		}
 		#endregion
 	}
