@@ -464,8 +464,10 @@ namespace Ender
 				{
 					CodeMemberField f = new CodeMemberField ();
 					f.Name = ConvertName(c.Identifier);
-					// TODO add the value
-					//  InitExpression = new CodePrimitiveExpression(enumNameAndValue.Key);
+
+					// Add the value
+					Value v = c.Value;
+					f.InitExpression = new CodePrimitiveExpression(v.I32);
          				coEnum.Members.Add(f);
 				}
 			}
