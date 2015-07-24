@@ -6407,6 +6407,30 @@ private static extern void enesim_argb_components_to(System.UInt32 argbRaw, out 
             return v.value;
         }
     }
+    
+    public class Main {
+        
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Int32 enesim_shutdown();
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Int32 enesim_init();
+[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void enesim_version_get(out System.UInt32 major, out System.UInt32 minor, out System.UInt32 micro);
+        
+        public static int Shutdown() {
+            int ret = enesim_shutdown();
+            return ret;
+        }
+        
+        public static int Init() {
+            int ret = enesim_init();
+            return ret;
+        }
+        
+        public static void GetVersion(out uint major, out uint minor, out uint micro) {
+            enesim_version_get(out  major, out  minor, out  micro);
+        }
+    }
 }
 namespace Enesim.Text {
     
@@ -6739,33 +6763,6 @@ private static extern System.Boolean enesim_text_engine_type_get(System.IntPtr s
             lib = Marshal.PtrToStringAnsi(libRaw);
             name = Marshal.PtrToStringAnsi(nameRaw);
             return ret;
-        }
-    }
-}
-namespace Enesim.Main {
-    
-    
-    public class Main {
-        
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_shutdown();
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Int32 enesim_init();
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void enesim_version_get(out System.UInt32 major, out System.UInt32 minor, out System.UInt32 micro);
-        
-        public static int Shutdown() {
-            int ret = enesim_shutdown();
-            return ret;
-        }
-        
-        public static int Init() {
-            int ret = enesim_init();
-            return ret;
-        }
-        
-        public static void GetVersion(out uint major, out uint minor, out uint micro) {
-            enesim_version_get(out  major, out  minor, out  micro);
         }
     }
 }

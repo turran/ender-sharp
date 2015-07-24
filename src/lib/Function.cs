@@ -286,7 +286,6 @@ namespace Ender
 			if (parent == null)
 			{
 				base.QualifiedName(out className, out nsName);
-				nsName = nsName + ".Main";
 			}
 			else
 			{
