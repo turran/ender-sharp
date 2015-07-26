@@ -19,7 +19,7 @@ $(top_srcdir)/src/lib/Generator.cs
 
 $(output_DIR)/$(lib_BIN): $(lib_SRC) $(output_CHECK)
 	$(CSC) -nowarn:169 -unsafe -target:library -debug $(lib_SRC) \
-		-out:$(output_DIR)/$(lib_BIN)
+		-out:$(output_DIR)/$(lib_BIN) -keyfile:$(top_srcdir)/ender-sharp.snk
 
 enderlibdir = $(libdir)/ender-sharp
 enderlib_DATA = $(output_DIR)/$(lib_BIN)

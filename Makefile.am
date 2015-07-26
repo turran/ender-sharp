@@ -89,6 +89,8 @@ $(output_CHECK):
 	@touch $(output_CHECK)
 
 install-data-local:
+	echo "$(GACUTIL) /i $(output_DIR)/$(lib_BIN) /f $(GACUTIL_FLAGS)";  \
+        $(GACUTIL) /i $(output_DIR)/$(lib_BIN) /f $(GACUTIL_FLAGS) || exit 1;
 	echo "$(GACUTIL) /i $(output_DIR)/$(eina_BIN) /f $(GACUTIL_FLAGS)";  \
         $(GACUTIL) /i $(output_DIR)/$(eina_BIN) /f $(GACUTIL_FLAGS) || exit 1;
 	echo "$(GACUTIL) /i $(output_DIR)/$(enesim_BIN) /f $(GACUTIL_FLAGS)";  \
@@ -96,6 +98,8 @@ install-data-local:
 
 uninstall-local:
 	echo "$(GACUTIL) /u $(output_DIR)/$(lib_BIN) $(GACUTIL_FLAGS)"; \
+        $(GACUTIL) /u $(output_DIR)/$(lib_BIN) $(GACUTIL_FLAGS) || exit 1;
+	echo "$(GACUTIL) /u $(output_DIR)/$(eina_BIN) $(GACUTIL_FLAGS)"; \
         $(GACUTIL) /u $(output_DIR)/$(eina_BIN) $(GACUTIL_FLAGS) || exit 1;
-	echo "$(GACUTIL) /u $(output_DIR)/$(lib_BIN) $(GACUTIL_FLAGS)"; \
+	echo "$(GACUTIL) /u $(output_DIR)/$(enesim_BIN) $(GACUTIL_FLAGS)"; \
         $(GACUTIL) /u $(output_DIR)/$(enesim_BIN) $(GACUTIL_FLAGS) || exit 1;
