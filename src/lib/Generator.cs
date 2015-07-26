@@ -1019,6 +1019,7 @@ namespace Ender
 			Function refFunc = null;
 			Function unrefFunc = null;
 			List functions;
+			bool hasDowncast = false;
 			bool hasRef = false;
 			bool hasUnref = false;
 			bool hasCtor = false;
@@ -1099,6 +1100,10 @@ namespace Ender
 						isPartial = true;
 						continue;
 					}
+					// Skip the downcast function, we'll call ender directly 
+					if ((f.Flags & FunctionFlag.DOWNCAST) == FunctionFlag.DOWNCAST)
+						continue;
+
 					Console.WriteLine("Processing PInvoke function " + f.Name);
 					co.Members.Add(f.GeneratePinvoke(this));
 				}
@@ -1149,6 +1154,11 @@ namespace Ender
 						continue;
 					if ((f.Flags & FunctionFlag.UNREF) == FunctionFlag.UNREF)
 						continue;
+					if ((f.Flags & FunctionFlag.DOWNCAST) == FunctionFlag.DOWNCAST)
+					{
+						hasDowncast = true;
+						continue;
+					}
 
 					Console.WriteLine("Generating function " + f.Name);
 					CodeTypeMember cm = GenerateFunction(f);
@@ -1156,16 +1166,75 @@ namespace Ender
 						co.Members.Add(cm);
 				}
 			}
+
 			// Geneate the downcast function if needed
-			// public static Enesim.Renderer Downcast(IntPtr raw, bool owned)
-			// Ender.Lib  lib = Ender.Lib.Find("enesim");
-			// Object o = (Object)lib.FindItem(name);
-			// Item downcastedItem = o.Downcast(raw);
-			// Class downcastedClass = Type.GetType(downcastedItem.QualifiedName);
-			// ConstructorInfo ctorInfo = downcastedClass.GetConstructor(IntPtr, bool);
-			// if (ctorInfo)
-			// Enesim.Renderer ret = ctorInfo.Invoke(raw, owned);
-			// return ret;
+			if (hasDowncast)
+			{
+				// public static Enesim.Renderer Downcast(IntPtr raw, bool owned)
+				CodeMemberMethod cm = new CodeMemberMethod();
+				cm.Name = ConvertName("Downcast");
+				cm.Attributes = MemberAttributes.Public | MemberAttributes.Final | MemberAttributes.Static;
+				cm.ReturnType = new CodeTypeReference(o.ManagedType(this));
+				cm.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IntPtr), "raw"));
+				cm.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "owned"));
+				// Ender.Lib  lib = Ender.Lib.Find("enesim");
+				CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
+				ci.Method = new CodeMethodReferenceExpression(new CodeTypeReferenceExpression("Ender.Lib"), "Find");
+				ci.Parameters.Add(new CodePrimitiveExpression(lib.Name));
+				cm.Statements.Add(new CodeVariableDeclarationStatement(new CodeTypeReference("Ender.Lib"), "lib", ci));
+				// Object o = (Object)lib.FindItem(name);
+				ci = new CodeMethodInvokeExpression();
+				ci.Method = new CodeMethodReferenceExpression(new CodeVariableReferenceExpression("lib"), "FindItem");
+				ci.Parameters.Add(new CodePrimitiveExpression(o.Name));
+				cm.Statements.Add(new CodeVariableDeclarationStatement(new CodeTypeReference("Ender.Object"), "o",
+						new CodeCastExpression("Ender.Object", ci)));
+				// Item downcastedItem = o.Downcast(raw);
+				ci = new CodeMethodInvokeExpression();
+				ci.Method = new CodeMethodReferenceExpression(new CodeVariableReferenceExpression("o"), "Downcast");
+				ci.Parameters.Add(new CodeVariableReferenceExpression("raw"));
+				cm.Statements.Add(new CodeVariableDeclarationStatement(new CodeTypeReference("Ender.Item"), "downO", ci));
+				// Type downType = Type.GetType(downO.QualifiedName);
+				ci = new CodeMethodInvokeExpression();
+				ci.Method = new CodeMethodReferenceExpression(new CodeTypeReferenceExpression("System.Type"), "GetType");
+				ci.Parameters.Add(new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("downO"), "FullQualifiedName"));
+				cm.Statements.Add(new CodeVariableDeclarationStatement(new CodeTypeReference("System.Type"), "downType", ci));
+				// Type[] types = new Type[2];
+				CodeArrayCreateExpression types = new CodeArrayCreateExpression("System.Type", 2);
+				cm.Statements.Add(new CodeVariableDeclarationStatement(new CodeTypeReference("System.Type[]"), "types", types));
+				// Type[0] = typeof(IntPtr);
+				cm.Statements.Add(new CodeAssignStatement(
+						new CodeArrayIndexerExpression(new CodeVariableReferenceExpression("types"), new CodePrimitiveExpression(0)),
+						new CodeTypeOfExpression(new CodeTypeReference("IntPtr"))));
+				// Type[1] = typeof(bool);
+				cm.Statements.Add(new CodeAssignStatement(
+						new CodeArrayIndexerExpression(new CodeVariableReferenceExpression("types"), new CodePrimitiveExpression(1)),
+						new CodeTypeOfExpression(new CodeTypeReference(typeof(bool)))));
+				// ConstructorInfo ctorInfo = downcastedClass.GetConstructor(IntPtr, bool);
+				ci = new CodeMethodInvokeExpression();
+				ci.Method = new CodeMethodReferenceExpression(new CodeVariableReferenceExpression("downType"), "GetConstructor");
+				ci.Parameters.Add(new CodeVariableReferenceExpression("types"));
+				cm.Statements.Add(new CodeVariableDeclarationStatement(new CodeTypeReference("ConstructorInfo"), "ctorInfo", ci));
+				// Object[] objects = new Objects[2];
+				CodeArrayCreateExpression objects = new CodeArrayCreateExpression("System.Object", 2);
+				cm.Statements.Add(new CodeVariableDeclarationStatement(new CodeTypeReference("System.Object[]"), "objects", objects));
+				// objects[0] = raw;
+				cm.Statements.Add(new CodeAssignStatement(
+						new CodeArrayIndexerExpression(new CodeVariableReferenceExpression("objects"), new CodePrimitiveExpression(0)),
+						new CodeVariableReferenceExpression("raw")));
+				// objects[1] = owned;
+				cm.Statements.Add(new CodeAssignStatement(
+						new CodeArrayIndexerExpression(new CodeVariableReferenceExpression("objects"), new CodePrimitiveExpression(1)),
+						new CodeVariableReferenceExpression("owned")));
+				// Enesim.Renderer ret = ctorInfo.Invoke(objects);
+				ci = new CodeMethodInvokeExpression();
+				ci.Method = new CodeMethodReferenceExpression(new CodeVariableReferenceExpression("ctorInfo"), "Invoke");
+				ci.Parameters.Add(new CodeVariableReferenceExpression("objects"));
+				cm.Statements.Add(new CodeVariableDeclarationStatement(new CodeTypeReference(o.ManagedType(this)), "ret",
+						new CodeCastExpression(new CodeTypeReference(o.ManagedType(this)), ci)));
+				// return ret;
+				cm.Statements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret")));
+				co.Members.Add(cm);
+			}
 
 			return co;
 		}
@@ -1175,7 +1244,9 @@ namespace Ender
 			CodeNamespace root = new CodeNamespace();
 			cu.Namespaces.Add(root);
 			// Our default imports
+			root.Imports.Add(new CodeNamespaceImport("Ender"));
 			root.Imports.Add(new CodeNamespaceImport("System"));
+			root.Imports.Add(new CodeNamespaceImport("System.Reflection"));
 			root.Imports.Add(new CodeNamespaceImport("System.Runtime.InteropServices"));
 			List deps = lib.Dependencies;
 			if (deps != null)
