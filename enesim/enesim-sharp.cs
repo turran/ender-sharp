@@ -9,7 +9,9 @@
 // ------------------------------------------------------------------------------
 
 using Eina;
+using Ender;
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 
@@ -86,8 +88,6 @@ private static extern System.Boolean enesim_renderer_draw(System.IntPtr selfRaw,
 private static extern System.Boolean enesim_renderer_draw_list(System.IntPtr selfRaw, System.IntPtr sRaw, Enesim.Rop rop, IntPtr clips, System.Int32 x, System.Int32 y, out System.IntPtr logRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_renderer_default_quality_set(Enesim.Quality quality);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_renderer_type_get(System.IntPtr selfRaw, out System.IntPtr libRaw, out System.String name);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_renderer_name_get(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -481,10 +481,19 @@ return retInternal;
             enesim_renderer_default_quality_set(quality);
         }
         
-        public bool GetType(out string lib, out string name) {
-            System.IntPtr libRaw;
-            bool ret = enesim_renderer_type_get(raw, out  libRaw, out  name);
-            lib = Marshal.PtrToStringAnsi(libRaw);
+        public static Enesim.Renderer Downcast(System.IntPtr raw, bool owned) {
+            Ender.Lib lib = Ender.Lib.Find("enesim");
+            Ender.Object o = ((Ender.Object)(lib.FindItem("enesim.renderer")));
+            Ender.Item downO = o.Downcast(raw);
+            System.Type downType = System.Type.GetType(downO.FullQualifiedName);
+            System.Type[] types = new System.Type[2];
+            types[0] = typeof(IntPtr);
+            types[1] = typeof(bool);
+            ConstructorInfo ctorInfo = downType.GetConstructor(types);
+            object[] objects = new object[2];
+            objects[0] = raw;
+            objects[1] = owned;
+            Enesim.Renderer ret = ((Enesim.Renderer)(ctorInfo.Invoke(objects)));
             return ret;
         }
     }
@@ -1205,8 +1214,6 @@ private static extern void enesim_stream_munmap(System.IntPtr selfRaw, System.In
 private static extern void enesim_stream_reset(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_stream_uri_get(System.IntPtr selfRaw);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_stream_type_get(System.IntPtr selfRaw, out System.IntPtr libRaw, out System.IntPtr nameRaw);
 ~Stream() { Dispose(false); }
         
         protected Stream() {
@@ -1277,12 +1284,19 @@ private static extern System.Boolean enesim_stream_type_get(System.IntPtr selfRa
             return Marshal.PtrToStringAnsi(ret);
         }
         
-        public bool GetType(out string lib, out string name) {
-            System.IntPtr libRaw;
-            System.IntPtr nameRaw;
-            bool ret = enesim_stream_type_get(raw, out  libRaw, out  nameRaw);
-            lib = Marshal.PtrToStringAnsi(libRaw);
-            name = Marshal.PtrToStringAnsi(nameRaw);
+        public static Enesim.Stream Downcast(System.IntPtr raw, bool owned) {
+            Ender.Lib lib = Ender.Lib.Find("enesim");
+            Ender.Object o = ((Ender.Object)(lib.FindItem("enesim.stream")));
+            Ender.Item downO = o.Downcast(raw);
+            System.Type downType = System.Type.GetType(downO.FullQualifiedName);
+            System.Type[] types = new System.Type[2];
+            types[0] = typeof(IntPtr);
+            types[1] = typeof(bool);
+            ConstructorInfo ctorInfo = downType.GetConstructor(types);
+            object[] objects = new object[2];
+            objects[0] = raw;
+            objects[1] = owned;
+            Enesim.Stream ret = ((Enesim.Stream)(ctorInfo.Invoke(objects)));
             return ret;
         }
     }
@@ -1863,8 +1877,6 @@ private static extern void enesim_pool_default_set(System.IntPtr selfRaw);
 private static extern System.IntPtr enesim_pool_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_pool_unref(System.IntPtr selfRaw);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_pool_type_get(System.IntPtr selfRaw, out System.IntPtr libRaw, out System.IntPtr nameRaw);
 ~Pool() { Dispose(false); }
         
         protected Pool() {
@@ -1911,12 +1923,19 @@ private static extern System.Boolean enesim_pool_type_get(System.IntPtr selfRaw,
             enesim_pool_default_set(raw);
         }
         
-        public bool GetType(out string lib, out string name) {
-            System.IntPtr libRaw;
-            System.IntPtr nameRaw;
-            bool ret = enesim_pool_type_get(raw, out  libRaw, out  nameRaw);
-            lib = Marshal.PtrToStringAnsi(libRaw);
-            name = Marshal.PtrToStringAnsi(nameRaw);
+        public static Enesim.Pool Downcast(System.IntPtr raw, bool owned) {
+            Ender.Lib lib = Ender.Lib.Find("enesim");
+            Ender.Object o = ((Ender.Object)(lib.FindItem("enesim.pool")));
+            Ender.Item downO = o.Downcast(raw);
+            System.Type downType = System.Type.GetType(downO.FullQualifiedName);
+            System.Type[] types = new System.Type[2];
+            types[0] = typeof(IntPtr);
+            types[1] = typeof(bool);
+            ConstructorInfo ctorInfo = downType.GetConstructor(types);
+            object[] objects = new object[2];
+            objects[0] = raw;
+            objects[1] = owned;
+            Enesim.Pool ret = ((Enesim.Pool)(ctorInfo.Invoke(objects)));
             return ret;
         }
     }
@@ -6478,8 +6497,6 @@ private static extern System.IntPtr enesim_text_buffer_ref(System.IntPtr selfRaw
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_text_buffer_unref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_text_buffer_type_get(System.IntPtr selfRaw, out System.IntPtr libRaw, out System.IntPtr nameRaw);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_text_buffer_string_set(System.IntPtr selfRaw, System.String str, System.Int32 length);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr enesim_text_buffer_string_get(System.IntPtr selfRaw);
@@ -6526,15 +6543,6 @@ private static extern System.Int32 enesim_text_buffer_string_length(System.IntPt
             }
         }
         
-        public bool GetType(out string lib, out string name) {
-            System.IntPtr libRaw;
-            System.IntPtr nameRaw;
-            bool ret = enesim_text_buffer_type_get(raw, out  libRaw, out  nameRaw);
-            lib = Marshal.PtrToStringAnsi(libRaw);
-            name = Marshal.PtrToStringAnsi(nameRaw);
-            return ret;
-        }
-        
         public void SetString(string str, int length) {
             enesim_text_buffer_string_set(raw, str, length);
         }
@@ -6556,6 +6564,22 @@ private static extern System.Int32 enesim_text_buffer_string_length(System.IntPt
         
         public int StringLength() {
             int ret = enesim_text_buffer_string_length(raw);
+            return ret;
+        }
+        
+        public static Enesim.Text.Buffer Downcast(System.IntPtr raw, bool owned) {
+            Ender.Lib lib = Ender.Lib.Find("enesim");
+            Ender.Object o = ((Ender.Object)(lib.FindItem("enesim.text.buffer")));
+            Ender.Item downO = o.Downcast(raw);
+            System.Type downType = System.Type.GetType(downO.FullQualifiedName);
+            System.Type[] types = new System.Type[2];
+            types[0] = typeof(IntPtr);
+            types[1] = typeof(bool);
+            ConstructorInfo ctorInfo = downType.GetConstructor(types);
+            object[] objects = new object[2];
+            objects[0] = raw;
+            objects[1] = owned;
+            Enesim.Text.Buffer ret = ((Enesim.Text.Buffer)(ctorInfo.Invoke(objects)));
             return ret;
         }
     }
@@ -6744,8 +6768,6 @@ private static extern System.IntPtr enesim_text_engine_default_get();
 private static extern System.IntPtr enesim_text_engine_ref(System.IntPtr selfRaw);
 [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void enesim_text_engine_unref(System.IntPtr selfRaw);
-[DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean enesim_text_engine_type_get(System.IntPtr selfRaw, out System.IntPtr libRaw, out System.IntPtr nameRaw);
 ~Engine() { Dispose(false); }
         
         protected Engine() {
@@ -6788,12 +6810,19 @@ private static extern System.Boolean enesim_text_engine_type_get(System.IntPtr s
             return Enesim.Text.Engine.Downcast(ret, false);
         }
         
-        public bool GetType(out string lib, out string name) {
-            System.IntPtr libRaw;
-            System.IntPtr nameRaw;
-            bool ret = enesim_text_engine_type_get(raw, out  libRaw, out  nameRaw);
-            lib = Marshal.PtrToStringAnsi(libRaw);
-            name = Marshal.PtrToStringAnsi(nameRaw);
+        public static Enesim.Text.Engine Downcast(System.IntPtr raw, bool owned) {
+            Ender.Lib lib = Ender.Lib.Find("enesim");
+            Ender.Object o = ((Ender.Object)(lib.FindItem("enesim.text.engine")));
+            Ender.Item downO = o.Downcast(raw);
+            System.Type downType = System.Type.GetType(downO.FullQualifiedName);
+            System.Type[] types = new System.Type[2];
+            types[0] = typeof(IntPtr);
+            types[1] = typeof(bool);
+            ConstructorInfo ctorInfo = downType.GetConstructor(types);
+            object[] objects = new object[2];
+            objects[0] = raw;
+            objects[1] = owned;
+            Enesim.Text.Engine ret = ((Enesim.Text.Engine)(ctorInfo.Invoke(objects)));
             return ret;
         }
     }
