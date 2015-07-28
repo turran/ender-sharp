@@ -1,0 +1,9 @@
+prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+
+Name: egueb-dom-sharp
+Description: egueb-dom .NET Binding
+Version: 0
+Libs: -r:${libdir}/egueb-dom-sharp/egueb-dom.dll
+Requires: eina-sharp,enesim-sharp,ender-sharp

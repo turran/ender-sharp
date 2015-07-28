@@ -50,6 +50,8 @@ include src/bin/Makefile.mk
 ### The generated bindings
 include eina/Makefile.mk
 include enesim/Makefile.mk
+include egueb-dom/Makefile.mk
+include egueb-svg/Makefile.mk
 
 EXTRA_DIST += \
 AUTHORS \
