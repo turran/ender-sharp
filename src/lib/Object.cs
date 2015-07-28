@@ -215,6 +215,7 @@ namespace Ender
 			bool incRef = false;
 			bool hasCtor = false;
 			bool hasDowncast = false;
+			List functions = Functions;
 
 
 			if (direction == ArgDirection.IN)
@@ -227,17 +228,20 @@ namespace Ender
 
 			// Check if there is no ctor to call the downcast instead
 			// of the ctor directly
-			foreach (Function f in Functions)
+			if (functions != null)
 			{
-				if ((f.Flags & FunctionFlag.CTOR) == FunctionFlag.CTOR)
+				foreach (Function f in functions)
 				{
-					hasCtor = true;
-					break;
-				}
+					if ((f.Flags & FunctionFlag.CTOR) == FunctionFlag.CTOR)
+					{
+						hasCtor = true;
+						break;
+					}
 
-				if ((f.Flags & FunctionFlag.DOWNCAST) == FunctionFlag.DOWNCAST)
-				{
-					hasDowncast = true;
+					if ((f.Flags & FunctionFlag.DOWNCAST) == FunctionFlag.DOWNCAST)
+					{
+						hasDowncast = true;
+					}
 				}
 			}
 
