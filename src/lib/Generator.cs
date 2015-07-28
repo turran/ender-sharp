@@ -281,8 +281,11 @@ namespace Ender
 			if (ret != null)
 			{
 				CodeVariableDeclarationStatement cvs;
+				string retType = "IntPtr";
+
 				Item argType = f.Ret.ArgType;
-				string retType = argType.UnmanagedType(this, f.Ret.Direction, f.Ret.Transfer);
+				if (argType != null)
+					retType = argType.UnmanagedType(this, f.Ret.Direction, f.Ret.Transfer);
 				cvs = new CodeVariableDeclarationStatement(retType, "ret", ci);
 				csc.Add(cvs);
 			}
