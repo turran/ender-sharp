@@ -1988,20 +1988,40 @@ private static extern System.IntPtr egueb_dom_event_focus_out_new();
     
     public class ScripterDescriptor {
         
-        public delegate bool Load();
+        public delegate System.IntPtr CreateCb();
         
-        public delegate void Destroy();
+        public delegate void ScriptDestroyCb();
         
-        public delegate System.IntPtr Create();
+        public delegate bool ScriptListenerCb();
+        
+        public delegate void DestroyCb(System.IntPtr prv);
+        
+        public delegate void GlobalClearCb(System.IntPtr prv);
+        
+        public delegate void GlobalAddCb(System.IntPtr prv, string name, System.IntPtr o, Ender.Item i);
+        
+        public delegate bool LoadCb(System.IntPtr prv, Egueb.Dom.String s, out System.IntPtr obj);
+        
+        public delegate System.IntPtr ScriptRunCb(System.IntPtr prv, System.IntPtr obj);
         
         private DescriptorStruct rawStruct;
         
 
-internal delegate System.Boolean LoadInternal();
+internal delegate System.IntPtr CreateCbInternal();
 
-internal delegate void DestroyInternal();
+internal delegate void ScriptDestroyCbInternal();
 
-internal delegate System.IntPtr CreateInternal();
+internal delegate System.Boolean ScriptListenerCbInternal();
+
+internal delegate void DestroyCbInternal(System.IntPtr prv);
+
+internal delegate void GlobalClearCbInternal(System.IntPtr prv);
+
+internal delegate void GlobalAddCbInternal(System.IntPtr prv, System.String name, System.IntPtr o, System.IntPtr iRaw);
+
+internal delegate System.Boolean LoadCbInternal(System.IntPtr prv, System.IntPtr sRaw, out System.IntPtr obj);
+
+internal delegate System.IntPtr ScriptRunCbInternal(System.IntPtr prv, System.IntPtr obj);
         
         public ScripterDescriptor() {
         }
@@ -2034,11 +2054,11 @@ internal delegate System.IntPtr CreateInternal();
             }
         }
         
-        public Egueb.Dom.ScripterDescriptor.Create Create {
+        public Egueb.Dom.ScripterDescriptor.CreateCb Create {
             get {
-                Egueb.Dom.ScripterDescriptor.Create ret;
+                Egueb.Dom.ScripterDescriptor.CreateCb ret;
 
-Egueb.Dom.ScripterDescriptor.CreateInternal retRaw = () => {
+Egueb.Dom.ScripterDescriptor.CreateCbInternal retRaw = () => {
 System.IntPtr retInternal = ret();
 return retInternal;
 
@@ -2047,7 +2067,7 @@ return retInternal;
             }
             set {
 
-Egueb.Dom.ScripterDescriptor.CreateInternal valueRaw = () => {
+Egueb.Dom.ScripterDescriptor.CreateCbInternal valueRaw = () => {
 System.IntPtr retInternal = value();
 return retInternal;
 
@@ -2055,11 +2075,117 @@ return retInternal;
             }
         }
         
-        public Egueb.Dom.ScripterDescriptor.Destroy Destroy {
+        public Egueb.Dom.ScripterDescriptor.DestroyCb Destroy {
             get {
-                Egueb.Dom.ScripterDescriptor.Destroy ret;
+                Egueb.Dom.ScripterDescriptor.DestroyCb ret;
 
-Egueb.Dom.ScripterDescriptor.DestroyInternal retRaw = () => {
+Egueb.Dom.ScripterDescriptor.DestroyCbInternal retRaw = (System.IntPtr prv) => {
+ret(prv);
+
+};
+                return retRaw;
+            }
+            set {
+
+Egueb.Dom.ScripterDescriptor.DestroyCbInternal valueRaw = (System.IntPtr prv) => {
+value(prv);
+
+};
+            }
+        }
+        
+        public Egueb.Dom.ScripterDescriptor.LoadCb Load {
+            get {
+                Egueb.Dom.ScripterDescriptor.LoadCb ret;
+
+Egueb.Dom.ScripterDescriptor.LoadCbInternal retRaw = (System.IntPtr prv, System.IntPtr sRaw, out System.IntPtr obj) => {
+Egueb.Dom.String s;
+if ((sRaw == IntPtr.Zero)) {
+    s = null;
+}
+else {
+    s = new Egueb.Dom.String(sRaw, true);
+}
+bool retInternal = ret(prv, s, obj);
+return retInternal;
+
+};
+                return retRaw;
+            }
+            set {
+
+Egueb.Dom.ScripterDescriptor.LoadCbInternal valueRaw = (System.IntPtr prv, System.IntPtr sRaw, out System.IntPtr obj) => {
+Egueb.Dom.String s;
+if ((sRaw == IntPtr.Zero)) {
+    s = null;
+}
+else {
+    s = new Egueb.Dom.String(sRaw, true);
+}
+bool retInternal = value(prv, s, obj);
+return retInternal;
+
+};
+            }
+        }
+        
+        public Egueb.Dom.ScripterDescriptor.GlobalAddCb GlobalAdd {
+            get {
+                Egueb.Dom.ScripterDescriptor.GlobalAddCb ret;
+
+Egueb.Dom.ScripterDescriptor.GlobalAddCbInternal retRaw = (System.IntPtr prv, System.String name, System.IntPtr o, System.IntPtr iRaw) => {
+Ender.Item i;
+if ((iRaw == IntPtr.Zero)) {
+    i = null;
+}
+else {
+    i = new Ender.Item(iRaw, true);
+}
+ret(prv, name, o, i);
+
+};
+                return retRaw;
+            }
+            set {
+
+Egueb.Dom.ScripterDescriptor.GlobalAddCbInternal valueRaw = (System.IntPtr prv, System.String name, System.IntPtr o, System.IntPtr iRaw) => {
+Ender.Item i;
+if ((iRaw == IntPtr.Zero)) {
+    i = null;
+}
+else {
+    i = new Ender.Item(iRaw, true);
+}
+value(prv, name, o, i);
+
+};
+            }
+        }
+        
+        public Egueb.Dom.ScripterDescriptor.GlobalClearCb GlobalClear {
+            get {
+                Egueb.Dom.ScripterDescriptor.GlobalClearCb ret;
+
+Egueb.Dom.ScripterDescriptor.GlobalClearCbInternal retRaw = (System.IntPtr prv) => {
+ret(prv);
+
+};
+                return retRaw;
+            }
+            set {
+
+Egueb.Dom.ScripterDescriptor.GlobalClearCbInternal valueRaw = (System.IntPtr prv) => {
+value(prv);
+
+};
+            }
+        }
+        
+        public Egueb.Dom.ScripterDescriptor.ScriptDestroyCb ScriptDestroy {
+            get {
+                Egueb.Dom.ScripterDescriptor.ScriptDestroyCb ret;
+
+Egueb.Dom.ScripterDescriptor.ScriptDestroyCbInternal retRaw = () => {
 ret();
 
 };
@@ -2067,18 +2193,39 @@ ret();
             }
             set {
 
-Egueb.Dom.ScripterDescriptor.DestroyInternal valueRaw = () => {
+Egueb.Dom.ScripterDescriptor.ScriptDestroyCbInternal valueRaw = () => {
 value();
 
 };
             }
         }
         
-        public Egueb.Dom.ScripterDescriptor.Load Load {
+        public Egueb.Dom.ScripterDescriptor.ScriptRunCb ScriptRun {
             get {
-                Egueb.Dom.ScripterDescriptor.Load ret;
+                Egueb.Dom.ScripterDescriptor.ScriptRunCb ret;
 
-Egueb.Dom.ScripterDescriptor.LoadInternal retRaw = () => {
+Egueb.Dom.ScripterDescriptor.ScriptRunCbInternal retRaw = (System.IntPtr prv, System.IntPtr obj) => {
+System.IntPtr retInternal = ret(prv, obj);
+return retInternal;
+
+};
+                return retRaw;
+            }
+            set {
+
+Egueb.Dom.ScripterDescriptor.ScriptRunCbInternal valueRaw = (System.IntPtr prv, System.IntPtr obj) => {
+System.IntPtr retInternal = value(prv, obj);
+return retInternal;
+
+};
+            }
+        }
+        
+        public Egueb.Dom.ScripterDescriptor.ScriptListenerCb ScriptRunListener {
+            get {
+                Egueb.Dom.ScripterDescriptor.ScriptListenerCb ret;
+
+Egueb.Dom.ScripterDescriptor.ScriptListenerCbInternal retRaw = () => {
 bool retInternal = ret();
 return retInternal;
 
@@ -2087,106 +2234,7 @@ return retInternal;
             }
             set {
 
-Egueb.Dom.ScripterDescriptor.LoadInternal valueRaw = () => {
-bool retInternal = value();
-return retInternal;
-
-};
-            }
-        }
-        
-        public Egueb.Dom.Scripter.Descriptor.Global.Add GlobalAdd {
-            get {
-                Egueb.Dom.Scripter.Descriptor.Global.Add ret;
-
-Egueb.Dom.Scripter.Descriptor.Global.AddInternal retRaw = () => {
-ret();
-
-};
-                return retRaw;
-            }
-            set {
-
-Egueb.Dom.Scripter.Descriptor.Global.AddInternal valueRaw = () => {
-value();
-
-};
-            }
-        }
-        
-        public Egueb.Dom.Scripter.Descriptor.Global.Clear GlobalClear {
-            get {
-                Egueb.Dom.Scripter.Descriptor.Global.Clear ret;
-
-Egueb.Dom.Scripter.Descriptor.Global.ClearInternal retRaw = () => {
-ret();
-
-};
-                return retRaw;
-            }
-            set {
-
-Egueb.Dom.Scripter.Descriptor.Global.ClearInternal valueRaw = () => {
-value();
-
-};
-            }
-        }
-        
-        public Egueb.Dom.Scripter.Descriptor.Script.Destroy ScriptDestroy {
-            get {
-                Egueb.Dom.Scripter.Descriptor.Script.Destroy ret;
-
-Egueb.Dom.Scripter.Descriptor.Script.DestroyInternal retRaw = () => {
-ret();
-
-};
-                return retRaw;
-            }
-            set {
-
-Egueb.Dom.Scripter.Descriptor.Script.DestroyInternal valueRaw = () => {
-value();
-
-};
-            }
-        }
-        
-        public Egueb.Dom.Scripter.Descriptor.Script.Run ScriptRun {
-            get {
-                Egueb.Dom.Scripter.Descriptor.Script.Run ret;
-
-Egueb.Dom.Scripter.Descriptor.Script.RunInternal retRaw = () => {
-bool retInternal = ret();
-return retInternal;
-
-};
-                return retRaw;
-            }
-            set {
-
-Egueb.Dom.Scripter.Descriptor.Script.RunInternal valueRaw = () => {
-bool retInternal = value();
-return retInternal;
-
-};
-            }
-        }
-        
-        public Egueb.Dom.Scripter.Descriptor.Script.Run.Listener ScriptRunListener {
-            get {
-                Egueb.Dom.Scripter.Descriptor.Script.Run.Listener ret;
-
-Egueb.Dom.Scripter.Descriptor.Script.Run.ListenerInternal retRaw = () => {
-bool retInternal = ret();
-return retInternal;
-
-};
-                return retRaw;
-            }
-            set {
-
-Egueb.Dom.Scripter.Descriptor.Script.Run.ListenerInternal valueRaw = () => {
+Egueb.Dom.ScripterDescriptor.ScriptListenerCbInternal valueRaw = () => {
 bool retInternal = value();
 return retInternal;
 
@@ -2208,6 +2256,22 @@ return retInternal;
         public struct DescriptorStruct {
             
             public int version;
+            
+            private Egueb.Dom.ScripterDescriptor.CreateCbInternal createRaw;
+            
+            private Egueb.Dom.ScripterDescriptor.DestroyCbInternal destroyRaw;
+            
+            private Egueb.Dom.ScripterDescriptor.LoadCbInternal loadRaw;
+            
+            private Egueb.Dom.ScripterDescriptor.GlobalAddCbInternal global_addRaw;
+            
+            private Egueb.Dom.ScripterDescriptor.GlobalClearCbInternal global_clearRaw;
+            
+            private Egueb.Dom.ScripterDescriptor.ScriptDestroyCbInternal script_destroyRaw;
+            
+            private Egueb.Dom.ScripterDescriptor.ScriptRunCbInternal script_runRaw;
+            
+            private Egueb.Dom.ScripterDescriptor.ScriptListenerCbInternal script_run_listenerRaw;
         }
     }
     
@@ -2343,36 +2407,6 @@ namespace Egueb.Dom.Event.Io.Image {
         
 
 internal delegate void CbInternal();
-    }
-}
-namespace Egueb.Dom.Scripter.Descriptor.Global {
-    
-    
-    public class Main {
-        
-        public delegate void Clear();
-        
-        public delegate void Add();
-        
-
-internal delegate void ClearInternal();
-
-internal delegate void AddInternal();
-    }
-}
-namespace Egueb.Dom.Scripter.Descriptor.Script {
-    
-    
-    public class Main {
-        
-        public delegate void Destroy();
-        
-        public delegate bool Run();
-        
-
-internal delegate void DestroyInternal();
-
-internal delegate System.Boolean RunInternal();
     }
 }
 namespace Egueb.Dom.Event.Io.Data {
