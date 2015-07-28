@@ -491,17 +491,13 @@ namespace Ender
 				case ItemType.ARG:
 					ret = null;
 					break;
-				// Basic case
-				case ItemType.BASIC:
-					ret = new CodeMemberField();
-					ret.Type = new CodeTypeReference(i.ManagedType(this));
-					ret.Name = name;
-					ret.Attributes = MemberAttributes.Public;
-					break;
-				// TODO how to handle a function ptr?
 				case ItemType.FUNCTION:
-					ret = null;
+					ret = new CodeMemberField();
+					ret.Type = new CodeTypeReference(i.UnmanagedType(this, ArgDirection.IN, ItemTransfer.NONE));
+					ret.Name = i.UnmanagedName(name, ArgDirection.IN, ItemTransfer.NONE);
 					break;
+				case ItemType.BASIC:
+				case ItemType.ENUM:
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
 					ret = new CodeMemberField();
@@ -511,10 +507,6 @@ namespace Ender
 					break;
 				// TODO same as basic?
 				case ItemType.CONSTANT:
-					ret = null;
-					break;
-				// TODO Check the processed for the enum name
-				case ItemType.ENUM:
 					ret = null;
 					break;
 				case ItemType.DEF:
