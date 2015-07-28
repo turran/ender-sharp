@@ -788,13 +788,7 @@ namespace Ender
 			else
 			{
 				// add the inheritance on the type
-				if (!processed.ContainsKey(inherit.Name))
-					GenerateComplexItem(inherit);
-				if (processed.ContainsKey(inherit.Name))
-				{
-					CodeTypeDeclaration cob = (CodeTypeDeclaration)processed[inherit.Name];
-					co.BaseTypes.Add(cob.Name);
-				}
+				co.BaseTypes.Add(inherit.FullQualifiedName);
 			}
 			// Get the constructors
 			List ctors = o.Ctors;
