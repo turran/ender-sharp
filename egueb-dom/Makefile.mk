@@ -6,6 +6,7 @@ egueb-dom-sharp.cs:
 	$(output_DIR)/ender2sharp.exe -s egueb.dom.attr.get -s egueb.dom.attr.set \
 	-s egueb.dom.attr.final_get -s egueb.dom.attr.final_get_va \
 	-s egueb.dom.element.attribute_masked_set -s egueb.dom.element.attribute_masked_get \
+	-s egueb.dom.string.new_with_static_string \
 	-o $(top_srcdir)/egueb-dom egueb-dom
 
 egueb_dom_BIN = egueb-dom-sharp.dll
