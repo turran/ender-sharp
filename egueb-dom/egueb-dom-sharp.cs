@@ -993,8 +993,6 @@ private static extern System.IntPtr egueb_dom_string_new_with_string(System.Stri
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr egueb_dom_string_new_with_length(System.String str, System.Int32 len);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr egueb_dom_string_steal(System.IntPtr str);
-[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr egueb_dom_string_dup(System.IntPtr selfRaw);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr egueb_dom_string_ref(System.IntPtr selfRaw);
@@ -1071,11 +1069,6 @@ private static extern void egueb_dom_string_string_set(System.IntPtr selfRaw, Sy
             if (owned) {
                 egueb_dom_string_ref(i);
             }
-        }
-        
-        public static Egueb.Dom.String Steal(string str) {
-            System.IntPtr ret = egueb_dom_string_steal(str);
-            return new Egueb.Dom.String(ret, false);
         }
         
         public Egueb.Dom.String Dup() {
