@@ -69,6 +69,12 @@ namespace Ender
 				ender_item_ref(p);
 		}
 
+		public System.IntPtr Raw {
+			get {
+				return this.raw;
+			}
+		}
+
 		public string Name
 		{
 			get {
