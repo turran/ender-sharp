@@ -129,7 +129,7 @@ namespace Ender
 			}
 			else
 			{
-				ret = new CodeVariableReferenceExpression(i.UnmanagedName(Name, Direction, Transfer));
+				ret = new CodeVariableReferenceExpression(i.UnmanagedName(generator.Provider.CreateValidIdentifier(Name), Direction, Transfer));
 				if (Direction == ArgDirection.OUT && i.Type != ItemType.STRUCT)
 					return new CodeDirectionExpression(FieldDirection.Out, ret);
 				else
@@ -144,7 +144,7 @@ namespace Ender
 
 			if (i == null)
 				return null;
-			return i.ManagedPreStatements(generator, Name, Direction, Transfer);
+			return i.ManagedPreStatements(generator, generator.Provider.CreateValidIdentifier(Name), Direction, Transfer);
 		}
 
 		public CodeStatementCollection ManagedPostStatements(
