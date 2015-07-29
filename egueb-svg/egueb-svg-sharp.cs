@@ -2270,6 +2270,8 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public struct PaintStruct {
             
+            public Egueb.Svg.PaintType type;
+            
             public Egueb.Svg.Color color;
             
             public Egueb.Dom.String uri;
@@ -2419,6 +2421,8 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         public struct LengthStruct {
             
             public double value;
+            
+            public Egueb.Svg.LengthUnit unit;
         }
     }
     

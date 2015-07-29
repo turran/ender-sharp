@@ -21,10 +21,14 @@ namespace Egueb.Dom {
     
     public class EventIo : Egueb.Dom.Event {
         
+        public delegate void DataCb();
+        
+        public delegate void ImageCb();
+        
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr egueb_dom_event_io_data_new(IntPtr uri, Egueb.Dom.Event.Io.Data.CbInternal cbRaw);
+private static extern System.IntPtr egueb_dom_event_io_data_new(IntPtr uri, Egueb.Dom.EventIo.DataCbInternal cbRaw);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr egueb_dom_event_io_image_new(System.IntPtr sRaw, Egueb.Dom.Event.Io.Image.CbInternal cbRaw);
+private static extern System.IntPtr egueb_dom_event_io_image_new(System.IntPtr sRaw, Egueb.Dom.EventIo.ImageCbInternal cbRaw);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr egueb_dom_event_io_stream_get(System.IntPtr selfRaw);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -33,15 +37,19 @@ private static extern void egueb_dom_event_io_uri_get(System.IntPtr selfRaw, Int
 private static extern void egueb_dom_event_io_image_finish(System.IntPtr selfRaw, System.IntPtr sRaw);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void egueb_dom_event_io_data_finish(System.IntPtr selfRaw, System.IntPtr sRaw);
+
+internal delegate void DataCbInternal();
+
+internal delegate void ImageCbInternal();
         
         public EventIo(System.IntPtr i, bool owned) : 
                 base(i, owned) {
             Initialize(i, owned);
         }
         
-        public EventIo(System.IntPtr uri, Egueb.Dom.Event.Io.Data.Cb cb) {
+        public EventIo(System.IntPtr uri, Egueb.Dom.EventIo.DataCb cb) {
 
-Egueb.Dom.Event.Io.Data.CbInternal cbRaw = () => {
+Egueb.Dom.EventIo.DataCbInternal cbRaw = () => {
 cb();
 
 };
@@ -49,7 +57,7 @@ cb();
             Initialize(ret, false);
         }
         
-        public EventIo(Enesim.Stream s, Egueb.Dom.Event.Io.Image.Cb cb) {
+        public EventIo(Enesim.Stream s, Egueb.Dom.EventIo.ImageCb cb) {
             System.IntPtr sRaw;
             if ((s == null)) {
                 sRaw = IntPtr.Zero;
@@ -58,7 +66,7 @@ cb();
                 sRaw = s.Raw;
             }
 
-Egueb.Dom.Event.Io.Image.CbInternal cbRaw = () => {
+Egueb.Dom.EventIo.ImageCbInternal cbRaw = () => {
 cb();
 
 };
@@ -95,6 +103,123 @@ cb();
                 sRaw = s.Raw;
             }
             egueb_dom_event_io_data_finish(raw, sRaw);
+        }
+    }
+    
+    public class NodeMapNamed : IDisposable {
+        
+        protected IntPtr raw;
+        
+        private bool disposed;
+        
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_node_map_named_get(System.IntPtr selfRaw, System.IntPtr nameRaw, System.Int32 errRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_node_map_named_remove(System.IntPtr selfRaw, System.IntPtr nameRaw, System.IntPtr nRaw, System.Int32 errRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_node_map_named_set(System.IntPtr selfRaw, System.IntPtr nRaw, System.Int32 errRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_node_map_named_at(System.IntPtr selfRaw, System.Int32 idx);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Int32 egueb_dom_node_map_named_length(System.IntPtr selfRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_node_map_named_ref(System.IntPtr selfRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void egueb_dom_node_map_named_unref(System.IntPtr selfRaw);
+~NodeMapNamed() { Dispose(false); }
+        
+        protected NodeMapNamed() {
+        }
+        
+        public NodeMapNamed(System.IntPtr i, bool owned) {
+            Initialize(i, owned);
+        }
+        
+        public System.IntPtr Raw {
+            get {
+                return this.raw;
+            }
+        }
+        
+        public virtual void Dispose() {
+            Dispose(false);
+            GC.SuppressFinalize(this);
+        }
+        
+        protected virtual void Dispose(bool disposing) {
+            if (disposed) {
+            }
+            else {
+                egueb_dom_node_map_named_unref(raw);
+                raw = IntPtr.Zero;
+                disposed = false;
+            }
+        }
+        
+        protected virtual void Initialize(System.IntPtr i, bool owned) {
+            raw = i;
+            if (owned) {
+                egueb_dom_node_map_named_ref(i);
+            }
+        }
+        
+        public Egueb.Dom.Node Get(Egueb.Dom.String name, Eina.Error err) {
+            System.IntPtr nameRaw;
+            if ((name == null)) {
+                nameRaw = IntPtr.Zero;
+            }
+            else {
+                nameRaw = name.Raw;
+            }
+            int errRaw;
+            errRaw = err;
+            System.IntPtr ret = egueb_dom_node_map_named_get(raw, nameRaw, errRaw);
+            return new Egueb.Dom.Node(ret, false);
+        }
+        
+        public bool Remove(Egueb.Dom.String name, Egueb.Dom.Node n, Eina.Error err) {
+            System.IntPtr nameRaw;
+            if ((name == null)) {
+                nameRaw = IntPtr.Zero;
+            }
+            else {
+                nameRaw = name.Raw;
+            }
+            System.IntPtr nRaw;
+            if ((n == null)) {
+                nRaw = IntPtr.Zero;
+            }
+            else {
+                nRaw = n.Raw;
+            }
+            int errRaw;
+            errRaw = err;
+            bool ret = egueb_dom_node_map_named_remove(raw, nameRaw, nRaw, errRaw);
+            return ret;
+        }
+        
+        public bool Set(Egueb.Dom.Node n, Eina.Error err) {
+            System.IntPtr nRaw;
+            if ((n == null)) {
+                nRaw = IntPtr.Zero;
+            }
+            else {
+                nRaw = n.Raw;
+            }
+            int errRaw;
+            errRaw = err;
+            bool ret = egueb_dom_node_map_named_set(raw, nRaw, errRaw);
+            return ret;
+        }
+        
+        public Egueb.Dom.Node At(int idx) {
+            System.IntPtr ret = egueb_dom_node_map_named_at(raw, idx);
+            return new Egueb.Dom.Node(ret, false);
+        }
+        
+        public int Length() {
+            int ret = egueb_dom_node_map_named_length(raw);
+            return ret;
         }
     }
     
@@ -200,6 +325,70 @@ private static extern void egueb_dom_event_script_scripter_set(System.IntPtr sel
                 scRaw = sc.Raw;
             }
             egueb_dom_event_script_scripter_set(raw, scRaw);
+        }
+    }
+    
+    public class NodeList : IDisposable {
+        
+        protected IntPtr raw;
+        
+        private bool disposed;
+        
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_node_list_item(System.IntPtr selfRaw, System.Int32 index);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_node_list_ref(System.IntPtr selfRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void egueb_dom_node_list_unref(System.IntPtr selfRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Int32 egueb_dom_node_list_length_get(System.IntPtr selfRaw);
+~NodeList() { Dispose(false); }
+        
+        protected NodeList() {
+        }
+        
+        public NodeList(System.IntPtr i, bool owned) {
+            Initialize(i, owned);
+        }
+        
+        public System.IntPtr Raw {
+            get {
+                return this.raw;
+            }
+        }
+        
+        public int Length {
+            get {
+                int ret = egueb_dom_node_list_length_get(raw);
+                return ret;
+            }
+        }
+        
+        public virtual void Dispose() {
+            Dispose(false);
+            GC.SuppressFinalize(this);
+        }
+        
+        protected virtual void Dispose(bool disposing) {
+            if (disposed) {
+            }
+            else {
+                egueb_dom_node_list_unref(raw);
+                raw = IntPtr.Zero;
+                disposed = false;
+            }
+        }
+        
+        protected virtual void Initialize(System.IntPtr i, bool owned) {
+            raw = i;
+            if (owned) {
+                egueb_dom_node_list_ref(i);
+            }
+        }
+        
+        public Egueb.Dom.Node Item(int index) {
+            System.IntPtr ret = egueb_dom_node_list_item(raw, index);
+            return new Egueb.Dom.Node(ret, false);
         }
     }
     
@@ -609,16 +798,16 @@ return retInternal;
             else {
                 childRaw = child.Raw;
             }
-            System.IntPtr refRaw;
-            if ((@ref == null)) {
-                refRaw = IntPtr.Zero;
+            System.IntPtr _refRaw;
+            if ((_ref == null)) {
+                _refRaw = IntPtr.Zero;
             }
             else {
-                refRaw = @ref.Raw;
+                _refRaw = _ref.Raw;
             }
             int errRaw;
             errRaw = err;
-            bool ret = egueb_dom_node_insert_before(raw, childRaw, refRaw, errRaw);
+            bool ret = egueb_dom_node_insert_before(raw, childRaw, _refRaw, errRaw);
             return ret;
         }
         
@@ -645,14 +834,14 @@ return retInternal;
         }
         
         public bool EventPropagate(Egueb.Dom.Event _event) {
-            System.IntPtr eventRaw;
-            if ((@event == null)) {
-                eventRaw = IntPtr.Zero;
+            System.IntPtr _eventRaw;
+            if ((_event == null)) {
+                _eventRaw = IntPtr.Zero;
             }
             else {
-                eventRaw = @event.Raw;
+                _eventRaw = _event.Raw;
             }
-            bool ret = egueb_dom_node_event_propagate(raw, eventRaw);
+            bool ret = egueb_dom_node_event_propagate(raw, _eventRaw);
             return ret;
         }
         
@@ -791,7 +980,7 @@ return retInternal;
         }
     }
     
-    public class String : IDisposable {
+    public partial class String : IDisposable {
         
         protected IntPtr raw;
         
@@ -803,8 +992,6 @@ private static extern System.IntPtr egueb_dom_string_new();
 private static extern System.IntPtr egueb_dom_string_new_with_string(System.String str);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr egueb_dom_string_new_with_length(System.String str, System.Int32 len);
-[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr egueb_dom_string_new_with_static_string(System.String str);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr egueb_dom_string_steal(System.IntPtr str);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -843,11 +1030,6 @@ private static extern void egueb_dom_string_string_set(System.IntPtr selfRaw, Sy
         
         public String(string str, int len) {
             System.IntPtr ret = egueb_dom_string_new_with_length(str, len);
-            Initialize(ret, false);
-        }
-        
-        public String(string str) {
-            System.IntPtr ret = egueb_dom_string_new_with_static_string(str);
             Initialize(ret, false);
         }
         
@@ -1033,15 +1215,15 @@ private static extern IntPtr egueb_dom_event_target_descriptor_get();
         }
         
         public bool EventDispatch(Egueb.Dom.Event _event, out bool notprevented, out Eina.Error err) {
-            System.IntPtr eventRaw;
-            if ((@event == null)) {
-                eventRaw = IntPtr.Zero;
+            System.IntPtr _eventRaw;
+            if ((_event == null)) {
+                _eventRaw = IntPtr.Zero;
             }
             else {
-                eventRaw = @event.Raw;
+                _eventRaw = _event.Raw;
             }
             int errRaw;
-            bool ret = egueb_dom_event_target_event_dispatch(raw, eventRaw, out  notprevented, out  errRaw);
+            bool ret = egueb_dom_event_target_event_dispatch(raw, _eventRaw, out  notprevented, out  errRaw);
             err = errRaw;
             return ret;
         }
@@ -1936,6 +2118,135 @@ private static extern System.IntPtr egueb_dom_event_focus_out_new();
         }
     }
     
+    public class Scripter : IDisposable {
+        
+        protected IntPtr raw;
+        
+        private bool disposed;
+        
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_scripter_new(System.IntPtr dRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_scripter_ref(System.IntPtr selfRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void egueb_dom_scripter_unref(System.IntPtr selfRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_scripter_data_get(System.IntPtr selfRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_scripter_load(System.IntPtr selfRaw, System.IntPtr sRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void egueb_dom_scripter_global_add(System.IntPtr selfRaw, System.String name, System.IntPtr o, System.IntPtr iRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void egueb_dom_scripter_global_clear(System.IntPtr selfRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void egueb_dom_scripter_script_free(System.IntPtr selfRaw, System.IntPtr obj);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_scripter_script_run(System.IntPtr selfRaw, System.IntPtr obj);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_scripter_script_run_listener(System.IntPtr selfRaw, System.IntPtr obj, System.IntPtr eRaw);
+~Scripter() { Dispose(false); }
+        
+        public Scripter(System.IntPtr i, bool owned) {
+            Initialize(i, owned);
+        }
+        
+        public Scripter(Egueb.Dom.ScripterDescriptor d) {
+            System.IntPtr dRaw;
+            if ((d == null)) {
+                dRaw = IntPtr.Zero;
+            }
+            else {
+                dRaw = d.Raw;
+            }
+            System.IntPtr ret = egueb_dom_scripter_new(dRaw);
+            if ((dRaw != IntPtr.Zero)) {
+                Marshal.FreeHGlobal(dRaw);
+            }
+            Initialize(ret, false);
+        }
+        
+        public System.IntPtr Raw {
+            get {
+                return this.raw;
+            }
+        }
+        
+        public virtual void Dispose() {
+            Dispose(false);
+            GC.SuppressFinalize(this);
+        }
+        
+        protected virtual void Dispose(bool disposing) {
+            if (disposed) {
+            }
+            else {
+                egueb_dom_scripter_unref(raw);
+                raw = IntPtr.Zero;
+                disposed = false;
+            }
+        }
+        
+        protected virtual void Initialize(System.IntPtr i, bool owned) {
+            raw = i;
+            if (owned) {
+                egueb_dom_scripter_ref(i);
+            }
+        }
+        
+        public System.IntPtr GetData() {
+            System.IntPtr ret = egueb_dom_scripter_data_get(raw);
+            return ret;
+        }
+        
+        public bool Load(Egueb.Dom.String s) {
+            System.IntPtr sRaw;
+            if ((s == null)) {
+                sRaw = IntPtr.Zero;
+            }
+            else {
+                sRaw = s.Raw;
+            }
+            bool ret = egueb_dom_scripter_load(raw, sRaw);
+            return ret;
+        }
+        
+        public void GlobalAdd(string name, System.IntPtr o, Ender.Item i) {
+            System.IntPtr iRaw;
+            if ((i == null)) {
+                iRaw = IntPtr.Zero;
+            }
+            else {
+                iRaw = i.Raw;
+            }
+            egueb_dom_scripter_global_add(raw, name, o, iRaw);
+        }
+        
+        public void GlobalClear() {
+            egueb_dom_scripter_global_clear(raw);
+        }
+        
+        public void ScriptFree(System.IntPtr obj) {
+            egueb_dom_scripter_script_free(raw, obj);
+        }
+        
+        public bool ScriptRun(System.IntPtr obj) {
+            bool ret = egueb_dom_scripter_script_run(raw, obj);
+            return ret;
+        }
+        
+        public bool ScriptRunListener(System.IntPtr obj, Egueb.Dom.Event e) {
+            System.IntPtr eRaw;
+            if ((e == null)) {
+                eRaw = IntPtr.Zero;
+            }
+            else {
+                eRaw = e.Raw;
+            }
+            bool ret = egueb_dom_scripter_script_run_listener(raw, obj, eRaw);
+            return ret;
+        }
+    }
+    
     public enum EventPhase {
         
         Capturing = 0,
@@ -2396,27 +2707,5 @@ namespace Egueb.Dom.Key {
         Right = 2,
         
         Numpad = 3,
-    }
-}
-namespace Egueb.Dom.Event.Io.Image {
-    
-    
-    public class Main {
-        
-        public delegate void Cb();
-        
-
-internal delegate void CbInternal();
-    }
-}
-namespace Egueb.Dom.Event.Io.Data {
-    
-    
-    public class Main {
-        
-        public delegate void Cb();
-        
-
-internal delegate void CbInternal();
     }
 }
