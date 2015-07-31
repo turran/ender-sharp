@@ -4899,7 +4899,6 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         
         public Eina.F16p16 Xx {
             get {
-                Eina.F16p16 ret;
                 int retRaw;
                 retRaw = this.rawStruct.xx;
                 return new Eina.F16p16(retRaw);
@@ -4913,7 +4912,6 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         
         public Eina.F16p16 Xy {
             get {
-                Eina.F16p16 ret;
                 int retRaw;
                 retRaw = this.rawStruct.xy;
                 return new Eina.F16p16(retRaw);
@@ -4927,7 +4925,6 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         
         public Eina.F16p16 Xz {
             get {
-                Eina.F16p16 ret;
                 int retRaw;
                 retRaw = this.rawStruct.xz;
                 return new Eina.F16p16(retRaw);
@@ -4941,7 +4938,6 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         
         public Eina.F16p16 Yx {
             get {
-                Eina.F16p16 ret;
                 int retRaw;
                 retRaw = this.rawStruct.yx;
                 return new Eina.F16p16(retRaw);
@@ -4955,7 +4951,6 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         
         public Eina.F16p16 Yy {
             get {
-                Eina.F16p16 ret;
                 int retRaw;
                 retRaw = this.rawStruct.yy;
                 return new Eina.F16p16(retRaw);
@@ -4969,7 +4964,6 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         
         public Eina.F16p16 Yz {
             get {
-                Eina.F16p16 ret;
                 int retRaw;
                 retRaw = this.rawStruct.yz;
                 return new Eina.F16p16(retRaw);
@@ -4983,7 +4977,6 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         
         public Eina.F16p16 Zx {
             get {
-                Eina.F16p16 ret;
                 int retRaw;
                 retRaw = this.rawStruct.zx;
                 return new Eina.F16p16(retRaw);
@@ -4997,7 +4990,6 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         
         public Eina.F16p16 Zy {
             get {
-                Eina.F16p16 ret;
                 int retRaw;
                 retRaw = this.rawStruct.zy;
                 return new Eina.F16p16(retRaw);
@@ -5011,7 +5003,6 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         
         public Eina.F16p16 Zz {
             get {
-                Eina.F16p16 ret;
                 int retRaw;
                 retRaw = this.rawStruct.zz;
                 return new Eina.F16p16(retRaw);
@@ -5082,7 +5073,6 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         
         public Enesim.PathCommandDefinition Data {
             get {
-                Enesim.PathCommandDefinition ret;
                 System.IntPtr retRaw;
                 retRaw = Enesim.PathCommandDefinition.CreateRaw();
                 return new Enesim.PathCommandDefinition(retRaw, true);
@@ -6298,7 +6288,6 @@ private static extern void enesim_renderer_importer_buffer_set(System.IntPtr sel
         
         public Enesim.Argb Argb {
             get {
-                Enesim.Argb ret;
                 uint retRaw;
                 retRaw = this.rawStruct.argb;
                 return new Enesim.Argb(retRaw);

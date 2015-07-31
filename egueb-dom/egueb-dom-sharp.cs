@@ -262,10 +262,12 @@ private static extern System.IntPtr egueb_dom_event_multimedia_audio_new(IntPtr 
         
         public System.IntPtr GetNotifier() {
             IntPtr ret = egueb_dom_event_multimedia_notifier_get(raw);
+            return ret;
         }
         
         public System.IntPtr GetProvider() {
             IntPtr ret = egueb_dom_event_multimedia_provider_get(raw);
+            return ret;
         }
         
         public void SetProvider(System.IntPtr sc) {
@@ -477,6 +479,7 @@ internal delegate void ListenerInternal();
         public System.IntPtr Target {
             get {
                 IntPtr ret = egueb_dom_event_target_get(raw);
+                return ret;
             }
         }
         
@@ -504,6 +507,7 @@ internal delegate void ListenerInternal();
         
         public static System.IntPtr GetDescriptor() {
             IntPtr ret = egueb_dom_event_descriptor_get();
+            return ret;
         }
         
         public void Init(Egueb.Dom.String type, bool bubbleable, bool capturable, bool cancelable, Egueb.Dom.EventDirection direction) {
@@ -519,6 +523,7 @@ internal delegate void ListenerInternal();
         
         public System.IntPtr GetTargetCurrent() {
             IntPtr ret = egueb_dom_event_target_current_get(raw);
+            return ret;
         }
         
         public void StopPropagation() {
@@ -679,6 +684,7 @@ internal delegate System.Boolean CbInternal();
         
         public static System.IntPtr GetDescriptor() {
             IntPtr ret = egueb_dom_node_descriptor_get();
+            return ret;
         }
         
         public bool IsDestroying() {
@@ -1001,8 +1007,6 @@ private static extern void egueb_dom_string_unref(System.IntPtr selfRaw);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void egueb_dom_string_static_string_set(System.IntPtr selfRaw, System.String str);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern void egueb_dom_string_string_steal(System.IntPtr selfRaw, System.IntPtr str);
-[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Boolean egueb_dom_string_is_equal(System.IntPtr selfRaw, System.IntPtr otherRaw);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Boolean egueb_dom_string_is_valid(System.IntPtr selfRaw);
@@ -1037,18 +1041,6 @@ private static extern void egueb_dom_string_string_set(System.IntPtr selfRaw, Sy
             }
         }
         
-        public string String {
-            get {
-                System.IntPtr ret = egueb_dom_string_string_get(raw);
-                return Marshal.PtrToStringAnsi(ret);
-            }
-            set {
-                string str;
-                str = value;
-                egueb_dom_string_string_set(raw, str);
-            }
-        }
-        
         public virtual void Dispose() {
             Dispose(false);
             GC.SuppressFinalize(this);
@@ -1078,10 +1070,6 @@ private static extern void egueb_dom_string_string_set(System.IntPtr selfRaw, Sy
         
         public void SetStaticString(string str) {
             egueb_dom_string_static_string_set(raw, str);
-        }
-        
-        public void StringSteal(string str) {
-            egueb_dom_string_string_steal(raw, str);
         }
         
         public bool IsEqual(Egueb.Dom.String other) {
@@ -1190,6 +1178,7 @@ private static extern IntPtr egueb_dom_event_target_descriptor_get();
                 typeRaw = type.Raw;
             }
             IntPtr ret = egueb_dom_event_target_event_listener_add(raw, typeRaw, listener, capture, data);
+            return ret;
         }
         
         public void EventListenerRemove(Egueb.Dom.String type, System.IntPtr listener, bool capture, System.IntPtr data) {
@@ -1231,6 +1220,7 @@ private static extern IntPtr egueb_dom_event_target_descriptor_get();
         
         public static System.IntPtr GetDescriptor() {
             IntPtr ret = egueb_dom_event_target_descriptor_get();
+            return ret;
         }
     }
     
@@ -1317,6 +1307,7 @@ internal delegate void FetchInternal();
         
         public System.IntPtr GetValueDescriptor() {
             IntPtr ret = egueb_dom_attr_value_descriptor_get(raw);
+            return ret;
         }
         
         public void Init(Egueb.Dom.String name, Egueb.Dom.String ns, bool animatable, bool stylable, bool inheritable) {
@@ -1466,14 +1457,17 @@ internal delegate void FetchInternal();
         
         public static System.IntPtr GetObjectDescriptor() {
             IntPtr ret = egueb_dom_attr_object_descriptor_get();
+            return ret;
         }
         
         public static System.IntPtr GetBasicDescriptor() {
             IntPtr ret = egueb_dom_attr_basic_descriptor_get();
+            return ret;
         }
         
         public static System.IntPtr GetPrimitiveDescriptor() {
             IntPtr ret = egueb_dom_attr_primitive_descriptor_get();
+            return ret;
         }
     }
     
@@ -1867,6 +1861,7 @@ private static extern IntPtr egueb_dom_element_descriptor_get();
         
         public static System.IntPtr GetDescriptor() {
             IntPtr ret = egueb_dom_element_descriptor_get();
+            return ret;
         }
     }
     
@@ -1905,6 +1900,7 @@ private static extern IntPtr egueb_dom_event_ui_view_get(System.IntPtr selfRaw);
         
         public System.IntPtr GetView() {
             IntPtr ret = egueb_dom_event_ui_view_get(raw);
+            return ret;
         }
     }
     
@@ -1958,6 +1954,7 @@ private static extern System.IntPtr egueb_dom_document_document_element_get(Syst
         
         public static System.IntPtr GetDescriptor() {
             IntPtr ret = egueb_dom_document_descriptor_get();
+            return ret;
         }
         
         public Egueb.Dom.Node CreateElementNs(Egueb.Dom.String ns_uri, Egueb.Dom.String qname, Eina.Error err) {
@@ -2102,11 +2099,6 @@ private static extern System.IntPtr egueb_dom_event_focus_out_new();
         
         public EventFocus() {
             System.IntPtr ret = egueb_dom_event_focus_in_new();
-            Initialize(ret, false);
-        }
-        
-        public EventFocus() {
-            System.IntPtr ret = egueb_dom_event_focus_out_new();
             Initialize(ret, false);
         }
     }
@@ -2310,6 +2302,22 @@ private static extern System.Boolean egueb_dom_scripter_script_run_listener(Syst
         
         private DescriptorStruct rawStruct;
         
+        private Egueb.Dom.ScripterDescriptor.CreateCb create;
+        
+        private Egueb.Dom.ScripterDescriptor.DestroyCb destroy;
+        
+        private Egueb.Dom.ScripterDescriptor.LoadCb load;
+        
+        private Egueb.Dom.ScripterDescriptor.GlobalAddCb global_add;
+        
+        private Egueb.Dom.ScripterDescriptor.GlobalClearCb global_clear;
+        
+        private Egueb.Dom.ScripterDescriptor.ScriptDestroyCb script_destroy;
+        
+        private Egueb.Dom.ScripterDescriptor.ScriptRunCb script_run;
+        
+        private Egueb.Dom.ScripterDescriptor.ScriptListenerCb script_run_listener;
+        
 
 internal delegate System.IntPtr CreateCbInternal();
 
@@ -2361,188 +2369,88 @@ internal delegate System.IntPtr ScriptRunCbInternal(System.IntPtr prv, System.In
         public Egueb.Dom.ScripterDescriptor.CreateCb Create {
             get {
                 Egueb.Dom.ScripterDescriptor.CreateCb ret;
-
-Egueb.Dom.ScripterDescriptor.CreateCbInternal retRaw = () => {
-System.IntPtr retInternal = ret();
-return retInternal;
-
-};
-                return retRaw;
+                ret = this.create;
+                return ret;
             }
             set {
-
-Egueb.Dom.ScripterDescriptor.CreateCbInternal valueRaw = () => {
-System.IntPtr retInternal = value();
-return retInternal;
-
-};
+                this.create = value;
             }
         }
         
         public Egueb.Dom.ScripterDescriptor.DestroyCb Destroy {
             get {
                 Egueb.Dom.ScripterDescriptor.DestroyCb ret;
-
-Egueb.Dom.ScripterDescriptor.DestroyCbInternal retRaw = (System.IntPtr prv) => {
-ret(prv);
-
-};
-                return retRaw;
+                ret = this.destroy;
+                return ret;
             }
             set {
-
-Egueb.Dom.ScripterDescriptor.DestroyCbInternal valueRaw = (System.IntPtr prv) => {
-value(prv);
-
-};
+                this.destroy = value;
             }
         }
         
         public Egueb.Dom.ScripterDescriptor.LoadCb Load {
             get {
                 Egueb.Dom.ScripterDescriptor.LoadCb ret;
-
-Egueb.Dom.ScripterDescriptor.LoadCbInternal retRaw = (System.IntPtr prv, System.IntPtr sRaw, out System.IntPtr obj) => {
-Egueb.Dom.String s;
-if ((sRaw == IntPtr.Zero)) {
-    s = null;
-}
-else {
-    s = new Egueb.Dom.String(sRaw, true);
-}
-bool retInternal = ret(prv, s, obj);
-return retInternal;
-
-};
-                return retRaw;
+                ret = this.load;
+                return ret;
             }
             set {
-
-Egueb.Dom.ScripterDescriptor.LoadCbInternal valueRaw = (System.IntPtr prv, System.IntPtr sRaw, out System.IntPtr obj) => {
-Egueb.Dom.String s;
-if ((sRaw == IntPtr.Zero)) {
-    s = null;
-}
-else {
-    s = new Egueb.Dom.String(sRaw, true);
-}
-bool retInternal = value(prv, s, obj);
-return retInternal;
-
-};
+                this.load = value;
             }
         }
         
         public Egueb.Dom.ScripterDescriptor.GlobalAddCb GlobalAdd {
             get {
                 Egueb.Dom.ScripterDescriptor.GlobalAddCb ret;
-
-Egueb.Dom.ScripterDescriptor.GlobalAddCbInternal retRaw = (System.IntPtr prv, System.String name, System.IntPtr o, System.IntPtr iRaw) => {
-Ender.Item i;
-if ((iRaw == IntPtr.Zero)) {
-    i = null;
-}
-else {
-    i = new Ender.Item(iRaw, true);
-}
-ret(prv, name, o, i);
-
-};
-                return retRaw;
+                ret = this.global_add;
+                return ret;
             }
             set {
-
-Egueb.Dom.ScripterDescriptor.GlobalAddCbInternal valueRaw = (System.IntPtr prv, System.String name, System.IntPtr o, System.IntPtr iRaw) => {
-Ender.Item i;
-if ((iRaw == IntPtr.Zero)) {
-    i = null;
-}
-else {
-    i = new Ender.Item(iRaw, true);
-}
-value(prv, name, o, i);
-
-};
+                this.global_add = value;
             }
         }
         
         public Egueb.Dom.ScripterDescriptor.GlobalClearCb GlobalClear {
             get {
                 Egueb.Dom.ScripterDescriptor.GlobalClearCb ret;
-
-Egueb.Dom.ScripterDescriptor.GlobalClearCbInternal retRaw = (System.IntPtr prv) => {
-ret(prv);
-
-};
-                return retRaw;
+                ret = this.global_clear;
+                return ret;
             }
             set {
-
-Egueb.Dom.ScripterDescriptor.GlobalClearCbInternal valueRaw = (System.IntPtr prv) => {
-value(prv);
-
-};
+                this.global_clear = value;
             }
         }
         
         public Egueb.Dom.ScripterDescriptor.ScriptDestroyCb ScriptDestroy {
             get {
                 Egueb.Dom.ScripterDescriptor.ScriptDestroyCb ret;
-
-Egueb.Dom.ScripterDescriptor.ScriptDestroyCbInternal retRaw = () => {
-ret();
-
-};
-                return retRaw;
+                ret = this.script_destroy;
+                return ret;
             }
             set {
-
-Egueb.Dom.ScripterDescriptor.ScriptDestroyCbInternal valueRaw = () => {
-value();
-
-};
+                this.script_destroy = value;
             }
         }
         
         public Egueb.Dom.ScripterDescriptor.ScriptRunCb ScriptRun {
             get {
                 Egueb.Dom.ScripterDescriptor.ScriptRunCb ret;
-
-Egueb.Dom.ScripterDescriptor.ScriptRunCbInternal retRaw = (System.IntPtr prv, System.IntPtr obj) => {
-System.IntPtr retInternal = ret(prv, obj);
-return retInternal;
-
-};
-                return retRaw;
+                ret = this.script_run;
+                return ret;
             }
             set {
-
-Egueb.Dom.ScripterDescriptor.ScriptRunCbInternal valueRaw = (System.IntPtr prv, System.IntPtr obj) => {
-System.IntPtr retInternal = value(prv, obj);
-return retInternal;
-
-};
+                this.script_run = value;
             }
         }
         
         public Egueb.Dom.ScripterDescriptor.ScriptListenerCb ScriptRunListener {
             get {
                 Egueb.Dom.ScripterDescriptor.ScriptListenerCb ret;
-
-Egueb.Dom.ScripterDescriptor.ScriptListenerCbInternal retRaw = () => {
-bool retInternal = ret();
-return retInternal;
-
-};
-                return retRaw;
+                ret = this.script_run_listener;
+                return ret;
             }
             set {
-
-Egueb.Dom.ScripterDescriptor.ScriptListenerCbInternal valueRaw = () => {
-bool retInternal = value();
-return retInternal;
-
-};
+                this.script_run_listener = value;
             }
         }
         
