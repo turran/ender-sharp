@@ -1,3 +1,98 @@
++ Add support for nested structs
+  In a case like
+  typedef struct _Foo
+  {
+    int i;
+  } Foo;
+
+  typedef struct _Baz Baz;
+
+  typedef struct _Bar
+  {
+    int j;
+    Foo f;
+    Baz b;
+  } Bar;
+
+  We should generate on the C# side two classes:
+  class Foo
+  {
+    public Struct rawStruct;
+    int i {
+      int ret = this.rawStruct.i;
+      return ret;
+    }
+
+    struct Struct {
+      int i;
+    }
+  }
+
+  class Bar
+  {
+    private Foo f;
+    private Baz b;
+    public Struct rawStruct;
+
+    Bar(IntPtr i, bool owned) {
+      rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
+      f = new Foo(rawStruct.f, false);
+      b = new Baz(rawStruct.b, false);
+    }
+
+    /* basic example */
+    int j {
+      get {
+        int ret = this.rawStruct.j;
+        return ret;
+      }
+      set {
+        return this.rawStruct.j;
+      }
+    }
+
+    /* struct example */
+    Foo f {
+      get {
+        return this.f;
+      }
+    }
+
+    /* object example */
+    Baz b {
+      get {
+        return this.b;
+      }
+
+      set {
+        this.b = b;
+      }
+    }
+
+    IntPtr Raw {
+       get {
+         raw = CreateRaw();
+
+         /* struct sync */
+         fRaw = this.f.Raw;
+         rawStruct.f = Marshal.PtrToStructure(fRaw, typeof(Foo.Struct));
+         Foo.Destroy(fRaw);
+
+         /* object sync ? */
+         rawStruct.b = Baz.Ref(b.Raw);
+
+         Marshal.StructureToPtr(rawStruct, raw, false);
+         return raw;
+       }
+    }
+
+    struct Struct {
+      int j;
+      Foo.Struct f;
+      IntPtr b;
+    }
+  }
+
 + Add support for nullable out args. One idea is to have several versions
   of the functions with/without the nullable out arg. the simplified version
   should pass IntPtr.Zero as the missing argument
