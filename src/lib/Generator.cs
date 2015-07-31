@@ -1053,6 +1053,32 @@ namespace Ender
 			return co;
 		}
 
+		private CodeTypeDeclaration GenerateStructDef(Def d)
+		{
+			Item i = d.DefType;
+
+			// For complex types, we might inherit directly
+ 			CodeTypeDeclaration co = new CodeTypeDeclaration(ConvertName(d.Identifier));
+			co.BaseTypes.Add(i.FullQualifiedName);
+			// Add the two constructors that should call the base type
+
+			CodeConstructor cc = new CodeConstructor();
+			cc.Attributes = MemberAttributes.Public;
+			cc.BaseConstructorArgs.Add(new CodeSnippetExpression(""));
+			co.Members.Add(cc);
+
+			// Add a constructor to pass directly the raw
+			cc = new CodeConstructor();
+			cc.Attributes = MemberAttributes.Public;
+			cc.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IntPtr), "i"));
+			cc.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "owned"));
+			cc.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("i"));
+			cc.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("owned"));
+			co.Members.Add(cc);
+
+			return co;
+		}
+
 		private CodeTypeDeclaration GenerateDef(Def d)
 		{
 			Item i = d.DefType;
@@ -1074,13 +1100,15 @@ namespace Ender
 				case ItemType.BASIC:
 					co = GenerateBasicDef(d, (Basic)i);
  					break;
-				case ItemType.STRUCT:
 				case ItemType.OBJECT:
 				case ItemType.ENUM:
 				case ItemType.DEF:
 					// For complex types, we might inherit directly
  					co = new CodeTypeDeclaration(ConvertName(d.Identifier));
 					co.BaseTypes.Add(i.FullQualifiedName);
+					break;
+				case ItemType.STRUCT:
+					co = GenerateStructDef(d);
 					break;
 				default:
 					return null;

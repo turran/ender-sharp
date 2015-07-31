@@ -2249,6 +2249,14 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
     }
     
     public class Rect : Enesim.Rectangle {
+        
+        public Rect() : 
+                base() {
+        }
+        
+        public Rect(System.IntPtr i, bool owned) : 
+                base(i, owned) {
+        }
     }
 }
 namespace Egueb.Svg.String {
