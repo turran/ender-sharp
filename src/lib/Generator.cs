@@ -173,21 +173,21 @@ namespace Ender
 		// TODO and move the return to where it belongs actually
 		private CodeStatement GenerateRetStatement(Arg arg)
 		{
+			CodeStatement ret = new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret"));
+
 			if (arg == null)
-				return null;
+				return ret;
 
 			Item i = arg.ArgType;
 			if (i == null)
-				return null;
+				return ret;
 
-			CodeStatement ret = null;
 			switch (i.Type)
 			{
 				// Impossible cases
 				case ItemType.INVALID:
 				case ItemType.ATTR:
 				case ItemType.ARG:
-					ret = null;
 					break;
 				case ItemType.BASIC:
 				case ItemType.DEF:
@@ -535,11 +535,9 @@ namespace Ender
 				// Basic case
 				case ItemType.ENUM:
 				case ItemType.BASIC:
+				case ItemType.FUNCTION:
 				case ItemType.DEF:
 					csc.Add(new CodeAssignStatement(dst, src));
-					break;
-				// TODO how to handle a function ptr?
-				case ItemType.FUNCTION:
 					break;
 				case ItemType.STRUCT:
 				case ItemType.OBJECT:
