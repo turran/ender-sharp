@@ -469,83 +469,165 @@ namespace Ender
 			return co;
 		}
 
-		private CodeMemberField GenerateInnerFieldFull(Item i, string iName, string name)
+		private void GenerateInnerField(CodeTypeDeclaration co, Attr f)
 		{
-			CodeMemberField ret = null;
-			switch (i.Type)
+			// Get the field type
+			Item fType = f.AttrType;
+			if (fType == null)
 			{
-				// Impossible cases
-				case ItemType.INVALID:
-				case ItemType.ATTR:
-				case ItemType.ARG:
-					ret = null;
-					break;
-				case ItemType.FUNCTION:
-					ret = new CodeMemberField();
-					ret.Type = new CodeTypeReference(i.UnmanagedType(this, ArgDirection.IN, ItemTransfer.NONE));
-					ret.Name = i.UnmanagedName(name, ArgDirection.IN, ItemTransfer.NONE);
-					break;
-				case ItemType.BASIC:
-				case ItemType.ENUM:
-				case ItemType.STRUCT:
-				case ItemType.OBJECT:
-					ret = new CodeMemberField();
-					ret.Type = new CodeTypeReference(i.ManagedType(this));
-					ret.Name = name;
-					ret.Attributes = MemberAttributes.Public;
-					break;
-				// TODO same as basic?
-				case ItemType.CONSTANT:
-					ret = null;
-					break;
-				case ItemType.DEF:
-					Def def = (Def)i;
-					ret = GenerateInnerFieldFull(def.DefType, iName, name);
-					break;
-				default:
-					break;
+				Console.WriteLine("[ERR] Field '" + f.Name + "' without type");
+				return;
 			}
-			return ret;
+			// Pick the final type
+			Item finalType = fType;
+			if (fType.Type == ItemType.DEF)
+			{
+				finalType = ((Def)finalType).FinalDefType;
+			}
+
+			// The member field
+			CodeMemberField mf = new CodeMemberField();
+			mf.Name = Provider.CreateValidIdentifier(f.Name);
+			mf.Attributes = MemberAttributes.Assembly;
+
+			if (finalType.Type == ItemType.FUNCTION ||
+					finalType.Type == ItemType.BASIC ||
+					finalType.Type == ItemType.OBJECT ||
+					finalType.Type == ItemType.ENUM)
+			{
+				mf.Type = new CodeTypeReference(f.UnmanagedType(this,
+						ArgDirection.IN, ItemTransfer.NONE));
+			}
+			else if (finalType.Type == ItemType.STRUCT)
+			{
+				mf.Type = new CodeTypeReference(f.ManagedType(this) + ".Struct");
+			}
+			else
+			{
+				Console.WriteLine("[ERR] Unsupported type '" + finalType.Type + "' on field '" + f.Name);
+				return;
+			}
+			co.Members.Add(mf);
 		}
 
-		private CodeMemberField GenerateInnerField(Attr a)
+		private void GenerateFieldMember(CodeTypeDeclaration co, Attr f)
 		{
-			Item i = a.AttrType;
-			if (i == null)
+			// Get the field type
+			Item fType = f.AttrType;
+			if (fType == null)
 			{
-				Console.WriteLine("[ERR] Field '" + a.Name + "' without type");
-				return null;
+				Console.WriteLine("[ERR] Field '" + f.Name + "' without type");
+				return;
 			}
-			return GenerateInnerFieldFull(i, i.Name, a.Name);
+			// Pick the final type
+			Item finalType = fType;
+			if (fType.Type == ItemType.DEF)
+			{
+				finalType = ((Def)finalType).FinalDefType;
+			}
+
+			if (finalType.Type != ItemType.FUNCTION &&
+				finalType.Type != ItemType.OBJECT &&
+				finalType.Type != ItemType.STRUCT)
+			{
+				return;
+			}
+				
+			// The name of the inner field
+			string innerName = Provider.CreateValidIdentifier(f.Name);
+
+			// Add the member field
+			CodeMemberField fField = new CodeMemberField(f.ManagedType(this), innerName);
+			fField.Attributes = MemberAttributes.Private;
+			co.Members.Add(fField);
+
+			// TODO add the unmanaged member function
 		}
 
-		private CodeStatementCollection GenerateFieldAssignment(Attr f, CodeExpression dst, CodeExpression src)
+		private void GenerateField(CodeTypeDeclaration co, Attr f)
 		{
-			CodeStatementCollection csc = new CodeStatementCollection();
-			Item i = f.AttrType;
-
-			switch (i.Type)
+			// Get the field type
+			Item fType = f.AttrType;
+			if (fType == null)
 			{
-				// Impossible cases
-				case ItemType.INVALID:
-				case ItemType.ATTR:
-				case ItemType.ARG:
-				case ItemType.CONSTANT:
-					break;
-				// Basic case
-				case ItemType.ENUM:
-				case ItemType.BASIC:
-				case ItemType.FUNCTION:
-				case ItemType.DEF:
-					csc.Add(new CodeAssignStatement(dst, src));
-					break;
-				case ItemType.STRUCT:
-				case ItemType.OBJECT:
-					break;
-				default:
-					break;
+				Console.WriteLine("[ERR] Field '" + f.Name + "' without type");
+				return;
 			}
-			return csc;
+			// Pick the final type
+			Item finalType = fType;
+			if (fType.Type == ItemType.DEF)
+			{
+				finalType = ((Def)finalType).FinalDefType;
+			}
+
+			// Create the property
+			CodeMemberProperty fProp = new CodeMemberProperty();
+			fProp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+			fProp.Type = new CodeTypeReference(f.ManagedType(this));
+			fProp.Name = ConvertName(f.Name);
+
+			// The name of the inner field
+			string innerName = Provider.CreateValidIdentifier(f.Name);
+
+			// Getter/Setter statements
+			if (finalType.Type == ItemType.BASIC ||
+					finalType.Type == ItemType.ENUM)
+			{
+				// int ret; 
+				fProp.GetStatements.Add(new CodeVariableDeclarationStatement(fProp.Type, "ret"));
+				// ret = this.rawStruct.foreach;
+				fProp.GetStatements.Add(new CodeAssignStatement(new CodeVariableReferenceExpression("ret"),
+						new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
+						new CodeThisReferenceExpression(), "rawStruct"), innerName)));
+				// return ret;
+				fProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret")));
+
+				// this.rawStruct.foreach = value;
+				fProp.SetStatements.Add(new CodeAssignStatement(
+						new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
+						new CodeThisReferenceExpression(), "rawStruct"), innerName),
+						new CodePropertySetValueReferenceExpression()));
+				fProp.HasGet = true;
+				fProp.HasSet = true;
+			}
+			// For objects and functions we get/set from the private member
+			else if (finalType.Type == ItemType.FUNCTION ||
+					finalType.Type == ItemType.OBJECT)
+			{
+				// Enesim.Renderer.Compound.Foreach ret;
+				fProp.GetStatements.Add(new CodeVariableDeclarationStatement(fProp.Type, "ret"));
+				// ret = this.foreach;
+				fProp.GetStatements.Add(new CodeAssignStatement(
+						new CodeVariableReferenceExpression("ret"),
+						new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), innerName)));
+				// return ret;
+				fProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret")));
+
+				fProp.SetStatements.Add(new CodeAssignStatement(
+						new CodeFieldReferenceExpression(
+						new CodeThisReferenceExpression(), innerName),
+						new CodePropertySetValueReferenceExpression()));
+				fProp.HasGet = true;
+				fProp.HasSet = true;
+			}
+			// For structs we get the private member
+			else if (finalType.Type == ItemType.STRUCT)
+			{
+				// int ret; 
+				fProp.GetStatements.Add(new CodeVariableDeclarationStatement(fProp.Type, "ret"));
+				// ret = this.rawStruct.foreach;
+				fProp.GetStatements.Add(new CodeAssignStatement(new CodeVariableReferenceExpression("ret"),
+						new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), innerName)));
+				// return ret;
+				fProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret")));
+				fProp.HasGet = true;
+			}
+			else
+			{
+				Console.WriteLine("[ERR] Unsupported type '" + finalType.Type + "' on field '" + f.Name);
+				return;
+			}
+			co.Members.Add(fProp);
 		}
 
 		// TODO The struct should have every field on the inner
@@ -560,6 +642,7 @@ namespace Ender
 			CodeMethodInvokeExpression cms;
 			CodeMethodInvokeExpression cma;
 			CodeParameterDeclarationExpression cmp;
+			List fields = s.Fields;
 
 			Console.WriteLine("Generating struct " + s.Name);
 			// Get the real item name
@@ -582,13 +665,20 @@ namespace Ender
 			// Marshal the raw
 			// TODO In case is owned, do a copy
 			cc.Statements.Add(new CodeAssignStatement(new CodeVariableReferenceExpression("rawStruct"),
-					new CodeCastExpression(ConvertName(s.Identifier) + "Struct",
+					new CodeCastExpression("Struct",
 						new CodeMethodInvokeExpression(new CodeTypeReferenceExpression("Marshal"), "PtrToStructure", new CodeExpression[] {
 							new CodeVariableReferenceExpression("i"),
-							new CodeTypeOfExpression(new CodeTypeReference(ConvertName(s.Identifier) + "Struct"))
+							new CodeTypeOfExpression(new CodeTypeReference("Struct"))
 						})
 					)));
 			cc.Attributes = MemberAttributes.Public;
+			if (fields != null)
+			{
+				foreach (Attr f in fields)
+				{
+					
+				}
+			}
 			co.Members.Add(cc);
 
 			// Add a property to get/set Raw
@@ -614,9 +704,9 @@ namespace Ender
 			// rawStruct = Marshal.StructureToPtr(raw);
 			// Matrix.DestroyRaw()
 			cmprop.SetStatements.Add(new CodeAssignStatement(new CodeVariableReferenceExpression("rawStruct"),
-					new CodeCastExpression(ConvertName(s.Identifier) + "Struct", new CodeMethodInvokeExpression(new CodeTypeReferenceExpression("Marshal"), "PtrToStructure", new CodeExpression[] {
+					new CodeCastExpression("Struct", new CodeMethodInvokeExpression(new CodeTypeReferenceExpression("Marshal"), "PtrToStructure", new CodeExpression[] {
 						new CodePropertySetValueReferenceExpression(),
-						new CodeTypeOfExpression(new CodeTypeReference(ConvertName(s.Identifier) + "Struct"))
+						new CodeTypeOfExpression(new CodeTypeReference("Struct"))
 						}))));
 			cmprop.SetStatements.Add(new CodeExpressionStatement(new CodeMethodInvokeExpression(null, "DestroyRaw", new CodeExpression[] {
 						new CodePropertySetValueReferenceExpression()
@@ -632,7 +722,7 @@ namespace Ender
 			// return raw
 			cm.Statements.Add(new CodeVariableDeclarationStatement(new CodeTypeReference("System.IntPtr"), "raw"));
 			cms = new CodeMethodInvokeExpression(
-					new CodeTypeReferenceExpression("Marshal"), "SizeOf", new CodeTypeOfExpression(new CodeTypeReference(ConvertName(s.Identifier) + "Struct")));
+					new CodeTypeReferenceExpression("Marshal"), "SizeOf", new CodeTypeOfExpression(new CodeTypeReference("Struct")));
 			cma = new CodeMethodInvokeExpression(
 					new CodeTypeReferenceExpression("Marshal"), "AllocHGlobal", cms);
 			cm.Statements.Add(new CodeAssignStatement(new CodeVariableReferenceExpression("raw"), cma));
@@ -653,131 +743,23 @@ namespace Ender
 			co.Members.Add(cm);
 
 			// Add the inner struct
-			CodeTypeDeclaration cs = new CodeTypeDeclaration(ConvertName(s.Identifier) + "Struct");
+			CodeTypeDeclaration cs = new CodeTypeDeclaration("Struct");
 			cs.Attributes = MemberAttributes.Private;
 			cs.IsStruct = true;
 			// Add the internal struct member rawStruct
-			CodeMemberField rawStructField = new CodeMemberField(ConvertName(s.Identifier) + "Struct", "rawStruct");
+			CodeMemberField rawStructField = new CodeMemberField("Struct", "rawStruct");
 			co.Members.Add(rawStructField);
 			// Add the custom attributes [StructLayout(LayoutKind.Sequential)]
 			cs.CustomAttributes.Add(new CodeAttributeDeclaration("StructLayout",
 					new CodeAttributeArgument(new CodeFieldReferenceExpression(
 					new CodeTypeReferenceExpression(typeof(LayoutKind)), "Sequential"))));
-			List fields = s.Fields;
 			if (fields != null)
 			{
 				foreach (Attr f in fields)
 				{
-					// Getter/Setter statements
-					CodeStatementCollection csc;
-					// Add the fields to the inner struct
-					CodeMemberField mf = GenerateInnerField(f);
-					if (mf == null)
-					{
-						Console.WriteLine("[ERR] Skipping field " + f.Name);
-						continue;
-					}
-					cs.Members.Add(mf);
-
-					// Add the property to the outer class
-					CodeMemberProperty fProp = new CodeMemberProperty();
-					fProp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-					fProp.Name = ConvertName(f.Name);
-					fProp.HasGet = true;
-					fProp.HasSet = true;
-					fProp.Type = new CodeTypeReference(f.ManagedType(this));
-
-					// The getter
-					// Enesim.Renderer ret;
-					if (f.ManagedType(this) == f.UnmanagedType(this, ArgDirection.OUT, ItemTransfer.NONE))
-					{
-						// int ret; 
-						fProp.GetStatements.Add(new CodeVariableDeclarationStatement(fProp.Type, "ret"));
-						// ret = this.rawStruct.foreach;
-						csc = GenerateFieldAssignment(f, new CodeVariableReferenceExpression("ret"),
-								new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
-								new CodeThisReferenceExpression(), "rawStruct"), f.Name));
-						if (csc != null)
-						{
-							fProp.GetStatements.AddRange(csc);
-						}
-						// return ret;
-						fProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret")));
-
-						// this.rawStruct.foreach = value;
-						csc = GenerateFieldAssignment(f, new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
-								new CodeThisReferenceExpression(), "rawStruct"), f.Name),
-								new CodePropertySetValueReferenceExpression());
-						if (csc != null)
-						{
-							fProp.SetStatements.AddRange(csc);
-						}
-					}
-					else
-					{
-						Item fType = f.AttrType;
-						// In case the field is a function callback, add the member
-						if (fType.Type == ItemType.FUNCTION)
-						{
-							// Enesim.Renderer.Compound.Foreach ret;
-							fProp.GetStatements.Add(new CodeVariableDeclarationStatement(fProp.Type, "ret"));
-							// ret = this.foreach;
-							csc = GenerateFieldAssignment(f, new CodeVariableReferenceExpression("ret"),
-									new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), f.Name));
-							if (csc != null)
-							{
-								fProp.GetStatements.AddRange(csc);
-							}
-							// return ret;
-							fProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret")));
-
-							csc = GenerateFieldAssignment(f, new CodeFieldReferenceExpression(
-									new CodeThisReferenceExpression(), f.Name),
-									new CodePropertySetValueReferenceExpression());
-							if (csc != null)
-							{
-								fProp.SetStatements.AddRange(csc);
-							}
-
-							// Add the member function
-							CodeMemberField fField = new CodeMemberField(f.ManagedType(this), f.Name);
-							fField.Attributes = MemberAttributes.Private;
-							co.Members.Add(fField);	
-						}
-						// Otherwise just do
-						else
-						{
-							string retType = f.UnmanagedType(this, ArgDirection.OUT, ItemTransfer.NONE);
-							csc = fType.ManagedPreStatements(this, "ret", ArgDirection.OUT, ItemTransfer.NONE);
-							if (csc != null)
-							{
-								fProp.GetStatements.AddRange(csc);
-							}
-							csc = GenerateFieldAssignment(f, new CodeVariableReferenceExpression("retRaw"),
-									new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
-									new CodeThisReferenceExpression(), "rawStruct"), f.Name));
-							if (csc != null)
-							{
-								fProp.GetStatements.AddRange(csc);
-							}
-							fProp.GetStatements.Add(new CodeMethodReturnStatement(f.Construct(this, f.UnmanagedName("ret", ArgDirection.OUT, ItemTransfer.NONE), ArgDirection.IN, ItemTransfer.FULL)));
-
-							csc = f.ManagedPreStatements(this, "value", ArgDirection.IN, ItemTransfer.NONE);
-							if (csc != null)
-							{
-								fProp.SetStatements.AddRange(csc);
-							}
-							csc = GenerateFieldAssignment(f, new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
-									new CodeThisReferenceExpression(), "rawStruct"), f.Name),
-									new CodePropertySetValueReferenceExpression());
-							if (csc != null)
-							{
-								fProp.SetStatements.AddRange(csc);
-							}
-						}
-					}
-					// The setter
-					co.Members.Add(fProp);
+					GenerateInnerField(cs, f);
+					GenerateFieldMember(co, f);
+					GenerateField(co, f);
 				}
 			}
 			co.Members.Add(cs);
