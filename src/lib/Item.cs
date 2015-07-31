@@ -285,6 +285,13 @@ namespace Ender
 		public virtual CodeExpression Construct(Generator generator,
 				string from, ArgDirection direction, ItemTransfer transfer)
 		{
+			return Construct(generator, from, ManagedType(generator), direction, transfer);
+		}
+
+		public virtual CodeExpression Construct(Generator generator,
+				string from, string type, ArgDirection direction,
+				ItemTransfer transfer)
+		{
 			return new CodeVariableReferenceExpression(from);
 		}
 

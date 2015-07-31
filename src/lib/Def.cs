@@ -158,26 +158,9 @@ namespace Ender
 					new CodeTypeReference(ManagedType(generator)),
 					new CodeVariableReferenceExpression(from));
 			}
-			else if (i.Type == ItemType.STRUCT)
-			{
-				bool incRef = false;
-
-				if (direction == ArgDirection.IN)
-				{
-					if (transfer == ItemTransfer.FULL)
-						incRef = true;
-					else
-						incRef = false;
-				}
-				return new CodeObjectCreateExpression(ManagedType(generator),
-						new CodeExpression[] {
-							new CodeVariableReferenceExpression(from),
-							new CodePrimitiveExpression(incRef)
-						});
-			}
 			else
 			{
-				return i.Construct(generator, from, direction, transfer);
+				return DefType.Construct(generator, from, ManagedType(generator), direction, transfer);
 			}
 		}
 		#endregion

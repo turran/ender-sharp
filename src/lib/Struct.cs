@@ -185,7 +185,8 @@ namespace Ender
 
 		// new FullName(from, incRef);
 		public override CodeExpression Construct(Generator generator,
-				string from, ArgDirection direction, ItemTransfer transfer)
+				string from, string type, ArgDirection direction,
+				ItemTransfer transfer)
 		{
 			bool incRef = false;
 
@@ -196,7 +197,7 @@ namespace Ender
 				else
 					incRef = false;
 			}
-			return new CodeObjectCreateExpression(ManagedType(generator),
+			return new CodeObjectCreateExpression(type,
 					new CodeExpression[] {
 						new CodeVariableReferenceExpression(from),
 						new CodePrimitiveExpression(incRef)
