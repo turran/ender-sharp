@@ -3,7 +3,8 @@ pkgconfig_DATA += egueb-svg/egueb-svg-sharp.pc
 EXTRA_DIST += egueb-svg/egueb-svg-sharp.cs
 
 egueb-svg-sharp.cs:
-	$(output_DIR)/ender2sharp.exe -o $(top_srcdir)/egueb-svg egueb-svg
+	$(output_DIR)/ender2sharp.exe -s egueb.svg.element.svg.svg_point_create \
+	-o $(top_srcdir)/egueb-svg egueb-svg
 
 egueb_svg_BIN = egueb-svg-sharp.dll
 egueb_svg_SRC = $(top_srcdir)/egueb-svg/egueb-svg-sharp.cs

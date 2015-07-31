@@ -675,7 +675,7 @@ private static extern void egueb_svg_element_rect_ry_get(System.IntPtr selfRaw, 
         }
     }
     
-    public class ElementSvg : Egueb.Svg.Element {
+    public partial class ElementSvg : Egueb.Svg.Element {
         
 [DllImport("egueb-svg.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr egueb_svg_element_svg_new();
@@ -703,8 +703,6 @@ private static extern void egueb_svg_element_svg_y_set_simple(System.IntPtr self
 private static extern void egueb_svg_element_svg_width_set_simple(System.IntPtr selfRaw, System.IntPtr widthRaw);
 [DllImport("egueb-svg.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void egueb_svg_element_svg_height_set_simple(System.IntPtr selfRaw, System.IntPtr heightRaw);
-[DllImport("egueb-svg.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr egueb_svg_element_svg_svg_point_create(System.IntPtr selfRaw);
 [DllImport("egueb-svg.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void egueb_svg_element_svg_x_get(System.IntPtr selfRaw, System.IntPtr xRaw);
 [DllImport("egueb-svg.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -948,11 +946,6 @@ private static extern void egueb_svg_element_svg_current_translate_set(System.In
             if ((heightRaw != IntPtr.Zero)) {
                 Marshal.FreeHGlobal(heightRaw);
             }
-        }
-        
-        public Egueb.Svg.Point CreateSvgPoint() {
-            System.IntPtr ret = egueb_svg_element_svg_svg_point_create(raw);
-            return ret;
         }
     }
     
@@ -1584,13 +1577,17 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
     
     public class LengthAnimated {
         
-        private AnimatedStruct rawStruct;
+        private Struct rawStruct;
+        
+        private Egueb.Svg.Length _base;
+        
+        private Egueb.Svg.Length anim;
         
         public LengthAnimated() {
         }
         
         public LengthAnimated(System.IntPtr i, bool owned) {
-            rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(i, typeof(AnimatedStruct))));
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
         }
         
         public IntPtr Raw {
@@ -1601,48 +1598,30 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
                 return raw;
             }
             set {
-                rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(value, typeof(AnimatedStruct))));
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
                 DestroyRaw(value);
             }
         }
         
         public Egueb.Svg.Length Base {
             get {
-                System.IntPtr retRaw;
-                retRaw = Egueb.Svg.Length.CreateRaw();
-                return new Egueb.Svg.Length(retRaw, true);
-            }
-            set {
-                System.IntPtr valueRaw;
-                if ((value == null)) {
-                    valueRaw = IntPtr.Zero;
-                }
-                else {
-                    valueRaw = value.Raw;
-                }
+                Egueb.Svg.Length ret;
+                ret = this._base;
+                return ret;
             }
         }
         
         public Egueb.Svg.Length Anim {
             get {
-                System.IntPtr retRaw;
-                retRaw = Egueb.Svg.Length.CreateRaw();
-                return new Egueb.Svg.Length(retRaw, true);
-            }
-            set {
-                System.IntPtr valueRaw;
-                if ((value == null)) {
-                    valueRaw = IntPtr.Zero;
-                }
-                else {
-                    valueRaw = value.Raw;
-                }
+                Egueb.Svg.Length ret;
+                ret = this.anim;
+                return ret;
             }
         }
         
         public static System.IntPtr CreateRaw() {
             System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(AnimatedStruct)));
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
             return raw;
         }
         
@@ -1651,23 +1630,27 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct AnimatedStruct {
+        public struct Struct {
             
-            public Egueb.Svg.Length @base;
+            internal Egueb.Svg.Length.Struct _base;
             
-            public Egueb.Svg.Length anim;
+            internal Egueb.Svg.Length.Struct anim;
         }
     }
     
     public class PaintAnimated {
         
-        private AnimatedStruct rawStruct;
+        private Struct rawStruct;
+        
+        private Egueb.Svg.Paint _base;
+        
+        private Egueb.Svg.Paint anim;
         
         public PaintAnimated() {
         }
         
         public PaintAnimated(System.IntPtr i, bool owned) {
-            rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(i, typeof(AnimatedStruct))));
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
         }
         
         public IntPtr Raw {
@@ -1678,48 +1661,30 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
                 return raw;
             }
             set {
-                rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(value, typeof(AnimatedStruct))));
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
                 DestroyRaw(value);
             }
         }
         
         public Egueb.Svg.Paint Base {
             get {
-                System.IntPtr retRaw;
-                retRaw = Egueb.Svg.Paint.CreateRaw();
-                return new Egueb.Svg.Paint(retRaw, true);
-            }
-            set {
-                System.IntPtr valueRaw;
-                if ((value == null)) {
-                    valueRaw = IntPtr.Zero;
-                }
-                else {
-                    valueRaw = value.Raw;
-                }
+                Egueb.Svg.Paint ret;
+                ret = this._base;
+                return ret;
             }
         }
         
         public Egueb.Svg.Paint Anim {
             get {
-                System.IntPtr retRaw;
-                retRaw = Egueb.Svg.Paint.CreateRaw();
-                return new Egueb.Svg.Paint(retRaw, true);
-            }
-            set {
-                System.IntPtr valueRaw;
-                if ((value == null)) {
-                    valueRaw = IntPtr.Zero;
-                }
-                else {
-                    valueRaw = value.Raw;
-                }
+                Egueb.Svg.Paint ret;
+                ret = this.anim;
+                return ret;
             }
         }
         
         public static System.IntPtr CreateRaw() {
             System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(AnimatedStruct)));
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
             return raw;
         }
         
@@ -1728,23 +1693,27 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct AnimatedStruct {
+        public struct Struct {
             
-            public Egueb.Svg.Paint @base;
+            internal Egueb.Svg.Paint.Struct _base;
             
-            public Egueb.Svg.Paint anim;
+            internal Egueb.Svg.Paint.Struct anim;
         }
     }
     
     public class Paint {
         
-        private PaintStruct rawStruct;
+        private Struct rawStruct;
+        
+        private Egueb.Svg.Color color;
+        
+        private Egueb.Dom.String uri;
         
         public Paint() {
         }
         
         public Paint(System.IntPtr i, bool owned) {
-            rawStruct = ((PaintStruct)(Marshal.PtrToStructure(i, typeof(PaintStruct))));
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
         }
         
         public IntPtr Raw {
@@ -1755,7 +1724,7 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
                 return raw;
             }
             set {
-                rawStruct = ((PaintStruct)(Marshal.PtrToStructure(value, typeof(PaintStruct))));
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
                 DestroyRaw(value);
             }
         }
@@ -1773,40 +1742,26 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         
         public Egueb.Svg.Color Color {
             get {
-                System.IntPtr retRaw;
-                retRaw = Egueb.Svg.Color.CreateRaw();
-                return new Egueb.Svg.Color(retRaw, true);
-            }
-            set {
-                System.IntPtr valueRaw;
-                if ((value == null)) {
-                    valueRaw = IntPtr.Zero;
-                }
-                else {
-                    valueRaw = value.Raw;
-                }
+                Egueb.Svg.Color ret;
+                ret = this.color;
+                return ret;
             }
         }
         
         public Egueb.Dom.String Uri {
             get {
-                System.IntPtr retRaw;
-                return new Egueb.Dom.String(retRaw, true);
+                Egueb.Dom.String ret;
+                ret = this.uri;
+                return ret;
             }
             set {
-                System.IntPtr valueRaw;
-                if ((value == null)) {
-                    valueRaw = IntPtr.Zero;
-                }
-                else {
-                    valueRaw = value.Raw;
-                }
+                this.uri = value;
             }
         }
         
         public static System.IntPtr CreateRaw() {
             System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(PaintStruct)));
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
             return raw;
         }
         
@@ -1815,25 +1770,29 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct PaintStruct {
+        public struct Struct {
             
-            public Egueb.Svg.PaintType type;
+            internal Egueb.Svg.PaintType type;
             
-            public Egueb.Svg.Color color;
+            internal Egueb.Svg.Color.Struct color;
             
-            public Egueb.Dom.String uri;
+            internal System.IntPtr uri;
         }
     }
     
     public class RectAnimated {
         
-        private AnimatedStruct rawStruct;
+        private Struct rawStruct;
+        
+        private Egueb.Svg.Rect _base;
+        
+        private Egueb.Svg.Rect anim;
         
         public RectAnimated() {
         }
         
         public RectAnimated(System.IntPtr i, bool owned) {
-            rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(i, typeof(AnimatedStruct))));
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
         }
         
         public IntPtr Raw {
@@ -1844,52 +1803,30 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
                 return raw;
             }
             set {
-                rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(value, typeof(AnimatedStruct))));
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
                 DestroyRaw(value);
             }
         }
         
         public Egueb.Svg.Rect Base {
             get {
-                System.IntPtr retRaw;
-                retRaw = Enesim.Rectangle.CreateRaw();
-                retRaw = this.rawStruct.@base;
-                return new Enesim.Rectangle(ret, true);
-            }
-            set {
-                System.IntPtr valueRaw;
-                if ((value == null)) {
-                    valueRaw = IntPtr.Zero;
-                }
-                else {
-                    valueRaw = value.Raw;
-                }
-                this.rawStruct.@base = value;
+                Egueb.Svg.Rect ret;
+                ret = this._base;
+                return ret;
             }
         }
         
         public Egueb.Svg.Rect Anim {
             get {
-                System.IntPtr retRaw;
-                retRaw = Enesim.Rectangle.CreateRaw();
-                retRaw = this.rawStruct.anim;
-                return new Enesim.Rectangle(ret, true);
-            }
-            set {
-                System.IntPtr valueRaw;
-                if ((value == null)) {
-                    valueRaw = IntPtr.Zero;
-                }
-                else {
-                    valueRaw = value.Raw;
-                }
-                this.rawStruct.anim = value;
+                Egueb.Svg.Rect ret;
+                ret = this.anim;
+                return ret;
             }
         }
         
         public static System.IntPtr CreateRaw() {
             System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(AnimatedStruct)));
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
             return raw;
         }
         
@@ -1898,23 +1835,23 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct AnimatedStruct {
+        public struct Struct {
             
-            public Enesim.Rectangle @base;
+            internal Egueb.Svg.Rect.Struct _base;
             
-            public Enesim.Rectangle anim;
+            internal Egueb.Svg.Rect.Struct anim;
         }
     }
     
     public class Length {
         
-        private LengthStruct rawStruct;
+        private Struct rawStruct;
         
         public Length() {
         }
         
         public Length(System.IntPtr i, bool owned) {
-            rawStruct = ((LengthStruct)(Marshal.PtrToStructure(i, typeof(LengthStruct))));
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
         }
         
         public IntPtr Raw {
@@ -1925,7 +1862,7 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
                 return raw;
             }
             set {
-                rawStruct = ((LengthStruct)(Marshal.PtrToStructure(value, typeof(LengthStruct))));
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
                 DestroyRaw(value);
             }
         }
@@ -1954,7 +1891,7 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         
         public static System.IntPtr CreateRaw() {
             System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(LengthStruct)));
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
             return raw;
         }
         
@@ -1963,23 +1900,23 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct LengthStruct {
+        public struct Struct {
             
-            public double value;
+            internal double value;
             
-            public Egueb.Svg.LengthUnit unit;
+            internal Egueb.Svg.LengthUnit unit;
         }
     }
     
     public class NumberAnimated {
         
-        private AnimatedStruct rawStruct;
+        private Struct rawStruct;
         
         public NumberAnimated() {
         }
         
         public NumberAnimated(System.IntPtr i, bool owned) {
-            rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(i, typeof(AnimatedStruct))));
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
         }
         
         public IntPtr Raw {
@@ -1990,40 +1927,36 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
                 return raw;
             }
             set {
-                rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(value, typeof(AnimatedStruct))));
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
                 DestroyRaw(value);
             }
         }
         
         public Egueb.Svg.Number Base {
             get {
-                double retRaw;
-                retRaw = this.rawStruct.@base;
-                return new Egueb.Svg.Number(retRaw);
+                Egueb.Svg.Number ret;
+                ret = this.rawStruct._base;
+                return ret;
             }
             set {
-                double valueRaw;
-                valueRaw = value;
-                this.rawStruct.@base = value;
+                this.rawStruct._base = value;
             }
         }
         
         public Egueb.Svg.Number Anim {
             get {
-                double retRaw;
-                retRaw = this.rawStruct.anim;
-                return new Egueb.Svg.Number(retRaw);
+                Egueb.Svg.Number ret;
+                ret = this.rawStruct.anim;
+                return ret;
             }
             set {
-                double valueRaw;
-                valueRaw = value;
                 this.rawStruct.anim = value;
             }
         }
         
         public static System.IntPtr CreateRaw() {
             System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(AnimatedStruct)));
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
             return raw;
         }
         
@@ -2032,23 +1965,27 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct AnimatedStruct {
+        public struct Struct {
             
-            public double @base;
+            internal double _base;
             
-            public double anim;
+            internal double anim;
         }
     }
     
     public class ColorAnimated {
         
-        private AnimatedStruct rawStruct;
+        private Struct rawStruct;
+        
+        private Egueb.Svg.Color _base;
+        
+        private Egueb.Svg.Color anim;
         
         public ColorAnimated() {
         }
         
         public ColorAnimated(System.IntPtr i, bool owned) {
-            rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(i, typeof(AnimatedStruct))));
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
         }
         
         public IntPtr Raw {
@@ -2059,48 +1996,30 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
                 return raw;
             }
             set {
-                rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(value, typeof(AnimatedStruct))));
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
                 DestroyRaw(value);
             }
         }
         
         public Egueb.Svg.Color Base {
             get {
-                System.IntPtr retRaw;
-                retRaw = Egueb.Svg.Color.CreateRaw();
-                return new Egueb.Svg.Color(retRaw, true);
-            }
-            set {
-                System.IntPtr valueRaw;
-                if ((value == null)) {
-                    valueRaw = IntPtr.Zero;
-                }
-                else {
-                    valueRaw = value.Raw;
-                }
+                Egueb.Svg.Color ret;
+                ret = this._base;
+                return ret;
             }
         }
         
         public Egueb.Svg.Color Anim {
             get {
-                System.IntPtr retRaw;
-                retRaw = Egueb.Svg.Color.CreateRaw();
-                return new Egueb.Svg.Color(retRaw, true);
-            }
-            set {
-                System.IntPtr valueRaw;
-                if ((value == null)) {
-                    valueRaw = IntPtr.Zero;
-                }
-                else {
-                    valueRaw = value.Raw;
-                }
+                Egueb.Svg.Color ret;
+                ret = this.anim;
+                return ret;
             }
         }
         
         public static System.IntPtr CreateRaw() {
             System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(AnimatedStruct)));
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
             return raw;
         }
         
@@ -2109,23 +2028,23 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct AnimatedStruct {
+        public struct Struct {
             
-            public Egueb.Svg.Color @base;
+            internal Egueb.Svg.Color.Struct _base;
             
-            public Egueb.Svg.Color anim;
+            internal Egueb.Svg.Color.Struct anim;
         }
     }
     
     public class Color {
         
-        private ColorStruct rawStruct;
+        private Struct rawStruct;
         
         public Color() {
         }
         
         public Color(System.IntPtr i, bool owned) {
-            rawStruct = ((ColorStruct)(Marshal.PtrToStructure(i, typeof(ColorStruct))));
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
         }
         
         public IntPtr Raw {
@@ -2136,7 +2055,7 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
                 return raw;
             }
             set {
-                rawStruct = ((ColorStruct)(Marshal.PtrToStructure(value, typeof(ColorStruct))));
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
                 DestroyRaw(value);
             }
         }
@@ -2176,7 +2095,7 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         
         public static System.IntPtr CreateRaw() {
             System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(ColorStruct)));
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
             return raw;
         }
         
@@ -2185,25 +2104,25 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct ColorStruct {
+        public struct Struct {
             
-            public byte r;
+            internal byte r;
             
-            public byte g;
+            internal byte g;
             
-            public byte b;
+            internal byte b;
         }
     }
     
     public class Point {
         
-        private PointStruct rawStruct;
+        private Struct rawStruct;
         
         public Point() {
         }
         
         public Point(System.IntPtr i, bool owned) {
-            rawStruct = ((PointStruct)(Marshal.PtrToStructure(i, typeof(PointStruct))));
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
         }
         
         public IntPtr Raw {
@@ -2214,7 +2133,7 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
                 return raw;
             }
             set {
-                rawStruct = ((PointStruct)(Marshal.PtrToStructure(value, typeof(PointStruct))));
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
                 DestroyRaw(value);
             }
         }
@@ -2243,7 +2162,7 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         
         public static System.IntPtr CreateRaw() {
             System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(PointStruct)));
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
             return raw;
         }
         
@@ -2252,11 +2171,11 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct PointStruct {
+        public struct Struct {
             
-            public double x;
+            internal double x;
             
-            public double y;
+            internal double y;
         }
     }
     
@@ -2291,13 +2210,17 @@ namespace Egueb.Svg.String {
     
     public class Animated {
         
-        private AnimatedStruct rawStruct;
+        private Struct rawStruct;
+        
+        private Egueb.Dom.String _base;
+        
+        private Egueb.Dom.String anim;
         
         public Animated() {
         }
         
         public Animated(System.IntPtr i, bool owned) {
-            rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(i, typeof(AnimatedStruct))));
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
         }
         
         public IntPtr Raw {
@@ -2308,46 +2231,36 @@ namespace Egueb.Svg.String {
                 return raw;
             }
             set {
-                rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(value, typeof(AnimatedStruct))));
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
                 DestroyRaw(value);
             }
         }
         
         public Egueb.Dom.String Base {
             get {
-                System.IntPtr retRaw;
-                return new Egueb.Dom.String(retRaw, true);
+                Egueb.Dom.String ret;
+                ret = this._base;
+                return ret;
             }
             set {
-                System.IntPtr valueRaw;
-                if ((value == null)) {
-                    valueRaw = IntPtr.Zero;
-                }
-                else {
-                    valueRaw = value.Raw;
-                }
+                this._base = value;
             }
         }
         
         public Egueb.Dom.String Anim {
             get {
-                System.IntPtr retRaw;
-                return new Egueb.Dom.String(retRaw, true);
+                Egueb.Dom.String ret;
+                ret = this.anim;
+                return ret;
             }
             set {
-                System.IntPtr valueRaw;
-                if ((value == null)) {
-                    valueRaw = IntPtr.Zero;
-                }
-                else {
-                    valueRaw = value.Raw;
-                }
+                this.anim = value;
             }
         }
         
         public static System.IntPtr CreateRaw() {
             System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(AnimatedStruct)));
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
             return raw;
         }
         
@@ -2356,11 +2269,11 @@ namespace Egueb.Svg.String {
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct AnimatedStruct {
+        public struct Struct {
             
-            public Egueb.Dom.String @base;
+            internal System.IntPtr _base;
             
-            public Egueb.Dom.String anim;
+            internal System.IntPtr anim;
         }
     }
 }
@@ -2369,13 +2282,13 @@ namespace Egueb.Svg.Enum {
     
     public class Animated {
         
-        private AnimatedStruct rawStruct;
+        private Struct rawStruct;
         
         public Animated() {
         }
         
         public Animated(System.IntPtr i, bool owned) {
-            rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(i, typeof(AnimatedStruct))));
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
         }
         
         public IntPtr Raw {
@@ -2386,7 +2299,7 @@ namespace Egueb.Svg.Enum {
                 return raw;
             }
             set {
-                rawStruct = ((AnimatedStruct)(Marshal.PtrToStructure(value, typeof(AnimatedStruct))));
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
                 DestroyRaw(value);
             }
         }
@@ -2394,11 +2307,11 @@ namespace Egueb.Svg.Enum {
         public int Base {
             get {
                 int ret;
-                ret = this.rawStruct.@base;
+                ret = this.rawStruct._base;
                 return ret;
             }
             set {
-                this.rawStruct.@base = value;
+                this.rawStruct._base = value;
             }
         }
         
@@ -2415,7 +2328,7 @@ namespace Egueb.Svg.Enum {
         
         public static System.IntPtr CreateRaw() {
             System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(AnimatedStruct)));
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
             return raw;
         }
         
@@ -2424,11 +2337,11 @@ namespace Egueb.Svg.Enum {
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct AnimatedStruct {
+        public struct Struct {
             
-            public int @base;
+            internal int _base;
             
-            public int anim;
+            internal int anim;
         }
     }
 }

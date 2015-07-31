@@ -410,13 +410,6 @@ private static extern System.IntPtr egueb_dom_text_new();
         }
     }
     
-    public enum EventDirection {
-        
-        CaptureBubble = 0,
-        
-        BubbleCapture = 1,
-    }
-    
     public class Event : IDisposable {
         
         public delegate void Listener();
@@ -1222,17 +1215,6 @@ private static extern IntPtr egueb_dom_event_target_descriptor_get();
             IntPtr ret = egueb_dom_event_target_descriptor_get();
             return ret;
         }
-    }
-    
-    public enum AttrType {
-        
-        Base = 1,
-        
-        Default = 2,
-        
-        Animated = 4,
-        
-        Styled = 8,
     }
     
     public partial class Attr : Egueb.Dom.Node {
@@ -2282,6 +2264,24 @@ private static extern System.Boolean egueb_dom_scripter_script_run_listener(Syst
         }
     }
     
+    public enum AttrType {
+        
+        Base = 1,
+        
+        Default = 2,
+        
+        Animated = 4,
+        
+        Styled = 8,
+    }
+    
+    public enum EventDirection {
+        
+        CaptureBubble = 0,
+        
+        BubbleCapture = 1,
+    }
+    
     public class ScripterDescriptor {
         
         public delegate System.IntPtr CreateCb();
@@ -2300,7 +2300,7 @@ private static extern System.Boolean egueb_dom_scripter_script_run_listener(Syst
         
         public delegate System.IntPtr ScriptRunCb(System.IntPtr prv, System.IntPtr obj);
         
-        private DescriptorStruct rawStruct;
+        private Struct rawStruct;
         
         private Egueb.Dom.ScripterDescriptor.CreateCb create;
         
@@ -2339,7 +2339,7 @@ internal delegate System.IntPtr ScriptRunCbInternal(System.IntPtr prv, System.In
         }
         
         public ScripterDescriptor(System.IntPtr i, bool owned) {
-            rawStruct = ((DescriptorStruct)(Marshal.PtrToStructure(i, typeof(DescriptorStruct))));
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
         }
         
         public IntPtr Raw {
@@ -2350,7 +2350,7 @@ internal delegate System.IntPtr ScriptRunCbInternal(System.IntPtr prv, System.In
                 return raw;
             }
             set {
-                rawStruct = ((DescriptorStruct)(Marshal.PtrToStructure(value, typeof(DescriptorStruct))));
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
                 DestroyRaw(value);
             }
         }
@@ -2456,7 +2456,7 @@ internal delegate System.IntPtr ScriptRunCbInternal(System.IntPtr prv, System.In
         
         public static System.IntPtr CreateRaw() {
             System.IntPtr raw;
-            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(DescriptorStruct)));
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
             return raw;
         }
         
@@ -2465,25 +2465,25 @@ internal delegate System.IntPtr ScriptRunCbInternal(System.IntPtr prv, System.In
         }
         
         [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct DescriptorStruct {
+        public struct Struct {
             
-            public int version;
+            internal int version;
             
-            private Egueb.Dom.ScripterDescriptor.CreateCbInternal createRaw;
+            internal Egueb.Dom.ScripterDescriptor.CreateCbInternal create;
             
-            private Egueb.Dom.ScripterDescriptor.DestroyCbInternal destroyRaw;
+            internal Egueb.Dom.ScripterDescriptor.DestroyCbInternal destroy;
             
-            private Egueb.Dom.ScripterDescriptor.LoadCbInternal loadRaw;
+            internal Egueb.Dom.ScripterDescriptor.LoadCbInternal load;
             
-            private Egueb.Dom.ScripterDescriptor.GlobalAddCbInternal global_addRaw;
+            internal Egueb.Dom.ScripterDescriptor.GlobalAddCbInternal global_add;
             
-            private Egueb.Dom.ScripterDescriptor.GlobalClearCbInternal global_clearRaw;
+            internal Egueb.Dom.ScripterDescriptor.GlobalClearCbInternal global_clear;
             
-            private Egueb.Dom.ScripterDescriptor.ScriptDestroyCbInternal script_destroyRaw;
+            internal Egueb.Dom.ScripterDescriptor.ScriptDestroyCbInternal script_destroy;
             
-            private Egueb.Dom.ScripterDescriptor.ScriptRunCbInternal script_runRaw;
+            internal Egueb.Dom.ScripterDescriptor.ScriptRunCbInternal script_run;
             
-            private Egueb.Dom.ScripterDescriptor.ScriptListenerCbInternal script_run_listenerRaw;
+            internal Egueb.Dom.ScripterDescriptor.ScriptListenerCbInternal script_run_listener;
         }
     }
     
