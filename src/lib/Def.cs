@@ -143,7 +143,7 @@ namespace Ender
 			}
 			else
 			{
-				return name;
+				return i.UnmanagedName(name, direction, transfer);
 			}
 		}
 
