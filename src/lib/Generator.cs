@@ -148,19 +148,8 @@ namespace Ender
 					ret = null;
 					break;
 				case ItemType.ENUM:
-					// if the created object is actually an enum (it can be a class in
-					// case it has methods) use it, otherwise the inner enum
-					CodeTypeDeclaration ce = (CodeTypeDeclaration)GenerateComplexItem(i);
-					if (ce.IsEnum)
-					{
-						ret = new CodeParameterDeclarationExpression();
-						ret.Type = new CodeTypeReference(i.ManagedType(this));
-					}
-					else
-					{
-						ret = new CodeParameterDeclarationExpression();
-						ret.Type = new CodeTypeReference(i.ManagedType(this));
-					}
+					ret = new CodeParameterDeclarationExpression();
+					ret.Type = new CodeTypeReference(i.ManagedType(this));
 					break;
 				case ItemType.DEF:
 					ret = new CodeParameterDeclarationExpression();
