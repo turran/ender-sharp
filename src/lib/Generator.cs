@@ -672,50 +672,111 @@ namespace Ender
 					CodeStatementCollection csc;
 					// Add the fields to the inner struct
 					CodeMemberField mf = GenerateInnerField(f);
-					if (mf != null)
-						cs.Members.Add(mf);
+					if (mf == null)
+					{
+						Console.WriteLine("[ERR] Skipping field " + f.Name);
+						continue;
+					}
+					cs.Members.Add(mf);
+
 					// Add the property to the outer class
 					CodeMemberProperty fProp = new CodeMemberProperty();
 					fProp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 					fProp.Name = ConvertName(f.Name);
-					fProp.Type = new CodeTypeReference(f.ManagedType(this));
 					fProp.HasGet = true;
 					fProp.HasSet = true;
-					Item fType = f.AttrType;
+					fProp.Type = new CodeTypeReference(f.ManagedType(this));
 
 					// The getter
-					// Enesim.Renderer ret
-					string retType = fType.ManagedType(this);
-					string retName = "ret";
-					fProp.GetStatements.Add(new CodeVariableDeclarationStatement(retType, "ret"));
-					csc = fType.ManagedPreStatements(this, "ret", ArgDirection.OUT, ItemTransfer.NONE);
-					if (csc != null)
+					// Enesim.Renderer ret;
+					if (f.ManagedType(this) == f.UnmanagedType(this, ArgDirection.OUT, ItemTransfer.NONE))
 					{
-						fProp.GetStatements.AddRange(csc);
-						retName = "retRaw";
-					}
-					csc = GenerateFieldAssignment(f, new CodeVariableReferenceExpression(retName),
-							new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
-							new CodeThisReferenceExpression(), "rawStruct"), f.Name));
-					if (csc != null)
-					{
-						fProp.GetStatements.AddRange(csc);
-					}
-					fProp.GetStatements.Add(new CodeMethodReturnStatement(fType.Construct(this, fType.UnmanagedName("ret", ArgDirection.IN, ItemTransfer.FULL), ArgDirection.IN, ItemTransfer.FULL)));
+						// int ret; 
+						fProp.GetStatements.Add(new CodeVariableDeclarationStatement(fProp.Type, "ret"));
+						// ret = this.rawStruct.foreach;
+						csc = GenerateFieldAssignment(f, new CodeVariableReferenceExpression("ret"),
+								new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
+								new CodeThisReferenceExpression(), "rawStruct"), f.Name));
+						if (csc != null)
+						{
+							fProp.GetStatements.AddRange(csc);
+						}
+						// return ret;
+						fProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret")));
 
+						// this.rawStruct.foreach = value;
+						csc = GenerateFieldAssignment(f, new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
+								new CodeThisReferenceExpression(), "rawStruct"), f.Name),
+								new CodePropertySetValueReferenceExpression());
+						if (csc != null)
+						{
+							fProp.SetStatements.AddRange(csc);
+						}
+					}
+					else
+					{
+						Item fType = f.AttrType;
+						// In case the field is a function callback, add the member
+						if (fType.Type == ItemType.FUNCTION)
+						{
+							// Enesim.Renderer.Compound.Foreach ret;
+							fProp.GetStatements.Add(new CodeVariableDeclarationStatement(fProp.Type, "ret"));
+							// ret = this.foreach;
+							csc = GenerateFieldAssignment(f, new CodeVariableReferenceExpression("ret"),
+									new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), f.Name));
+							if (csc != null)
+							{
+								fProp.GetStatements.AddRange(csc);
+							}
+							// return ret;
+							fProp.GetStatements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret")));
+
+							csc = GenerateFieldAssignment(f, new CodeFieldReferenceExpression(
+									new CodeThisReferenceExpression(), f.Name),
+									new CodePropertySetValueReferenceExpression());
+							if (csc != null)
+							{
+								fProp.SetStatements.AddRange(csc);
+							}
+
+							// Add the member function
+							CodeMemberField fField = new CodeMemberField(f.ManagedType(this), f.Name);
+							fField.Attributes = MemberAttributes.Private;
+							co.Members.Add(fField);	
+						}
+						// Otherwise just do
+						else
+						{
+							string retType = f.UnmanagedType(this, ArgDirection.OUT, ItemTransfer.NONE);
+							csc = fType.ManagedPreStatements(this, "ret", ArgDirection.OUT, ItemTransfer.NONE);
+							if (csc != null)
+							{
+								fProp.GetStatements.AddRange(csc);
+							}
+							csc = GenerateFieldAssignment(f, new CodeVariableReferenceExpression("retRaw"),
+									new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
+									new CodeThisReferenceExpression(), "rawStruct"), f.Name));
+							if (csc != null)
+							{
+								fProp.GetStatements.AddRange(csc);
+							}
+							fProp.GetStatements.Add(new CodeMethodReturnStatement(f.Construct(this, f.UnmanagedName("ret", ArgDirection.OUT, ItemTransfer.NONE), ArgDirection.IN, ItemTransfer.FULL)));
+
+							csc = f.ManagedPreStatements(this, "value", ArgDirection.IN, ItemTransfer.NONE);
+							if (csc != null)
+							{
+								fProp.SetStatements.AddRange(csc);
+							}
+							csc = GenerateFieldAssignment(f, new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
+									new CodeThisReferenceExpression(), "rawStruct"), f.Name),
+									new CodePropertySetValueReferenceExpression());
+							if (csc != null)
+							{
+								fProp.SetStatements.AddRange(csc);
+							}
+						}
+					}
 					// The setter
-					csc = fType.ManagedPreStatements(this, "value", ArgDirection.IN, ItemTransfer.NONE);
-					if (csc != null)
-					{
-						fProp.SetStatements.AddRange(csc);
-					}
-					csc = GenerateFieldAssignment(f, new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(
-							new CodeThisReferenceExpression(), "rawStruct"), f.Name),
-							new CodePropertySetValueReferenceExpression());
-					if (csc != null)
-					{
-						fProp.SetStatements.AddRange(csc);
-					}
 					co.Members.Add(fProp);
 				}
 			}
