@@ -1225,7 +1225,7 @@ namespace Ender
 				foreach (Lib l in deps)
 				{
 					string name = l.Name.Replace("-", ".");
-					root.Imports.Add(new CodeNamespaceImport(ConvertName(name)));
+					root.Imports.Add(new CodeNamespaceImport(ConvertFullName(name)));
 				}
 			}
 		}
