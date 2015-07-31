@@ -943,14 +943,7 @@ namespace Ender
 				case ItemType.DEF:
 					// For complex types, we might inherit directly
  					co = new CodeTypeDeclaration(ConvertName(d.Identifier));
-					// add the inheritance on the type
-					if (!processed.ContainsKey(i.Name))
-						GenerateComplexItem(i);
-					if (processed.ContainsKey(i.Name))
-					{
-						CodeTypeDeclaration cob = (CodeTypeDeclaration)processed[i.Name];
-						co.BaseTypes.Add(cob.Name);
-					}
+					co.BaseTypes.Add(i.FullQualifiedName);
 					break;
 				default:
 					return null;
