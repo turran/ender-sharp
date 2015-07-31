@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.CodeDom;
 
 namespace Ender
 {
@@ -99,6 +100,64 @@ namespace Ender
 			else
 			{
 				return i.ManagedType(generator);
+			}
+		}
+		public override string UnmanagedType(Generator generator,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			Item i = AttrType;
+			if (i == null)
+			{
+				Console.WriteLine("[ERR] Arg '" + Name + "' without a type?");
+				return "System.IntPtr";
+			}
+			else
+			{
+				return i.UnmanagedType(generator, direction, transfer);
+			}
+		}
+		public override CodeExpression Construct(Generator generator,
+				string from, ArgDirection direction, ItemTransfer transfer)
+		{
+			Item i = AttrType;
+			if (i == null)
+			{
+				Console.WriteLine("[ERR] Arg '" + Name + "' without a type?");
+				return new CodeVariableReferenceExpression(from);
+			}
+			else
+			{
+				return i.Construct(generator, from, direction, transfer);
+			}
+		}
+		public override CodeStatementCollection ManagedPreStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			Item i = AttrType;
+			if (i == null)
+			{
+				Console.WriteLine("[ERR] Arg '" + Name + "' without a type?");
+				return null;
+			}
+			else
+			{
+				return i.ManagedPreStatements(generator, varName, direction, transfer);
+			}
+
+		}
+		public override string UnmanagedName(string name,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			Item i = AttrType;
+			if (i == null)
+			{
+				Console.WriteLine("[ERR] Arg '" + Name + "' without a type?");
+				return null;
+			}
+			else
+			{
+				return i.UnmanagedName(name, direction, transfer);
 			}
 		}
 		#endregion
