@@ -544,6 +544,91 @@ namespace Ender
 			// TODO add the unmanaged member function
 		}
 
+		private CodeStatementCollection GenerateFieldFullConstructor(Attr f)
+		{
+			// Get the field type
+			Item fType = f.AttrType;
+			if (fType == null)
+			{
+				Console.WriteLine("[ERR] Field '" + f.Name + "' without type");
+				return null;
+			}
+			// Pick the final type
+			Item finalType = fType;
+			if (fType.Type == ItemType.DEF)
+			{
+				finalType = ((Def)finalType).FinalDefType;
+			}
+
+			string innerName = Provider.CreateValidIdentifier(f.Name);
+
+			if (finalType.Type == ItemType.OBJECT)
+			{
+				Object o = (Object)finalType;
+				CodeStatementCollection csc = new CodeStatementCollection();
+				csc.Add(new CodeVariableDeclarationStatement(
+						finalType.UnmanagedType(this, ArgDirection.IN, 	ItemTransfer.FULL),
+						finalType.UnmanagedName(innerName, ArgDirection.IN, ItemTransfer.FULL),
+						new CodeFieldReferenceExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
+						"rawStruct"), innerName)));
+				csc.AddRange(o.UnmanagedPreStatements(this, innerName, ArgDirection.IN, ItemTransfer.FULL));
+				csc.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
+						innerName), new CodeVariableReferenceExpression(innerName)));
+				return csc;
+			}
+			else if (finalType.Type == ItemType.STRUCT)
+			{
+				string unmanagedName = finalType.UnmanagedName(innerName, ArgDirection.IN, ItemTransfer.FULL);
+
+				CodeStatementCollection csc = new CodeStatementCollection();
+				csc.Add(new CodeVariableDeclarationStatement(
+						finalType.UnmanagedType(this, ArgDirection.IN, 	ItemTransfer.FULL),
+						unmanagedName,
+						new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(fType.FullQualifiedName),
+						"CreateRaw")));
+				csc.Add(new CodeMethodInvokeExpression(new CodeTypeReferenceExpression("Marshal"), "StructureToPtr", new CodeExpression[] {
+						new CodeFieldReferenceExpression(new CodeVariableReferenceExpression("rawStruct"), innerName),
+						new CodeVariableReferenceExpression(unmanagedName),
+						new CodePrimitiveExpression(false)
+						}));
+				csc.Add(new CodeAssignStatement(new CodeVariableReferenceExpression(innerName),
+						fType.Construct(this, unmanagedName, ArgDirection.IN, ItemTransfer.FULL))); 
+				return csc;
+			}
+			return null;
+		}
+
+		private CodeAssignStatement GenerateFieldSimpleConstructor(Attr f)
+		{
+			// Get the field type
+			Item fType = f.AttrType;
+			if (fType == null)
+			{
+				Console.WriteLine("[ERR] Field '" + f.Name + "' without type");
+				return null;
+			}
+			// Pick the final type
+			Item finalType = fType;
+			if (fType.Type == ItemType.DEF)
+			{
+				finalType = ((Def)finalType).FinalDefType;
+			}
+
+			string innerName = Provider.CreateValidIdentifier(f.Name);
+
+			if (finalType.Type == ItemType.OBJECT)
+			{
+				return new CodeAssignStatement(new CodeVariableReferenceExpression(innerName),
+						new CodePrimitiveExpression(null));
+			}
+			else if (finalType.Type == ItemType.STRUCT)
+			{
+				return new CodeAssignStatement(new CodeVariableReferenceExpression(innerName),
+						new CodeObjectCreateExpression(fType.ManagedType(this)));
+			}
+			return null;
+		}
+
 		private void GenerateField(CodeTypeDeclaration co, Attr f)
 		{
 			// Get the field type
@@ -656,6 +741,15 @@ namespace Ender
 			// Add a generic constructor
 			CodeConstructor cc = new CodeConstructor();
 			cc.Attributes = MemberAttributes.Public;
+			if (fields != null)
+			{
+				foreach (Attr f in fields)
+				{
+					CodeStatement cst = GenerateFieldSimpleConstructor(f);
+					if (cst != null)
+						cc.Statements.Add(cst);
+				}
+			}
 			co.Members.Add(cc);
 
 			// Add a constructor to pass directly the raw
@@ -676,7 +770,9 @@ namespace Ender
 			{
 				foreach (Attr f in fields)
 				{
-					
+					CodeStatementCollection csc = GenerateFieldFullConstructor(f);
+					if (csc != null)
+						cc.Statements.AddRange(csc);
 				}
 			}
 			co.Members.Add(cc);

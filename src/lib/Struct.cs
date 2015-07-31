@@ -183,7 +183,7 @@ namespace Ender
 			return name + "Raw";
 		}
 
-		// new FullName();
+		// new FullName(from, incRef);
 		public override CodeExpression Construct(Generator generator,
 				string from, ArgDirection direction, ItemTransfer transfer)
 		{

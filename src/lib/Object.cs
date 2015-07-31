@@ -101,6 +101,7 @@ namespace Ender
 		}
 
 		#region Item interface
+		// IntPtr rawName;
 		public override CodeStatementCollection ManagedPreStatements(
 				Generator generator, string varName,
 				ArgDirection direction, ItemTransfer transfer)

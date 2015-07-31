@@ -36,7 +36,11 @@
 
     Bar(IntPtr i, bool owned) {
       rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
-      f = new Foo(rawStruct.f, false);
+
+      IntPtr fRaw = Foo.CreateRaw();
+      Marshal.StructureToPtr(rawStruct.f, fRaw, false);
+      f = new Foo(fRaw, false);
+
       b = new Baz(rawStruct.b, false);
     }
 

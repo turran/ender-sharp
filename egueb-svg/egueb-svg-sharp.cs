@@ -1584,10 +1584,18 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         private Egueb.Svg.Length anim;
         
         public LengthAnimated() {
+            _base = new Egueb.Svg.Length();
+            anim = new Egueb.Svg.Length();
         }
         
         public LengthAnimated(System.IntPtr i, bool owned) {
             rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
+            System.IntPtr _baseRaw = Egueb.Svg.Length.CreateRaw();
+            Marshal.StructureToPtr(rawStruct._base, _baseRaw, false);
+            _base = new Egueb.Svg.Length(_baseRaw, true);
+            System.IntPtr animRaw = Egueb.Svg.Length.CreateRaw();
+            Marshal.StructureToPtr(rawStruct.anim, animRaw, false);
+            anim = new Egueb.Svg.Length(animRaw, true);
         }
         
         public IntPtr Raw {
@@ -1647,10 +1655,18 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         private Egueb.Svg.Paint anim;
         
         public PaintAnimated() {
+            _base = new Egueb.Svg.Paint();
+            anim = new Egueb.Svg.Paint();
         }
         
         public PaintAnimated(System.IntPtr i, bool owned) {
             rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
+            System.IntPtr _baseRaw = Egueb.Svg.Paint.CreateRaw();
+            Marshal.StructureToPtr(rawStruct._base, _baseRaw, false);
+            _base = new Egueb.Svg.Paint(_baseRaw, true);
+            System.IntPtr animRaw = Egueb.Svg.Paint.CreateRaw();
+            Marshal.StructureToPtr(rawStruct.anim, animRaw, false);
+            anim = new Egueb.Svg.Paint(animRaw, true);
         }
         
         public IntPtr Raw {
@@ -1710,10 +1726,24 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         private Egueb.Dom.String uri;
         
         public Paint() {
+            color = new Egueb.Svg.Color();
+            uri = null;
         }
         
         public Paint(System.IntPtr i, bool owned) {
             rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
+            System.IntPtr colorRaw = Egueb.Svg.Color.CreateRaw();
+            Marshal.StructureToPtr(rawStruct.color, colorRaw, false);
+            color = new Egueb.Svg.Color(colorRaw, true);
+            System.IntPtr uriRaw = this.rawStruct.uri;
+            Egueb.Dom.String uri;
+            if ((uriRaw == IntPtr.Zero)) {
+                uri = null;
+            }
+            else {
+                uri = new Egueb.Dom.String(uriRaw, false);
+            }
+            this.uri = uri;
         }
         
         public IntPtr Raw {
@@ -1789,10 +1819,18 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         private Egueb.Svg.Rect anim;
         
         public RectAnimated() {
+            _base = new Egueb.Svg.Rect();
+            anim = new Egueb.Svg.Rect();
         }
         
         public RectAnimated(System.IntPtr i, bool owned) {
             rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
+            System.IntPtr _baseRaw = Egueb.Svg.Rect.CreateRaw();
+            Marshal.StructureToPtr(rawStruct._base, _baseRaw, false);
+            _base = new Egueb.Svg.Rect(_baseRaw, true);
+            System.IntPtr animRaw = Egueb.Svg.Rect.CreateRaw();
+            Marshal.StructureToPtr(rawStruct.anim, animRaw, false);
+            anim = new Egueb.Svg.Rect(animRaw, true);
         }
         
         public IntPtr Raw {
@@ -1982,10 +2020,18 @@ private static extern void egueb_svg_element_use_href_get(System.IntPtr selfRaw,
         private Egueb.Svg.Color anim;
         
         public ColorAnimated() {
+            _base = new Egueb.Svg.Color();
+            anim = new Egueb.Svg.Color();
         }
         
         public ColorAnimated(System.IntPtr i, bool owned) {
             rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
+            System.IntPtr _baseRaw = Egueb.Svg.Color.CreateRaw();
+            Marshal.StructureToPtr(rawStruct._base, _baseRaw, false);
+            _base = new Egueb.Svg.Color(_baseRaw, true);
+            System.IntPtr animRaw = Egueb.Svg.Color.CreateRaw();
+            Marshal.StructureToPtr(rawStruct.anim, animRaw, false);
+            anim = new Egueb.Svg.Color(animRaw, true);
         }
         
         public IntPtr Raw {
@@ -2217,10 +2263,30 @@ namespace Egueb.Svg.String {
         private Egueb.Dom.String anim;
         
         public Animated() {
+            _base = null;
+            anim = null;
         }
         
         public Animated(System.IntPtr i, bool owned) {
             rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
+            System.IntPtr _baseRaw = this.rawStruct._base;
+            Egueb.Dom.String _base;
+            if ((_baseRaw == IntPtr.Zero)) {
+                _base = null;
+            }
+            else {
+                _base = new Egueb.Dom.String(_baseRaw, false);
+            }
+            this._base = _base;
+            System.IntPtr animRaw = this.rawStruct.anim;
+            Egueb.Dom.String anim;
+            if ((animRaw == IntPtr.Zero)) {
+                anim = null;
+            }
+            else {
+                anim = new Egueb.Dom.String(animRaw, false);
+            }
+            this.anim = anim;
         }
         
         public IntPtr Raw {
