@@ -2802,3 +2802,9 @@ namespace Egueb.Dom.Key {
         Numpad = 3,
     }
 }
+namespace Egueb.Dom.Event.Key {
+    
+    
+    public class Main {
+    }
+}
