@@ -1,3 +1,5 @@
++ Add glue code to get the constants
++ Add a parameter to make an object/class/whatever partial
 + Add support for nested structs
   In a case like
   typedef struct _Foo
