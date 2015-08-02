@@ -1593,6 +1593,53 @@ private static extern System.Int32 egueb_dom_event_mouse_client_y_get(System.Int
         }
     }
     
+    public class FeatureWindow : Egueb.Dom.Feature {
+        
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_feature_window_type_get(System.IntPtr selfRaw, IntPtr type);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_feature_window_content_size_set(System.IntPtr selfRaw, System.Int32 w, System.Int32 h);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_feature_window_content_size_get(System.IntPtr selfRaw, out System.Int32 w, out System.Int32 h);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_feature_window_add(System.IntPtr nRaw, IntPtr d);
+        
+        protected FeatureWindow() {
+        }
+        
+        public FeatureWindow(System.IntPtr i, bool owned) : 
+                base(i, owned) {
+            Initialize(i, owned);
+        }
+        
+        public bool GetType(System.IntPtr type) {
+            bool ret = egueb_dom_feature_window_type_get(raw, type);
+            return ret;
+        }
+        
+        public bool SetContentSize(int w, int h) {
+            bool ret = egueb_dom_feature_window_content_size_set(raw, w, h);
+            return ret;
+        }
+        
+        public bool GetContentSize(out int w, out int h) {
+            bool ret = egueb_dom_feature_window_content_size_get(raw, out  w, out  h);
+            return ret;
+        }
+        
+        public static bool Add(Egueb.Dom.Node n, System.IntPtr d) {
+            System.IntPtr nRaw;
+            if ((n == null)) {
+                nRaw = IntPtr.Zero;
+            }
+            else {
+                nRaw = n.Raw;
+            }
+            bool ret = egueb_dom_feature_window_add(nRaw, d);
+            return ret;
+        }
+    }
+    
     public class EventTargetListener {
     }
     
@@ -2149,19 +2196,12 @@ private static extern System.IntPtr egueb_dom_document_document_element_get(Syst
     
     public class EventFocus : Egueb.Dom.Event {
         
-[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr egueb_dom_event_focus_in_new();
-[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr egueb_dom_event_focus_out_new();
+        protected EventFocus() {
+        }
         
         public EventFocus(System.IntPtr i, bool owned) : 
                 base(i, owned) {
             Initialize(i, owned);
-        }
-        
-        public EventFocus() {
-            System.IntPtr ret = egueb_dom_event_focus_in_new();
-            Initialize(ret, false);
         }
     }
     
@@ -2342,6 +2382,13 @@ private static extern System.Boolean egueb_dom_scripter_script_run_listener(Syst
             
             Inheritable = 4,
         }
+    }
+    
+    public enum FeatureWindowType {
+        
+        Master = 0,
+        
+        Slave = 1,
     }
     
     public enum AttrType {
@@ -2564,6 +2611,71 @@ internal delegate System.IntPtr ScriptRunCbInternal(System.IntPtr prv, System.In
             internal Egueb.Dom.ScripterDescriptor.ScriptRunCbInternal script_run;
             
             internal Egueb.Dom.ScripterDescriptor.ScriptListenerCbInternal script_run_listener;
+        }
+    }
+    
+    public class FeatureWindowDescriptor {
+        
+        public delegate bool GetType();
+        
+        public delegate bool SetSize();
+        
+        public delegate bool GetSize();
+        
+        private Struct rawStruct;
+        
+
+internal delegate System.Boolean GetTypeInternal();
+
+internal delegate System.Boolean SetSizeInternal();
+
+internal delegate System.Boolean GetSizeInternal();
+        
+        public FeatureWindowDescriptor() {
+        }
+        
+        public FeatureWindowDescriptor(System.IntPtr i, bool owned) {
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
+        }
+        
+        public IntPtr Raw {
+            get {
+                System.IntPtr raw;
+                raw = CreateRaw();
+                Marshal.StructureToPtr(rawStruct, raw, false);
+                return raw;
+            }
+            set {
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
+                DestroyRaw(value);
+            }
+        }
+        
+        public int Version {
+            get {
+                int ret;
+                ret = this.rawStruct.version;
+                return ret;
+            }
+            set {
+                this.rawStruct.version = value;
+            }
+        }
+        
+        public static System.IntPtr CreateRaw() {
+            System.IntPtr raw;
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
+            return raw;
+        }
+        
+        public static void DestroyRaw(System.IntPtr raw) {
+            Marshal.FreeHGlobal(raw);
+        }
+        
+        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct Struct {
+            
+            internal int version;
         }
     }
     
