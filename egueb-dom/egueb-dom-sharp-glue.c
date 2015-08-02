@@ -2,7 +2,7 @@
 
 EAPI Egueb_Dom_String * egueb_dom_window_feature_window_name_get(void)
 {
-	return egueb_dom_string_ref(EGUEB_DOM_WINDOW_FEATURE_WINDOW_NAME_GET);
+	return egueb_dom_string_ref(EGUEB_DOM_FEATURE_WINDOW_NAME);
 }
 
 EAPI Egueb_Dom_String * egueb_dom_event_key_down_get(void)

@@ -102,6 +102,28 @@ AC_SUBST(RUNTIME)
 AC_SUBST(CSC)
 AC_SUBST(GACUTIL)
 
+AC_ARG_ENABLE([egueb-dom], [AS_HELP_STRING([--enable-egueb-dom], [Enable Ecore Win32 window])],
+  [
+    if test "x$enableval" = "xyes" ; then
+       want_egueb_dom="yes"
+    else
+       want_egueb_dom="no"
+    fi
+  ],
+  [want_egueb_dom="yes"]
+)
+PKG_CHECK_MODULES([EGUEB_DOM], [egueb-dom], [have_egueb_dom="yes"], [have_egueb_dom="no"])
+build_egueb_dom="no"
+
+if test "x${have_egueb_dom}" = "xyes" -a "x${want_egueb_dom}" = "xyes"; then
+  build_egueb_dom="yes"
+fi
+
+if test "x${build_egueb_dom}" = "xyes"; then
+  AC_DEFINE([BUILD_EGUEB_DOM], [1], [Have support for egueb_dom])
+fi
+AM_CONDITIONAL([BUILD_EGUEB_DOM], [test "x${build_egueb_dom}" = "xyes"])
+
 ## Make the debug preprocessor configurable
 
 AC_CONFIG_FILES([
@@ -122,6 +144,12 @@ echo "------------------------------------------------------------------------"
 echo
 echo
 echo "Configuration Options Summary:"
+echo
+echo "Bindings...............:"
+echo "  ender................: yes"
+echo "  enesim...............: yes"
+echo "  egueb-dom............: ${build_egueb_dom}"
+echo "  egueb-svg............: yes"
 echo
 echo "Compilation............: make (or gmake)"
 echo "  compiler.............: $CSC"

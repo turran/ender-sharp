@@ -1,3 +1,4 @@
+if BUILD_EGUEB_DOM
 pkgconfig_DATA += egueb-dom/egueb-dom-sharp.pc
 
 EXTRA_DIST += egueb-dom/egueb-dom-sharp.cs
@@ -19,3 +20,14 @@ $(output_DIR)/$(egueb_dom_BIN): $(output_DIR)/$(lib_BIN) $(output_DIR)/$(enesim_
 	$(CSC) -nowarn:169 -unsafe -target:library -debug $(egueb_dom_SRC) \
 		-r:$(output_DIR)/eina-sharp.dll -r:$(output_DIR)/enesim-sharp.dll -r:$(output_DIR)/ender-sharp.dll \
 		-out:$(output_DIR)/$(egueb_dom_BIN) -keyfile:$(top_srcdir)/egueb-dom/egueb-dom-sharp.snk
+
+egueb_dom_glue_LTLIBRARIES = egueb-dom/libegueb-dom-glue.la
+egueb_dom_gluedir = $(libdir)/egueb-dom-sharp
+
+egueb_dom_libegueb_dom_glue_la_SOURCES = egueb-dom/egueb-dom-sharp-glue.c
+egueb_dom_libegueb_dom_glue_la_CPPFLAGS = -DEGUEB_DOM_GLUE_BUILD @EGUEB_DOM_CFLAGS@
+egueb_dom_libegueb_dom_glue_la_LIBADD = @EGUEB_DOM_LIBS@
+egueb_dom_libegueb_dom_glue_la_LDFLAGS = -no-undefined -module -avoid-version
+egueb_dom_libegueb_dom_glue_la_LIBTOOLFLAGS = --tag=disable-static
+
+endif
