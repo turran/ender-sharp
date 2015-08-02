@@ -345,7 +345,12 @@ private static extern System.Boolean egueb_dom_parser_parse(System.IntPtr sRaw, 
             }
             System.IntPtr docRaw;
             bool ret = egueb_dom_parser_parse(sRaw, out  docRaw);
-            doc = new Egueb.Dom.Document(docRaw, false);
+            if ((docRaw == IntPtr.Zero)) {
+                doc = null;
+            }
+            else {
+                doc = new Egueb.Dom.Document(docRaw, false);
+            }
             return ret;
         }
     }

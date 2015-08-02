@@ -138,10 +138,25 @@ namespace Ender
 			if (direction == ArgDirection.OUT)
 			{
 				string rawName = varName + "Raw"; 
-				// varName = new identifier(varNameRaw, false/true);
 				CodeStatementCollection csc = new CodeStatementCollection();
-				CodeStatement cs = new CodeAssignStatement(new CodeVariableReferenceExpression(varName),
-						Construct(generator, rawName, direction, transfer));
+				// if (varNameRaw == IntPtr.Zero)
+				//  varName = null
+				// else
+				//  varName = new identifier(varNameRaw, false/true);
+				//
+				CodeStatement cs = new CodeConditionStatement(
+						new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(rawName),
+							CodeBinaryOperatorType.IdentityEquality,
+							new CodeTypeReferenceExpression("IntPtr.Zero")),
+								new CodeStatement[] {
+									new CodeAssignStatement(new CodeVariableReferenceExpression(varName),
+									new CodePrimitiveExpression(null))
+								},
+								new CodeStatement[] {
+									new CodeAssignStatement(new CodeVariableReferenceExpression(varName),
+									Construct(generator, rawName, direction, transfer))
+								}
+						);
 				csc.Add(cs);
 				return csc;
 			}
