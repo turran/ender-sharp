@@ -1375,6 +1375,11 @@ namespace Ender
 			return co;
 		}
 
+		private void GenerateConstant()
+		{
+
+		}
+
 		private void GenerateLib()
 		{
 			CodeNamespace root = new CodeNamespace();
@@ -1472,6 +1477,46 @@ namespace Ender
 			return ret;
 		}
 
+		public CodeTypeDeclaration GenerateTopLevelType(Item i)
+		{
+			Item parent = Lib.FindItem(i.Namespace);
+			if (parent == null)
+			{
+				CodeNamespace cns = GenerateNamespace(i);
+				if (cns == null)
+				{
+					Console.WriteLine("[ERR] Impossible to generate namespace for '" + i.Name + "'");
+					return null;
+				}
+				else
+				{
+					CodeTypeDeclaration main;
+					string mainName = cns.Name + ".Main";
+
+					// Create our Main class
+					if (processed.ContainsKey(mainName))
+						main = (CodeTypeDeclaration)processed[mainName];
+					else
+					{
+						main = new CodeTypeDeclaration("Main");
+						processed[mainName] = main;
+						cns.Types.Add(main);
+					}
+					return main;
+				}
+			}
+			else
+			{
+				CodeTypeDeclaration ty = (CodeTypeDeclaration)GenerateComplexItem(parent);
+				if (ty == null)
+				{
+					Console.WriteLine("[ERR] Impossible to generate parent for '" + i.Name + "'");
+					return null;
+				}
+				return ty;
+			}
+		}
+
 		public CodeCompileUnit Generate()
 		{
 			List items;
@@ -1508,46 +1553,30 @@ namespace Ender
 					Console.WriteLine("[ERR] Impossible to generate the pinvoke for '" + f.Name + "'");
 				}
 
-				Item parent = Lib.FindItem(f.Namespace);
-				if (parent == null)
+				CodeTypeDeclaration ty = GenerateTopLevelType(f);
+				if (ty != null)
 				{
-					CodeNamespace cns = GenerateNamespace(f);
-					if (cns == null)
-					{
-						Console.WriteLine("[ERR] Impossible to generate namespace for '" + f.Name + "'");
-					}
-					else
-					{
-						CodeTypeDeclaration main;
-						string mainName = cns.Name + ".Main";
-
-						// Create our Main class
-						if (processed.ContainsKey(mainName))
-							main = (CodeTypeDeclaration)processed[mainName];
-						else
-						{
-							main = new CodeTypeDeclaration("Main");
-							processed[mainName] = main;
-							cns.Types.Add(main);
-						}
-						CodeTypeMember ret = GenerateFunction(f);
-						main.Members.Add(pinvoke);
-						main.Members.Add(ret);
-					}
+					CodeTypeMember ret = GenerateFunction(f);
+					ty.Members.Add(pinvoke);
+					ty.Members.Add(ret);
 				}
-				else
+			}
+			items = lib.List(ItemType.CONSTANT);
+			foreach (Constant c in items)
+			{
+				if (skip.Contains(c.Name))
 				{
-					CodeTypeDeclaration ty = (CodeTypeDeclaration)GenerateComplexItem(parent);
-					if (ty == null)
-					{
-						Console.WriteLine("[ERR] Impossible to generate parent for '" + f.Name + "'");
-					}
-					else
-					{
-						CodeTypeMember ret = GenerateFunction(f);
-						ty.Members.Add(pinvoke);
-						ty.Members.Add(ret);
-					}
+					Console.WriteLine("Skipping constant '" + c.Name + "'");
+					continue;
+				}
+				Console.WriteLine("Generating constant '" + c.Name + "'");
+				CodeTypeDeclaration ty = GenerateTopLevelType(c);
+				if (ty != null)
+				{
+					Console.WriteLine("constant in " + ty.Name);
+					// TODO Add the pinvoke on libfoo-glue.so
+					// TODO Add the getter
+					// TODO Call the pinvoke
 				}
 			}
 			return cu;
