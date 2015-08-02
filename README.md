@@ -53,7 +53,7 @@ Objects
 ```
 
 ```cs
-public class Background : Renderer {
+public class RendererBackground : Renderer {
             
     [DllImport("enesim.dll", CallingConvention=CallingConvention.Cdecl)]
     private static extern IntPtr enesim_renderer_background_new();
@@ -63,12 +63,12 @@ public class Background : Renderer {
     private static extern void enesim_renderer_background_color_set(IntPtr self,
         uint color);
             
-    protected internal Background(System.IntPtr i, bool owned) : 
+    protected internal RendererBackground(System.IntPtr i, bool owned) : 
             base(i, owned) {
         Initialize(i, owned);
     }
     
-    public Background() {
+    public RendererBackground() {
         System.IntPtr ret = enesim_renderer_background_new();
         Initialize(ret, false);
     }
