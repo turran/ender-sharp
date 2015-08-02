@@ -330,6 +330,26 @@ private static extern void egueb_dom_event_script_scripter_set(System.IntPtr sel
         }
     }
     
+    public class Parser {
+        
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_parser_parse(System.IntPtr sRaw, out System.IntPtr docRaw);
+        
+        public static bool Parse(Enesim.Stream s, out Egueb.Dom.Document doc) {
+            System.IntPtr sRaw;
+            if ((s == null)) {
+                sRaw = IntPtr.Zero;
+            }
+            else {
+                sRaw = s.Raw;
+            }
+            System.IntPtr docRaw;
+            bool ret = egueb_dom_parser_parse(sRaw, out  docRaw);
+            doc = new Egueb.Dom.Document(docRaw, false);
+            return ret;
+        }
+    }
+    
     public class NodeList : IDisposable {
         
         protected IntPtr raw;
@@ -407,6 +427,61 @@ private static extern System.IntPtr egueb_dom_text_new();
         public Text() {
             System.IntPtr ret = egueb_dom_text_new();
             Initialize(ret, false);
+        }
+    }
+    
+    public class Feature : IDisposable {
+        
+        protected IntPtr raw;
+        
+        private bool disposed;
+        
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern IntPtr egueb_dom_feature_descriptor_get();
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_feature_ref(System.IntPtr selfRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void egueb_dom_feature_unref(System.IntPtr selfRaw);
+~Feature() { Dispose(false); }
+        
+        protected Feature() {
+        }
+        
+        public Feature(System.IntPtr i, bool owned) {
+            Initialize(i, owned);
+        }
+        
+        public System.IntPtr Raw {
+            get {
+                return this.raw;
+            }
+        }
+        
+        public virtual void Dispose() {
+            Dispose(false);
+            GC.SuppressFinalize(this);
+        }
+        
+        protected virtual void Dispose(bool disposing) {
+            if (disposed) {
+            }
+            else {
+                egueb_dom_feature_unref(raw);
+                raw = IntPtr.Zero;
+                disposed = false;
+            }
+        }
+        
+        protected virtual void Initialize(System.IntPtr i, bool owned) {
+            raw = i;
+            if (owned) {
+                egueb_dom_feature_ref(i);
+            }
+        }
+        
+        public static System.IntPtr GetDescriptor() {
+            IntPtr ret = egueb_dom_feature_descriptor_get();
+            return ret;
         }
     }
     
