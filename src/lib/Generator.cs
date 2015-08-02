@@ -1574,7 +1574,18 @@ namespace Ender
 				if (ty != null)
 				{
 					Console.WriteLine("constant in " + ty.Name);
-					// TODO Add the pinvoke on libfoo-glue.so
+					// Add the pinvoke on libfoo-glue.so
+					// Handle the function name
+					string pinvoke = null;
+					// TODO use the correct replacement to support case/notation
+					string fName = c.Name.Replace(".", "_") + "_get";
+					string retString = c.UnmanagedType(this, ArgDirection.OUT, ItemTransfer.NONE);
+					//string fName = GeneratePinvokeName(generator);
+					pinvoke += string.Format("[DllImport(\"{0}-glue.dll\", CallingConvention=CallingConvention.Cdecl)]", Lib.Name);
+					pinvoke += string.Format("\nprivate static extern {0} {1}();", retString, fName);
+					CodeSnippetTypeMember ext = new CodeSnippetTypeMember(pinvoke);
+					ty.Members.Add(ext);
+
 					// TODO Add the getter
 					// TODO Call the pinvoke
 				}

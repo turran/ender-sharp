@@ -41,6 +41,20 @@ namespace Ender
 				return v;
 			}
 		}
+
+		#region Item interface
+		public override string UnmanagedName(string name,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			return ConstantType.UnmanagedName(name, direction, transfer);
+		}
+
+		public override string UnmanagedType(Generator generator,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			return ConstantType.UnmanagedType(generator, direction, transfer);
+		}
+		#endregion
 	}
 }
 

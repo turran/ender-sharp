@@ -1603,6 +1603,8 @@ private static extern System.Boolean egueb_dom_feature_window_content_size_set(S
 private static extern System.Boolean egueb_dom_feature_window_content_size_get(System.IntPtr selfRaw, out System.Int32 w, out System.Int32 h);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Boolean egueb_dom_feature_window_add(System.IntPtr nRaw, IntPtr d);
+[DllImport("egueb-dom-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_feature_window_name_get();
         
         protected FeatureWindow() {
         }
@@ -2806,5 +2808,10 @@ namespace Egueb.Dom.Event.Key {
     
     
     public class Main {
+        
+[DllImport("egueb-dom-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_key_up_get();
+[DllImport("egueb-dom-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_key_down_get();
     }
 }
