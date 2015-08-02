@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.CodeDom;
 
 namespace Ender
 {
@@ -49,10 +50,38 @@ namespace Ender
 			return ConstantType.UnmanagedName(name, direction, transfer);
 		}
 
+		public override string ManagedType(Generator generator)
+		{
+			return ConstantType.ManagedType(generator);
+		}
+
 		public override string UnmanagedType(Generator generator,
 				ArgDirection direction, ItemTransfer transfer)
 		{
 			return ConstantType.UnmanagedType(generator, direction, transfer);
+		}
+
+		public override CodeStatementCollection ManagedPreStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			return ConstantType.ManagedPreStatements(generator, varName,
+					direction, transfer);
+		}
+
+		public override CodeStatementCollection ManagedPostStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			return ConstantType.ManagedPostStatements(generator, varName,
+					direction, transfer);
+		}
+		public override CodeStatementCollection UnmanagedPreStatements(
+				Generator generator, string varName,
+				ArgDirection direction, ItemTransfer transfer)
+		{
+			return ConstantType.UnmanagedPreStatements(generator, varName,
+					direction, transfer);
 		}
 		#endregion
 	}

@@ -1614,6 +1614,21 @@ private static extern System.IntPtr egueb_dom_feature_window_name_get();
             Initialize(i, owned);
         }
         
+        public static Egueb.Dom.String NAME {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_feature_window_name_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
         public bool GetType(System.IntPtr type) {
             bool ret = egueb_dom_feature_window_type_get(raw, type);
             return ret;
@@ -2813,5 +2828,35 @@ namespace Egueb.Dom.Event.Key {
 private static extern System.IntPtr egueb_dom_event_key_up_get();
 [DllImport("egueb-dom-glue.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr egueb_dom_event_key_down_get();
+        
+        public static Egueb.Dom.String UP {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_key_up_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static Egueb.Dom.String DOWN {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_key_down_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
     }
 }

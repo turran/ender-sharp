@@ -1586,8 +1586,30 @@ namespace Ender
 					CodeSnippetTypeMember ext = new CodeSnippetTypeMember(pinvoke);
 					ty.Members.Add(ext);
 
-					// TODO Add the getter
-					// TODO Call the pinvoke
+					// Add the getter
+					CodeMemberProperty cmprop = new CodeMemberProperty();
+					cmprop.Attributes = MemberAttributes.Public | MemberAttributes.Final | MemberAttributes.Static;
+					cmprop.Name = ConvertName(c.Identifier).ToUpper();
+					cmprop.Type = new CodeTypeReference(c.ManagedType(this));
+					cmprop.HasGet = true;
+
+					cmprop.GetStatements.Add(new CodeVariableDeclarationStatement(
+							new CodeTypeReference(c.ManagedType(this)), "ret"));
+					CodeStatementCollection csc = c.ManagedPreStatements(this, "ret", ArgDirection.OUT, ItemTransfer.NONE);
+					if (csc != null)
+						cmprop.GetStatements.AddRange(csc);
+					// Call the pinvoke
+					CodeMethodInvokeExpression ci = new CodeMethodInvokeExpression();
+					ci.Method = new CodeMethodReferenceExpression(null, fName);
+					cmprop.GetStatements.Add(new CodeAssignStatement(
+							new CodeVariableReferenceExpression(c.UnmanagedName("ret", ArgDirection.OUT, ItemTransfer.NONE)),
+							ci));
+
+					csc = c.ManagedPostStatements(this, "ret", ArgDirection.OUT, ItemTransfer.NONE);
+					if (csc != null)
+						cmprop.GetStatements.AddRange(csc);
+					cmprop.GetStatements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("ret")));
+					ty.Members.Add(cmprop);
 				}
 			}
 			return cu;
