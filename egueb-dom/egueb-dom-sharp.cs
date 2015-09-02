@@ -488,6 +488,22 @@ private static extern void egueb_dom_feature_unref(System.IntPtr selfRaw);
             IntPtr ret = egueb_dom_feature_descriptor_get();
             return ret;
         }
+        
+        public static Egueb.Dom.Feature Downcast(System.IntPtr raw, bool owned) {
+            Ender.Lib lib = Ender.Lib.Find("egueb-dom");
+            Ender.Object o = ((Ender.Object)(lib.FindItem("egueb.dom.feature")));
+            Ender.Item downO = o.Downcast(raw);
+            System.Type downType = System.Type.GetType(downO.FullQualifiedName);
+            System.Type[] types = new System.Type[2];
+            types[0] = typeof(IntPtr);
+            types[1] = typeof(bool);
+            ConstructorInfo ctorInfo = downType.GetConstructor(types);
+            object[] objects = new object[2];
+            objects[0] = raw;
+            objects[1] = owned;
+            Egueb.Dom.Feature ret = ((Egueb.Dom.Feature)(ctorInfo.Invoke(objects)));
+            return ret;
+        }
     }
     
     public class Event : IDisposable {
