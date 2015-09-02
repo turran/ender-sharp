@@ -83,6 +83,9 @@ pc_verbose_0 = @echo "  PC      " $@;
 	@rm -f $@
 	$(pc_verbose)$(sed_process)
 
+%.dll.config: %.dll.config.in Makefile
+	@rm -f $@
+	$(pc_verbose)$(sed_process)
 
 pkgconfig_DATA += ender-sharp.pc
 

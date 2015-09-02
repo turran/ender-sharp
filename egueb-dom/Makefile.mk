@@ -13,6 +13,9 @@ egueb-dom-sharp.cs:
 egueb_dom_BIN = egueb-dom-sharp.dll
 egueb_dom_SRC = $(top_srcdir)/egueb-dom/egueb-dom-sharp.cs
 
+egueb_domdllconfigdir = $(libdir)/egueb-dom-sharp
+egueb_domdllconfig_DATA = egueb-dom/egueb-dom-sharp.dll.config
+
 egueb_domlibdir = $(libdir)/egueb-dom-sharp
 egueb_domlib_DATA = $(output_DIR)/$(egueb_dom_BIN)
 
@@ -21,13 +24,13 @@ $(output_DIR)/$(egueb_dom_BIN): $(output_DIR)/$(lib_BIN) $(output_DIR)/$(enesim_
 		-r:$(output_DIR)/eina-sharp.dll -r:$(output_DIR)/enesim-sharp.dll -r:$(output_DIR)/ender-sharp.dll \
 		-out:$(output_DIR)/$(egueb_dom_BIN) -keyfile:$(top_srcdir)/egueb-dom/egueb-dom-sharp.snk
 
-egueb_dom_glue_LTLIBRARIES = egueb-dom/libegueb-dom-glue.la
-egueb_dom_gluedir = $(libdir)/egueb-dom-sharp
+egueb_dom_sharp_glue_LTLIBRARIES = egueb-dom/libegueb-dom-sharp-glue.la
+egueb_dom_sharp_gluedir = $(libdir)/egueb-dom-sharp
 
-egueb_dom_libegueb_dom_glue_la_SOURCES = egueb-dom/egueb-dom-sharp-glue.c
-egueb_dom_libegueb_dom_glue_la_CPPFLAGS = -DEGUEB_DOM_GLUE_BUILD @EGUEB_DOM_CFLAGS@
-egueb_dom_libegueb_dom_glue_la_LIBADD = @EGUEB_DOM_LIBS@
-egueb_dom_libegueb_dom_glue_la_LDFLAGS = -no-undefined -module -avoid-version
-egueb_dom_libegueb_dom_glue_la_LIBTOOLFLAGS = --tag=disable-static
+egueb_dom_libegueb_dom_sharp_glue_la_SOURCES = egueb-dom/egueb-dom-sharp-glue.c
+egueb_dom_libegueb_dom_sharp_glue_la_CPPFLAGS = -DEGUEB_DOM_GLUE_BUILD @EGUEB_DOM_CFLAGS@
+egueb_dom_libegueb_dom_sharp_glue_la_LIBADD = @EGUEB_DOM_LIBS@
+egueb_dom_libegueb_dom_sharp_glue_la_LDFLAGS = -no-undefined -module -avoid-version
+egueb_dom_libegueb_dom_sharp_glue_la_LIBTOOLFLAGS = --tag=disable-static
 
 endif

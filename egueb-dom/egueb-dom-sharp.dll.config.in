@@ -1,0 +1,4 @@
+<configuration>
+  <dllmap dll="egueb-dom-sharp-glue.dll" target="@libdir@/egueb-dom-sharp/egueb-dom-sharp-glue.so"/>
+</configuration>
+

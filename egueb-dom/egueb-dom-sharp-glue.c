@@ -1,6 +1,6 @@
 #include "egueb-dom-sharp-glue.h"
 
-EAPI Egueb_Dom_String * egueb_dom_window_feature_window_name_get(void)
+EAPI Egueb_Dom_String * egueb_dom_feature_window_name_get(void)
 {
 	return egueb_dom_string_ref(EGUEB_DOM_FEATURE_WINDOW_NAME);
 }
