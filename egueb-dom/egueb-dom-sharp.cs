@@ -2183,7 +2183,7 @@ private static extern System.IntPtr egueb_dom_feature_multimedia_name_get();
     public class FeatureWindow : Egueb.Dom.Feature {
         
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean egueb_dom_feature_window_type_get(System.IntPtr selfRaw, Egueb.Dom.FeatureWindowType type);
+private static extern System.Boolean egueb_dom_feature_window_type_get(System.IntPtr selfRaw, out Egueb.Dom.FeatureWindowType type);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Boolean egueb_dom_feature_window_content_size_set(System.IntPtr selfRaw, System.Int32 w, System.Int32 h);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -2216,8 +2216,8 @@ private static extern System.IntPtr egueb_dom_feature_window_name_get();
             }
         }
         
-        public bool GetType(Egueb.Dom.FeatureWindowType type) {
-            bool ret = egueb_dom_feature_window_type_get(raw, type);
+        public bool GetType(out Egueb.Dom.FeatureWindowType type) {
+            bool ret = egueb_dom_feature_window_type_get(raw, out  type);
             return ret;
         }
         
