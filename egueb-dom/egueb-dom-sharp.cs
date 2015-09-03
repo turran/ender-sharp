@@ -41,6 +41,12 @@ private static extern void egueb_dom_event_io_data_finish(System.IntPtr selfRaw,
 internal delegate void DataCbInternal();
 
 internal delegate void ImageCbInternal();
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_io_image_get();
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_io_done_get();
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_io_data_get();
         
         public EventIo(System.IntPtr i, bool owned) : 
                 base(i, owned) {
@@ -72,6 +78,51 @@ cb();
 };
             System.IntPtr ret = egueb_dom_event_io_image_new(sRaw, cbRaw);
             Initialize(ret, false);
+        }
+        
+        public static Egueb.Dom.String IMAGE {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_io_image_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static Egueb.Dom.String DONE {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_io_done_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static Egueb.Dom.String DATA {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_io_data_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
         }
         
         public Enesim.Stream GetStream() {
@@ -237,6 +288,10 @@ private static extern System.IntPtr egueb_dom_event_multimedia_video_new(IntPtr 
 private static extern System.IntPtr egueb_dom_event_multimedia_video_renderer_get(System.IntPtr selfRaw);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr egueb_dom_event_multimedia_audio_new(IntPtr notifier);
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_multimedia_audio_get();
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_multimedia_video_get();
         
         public EventMultimedia(System.IntPtr i, bool owned) : 
                 base(i, owned) {
@@ -258,6 +313,36 @@ private static extern System.IntPtr egueb_dom_event_multimedia_audio_new(IntPtr 
         public EventMultimedia(System.IntPtr notifier) {
             System.IntPtr ret = egueb_dom_event_multimedia_audio_new(notifier);
             Initialize(ret, false);
+        }
+        
+        public static Egueb.Dom.String AUDIO {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_multimedia_audio_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static Egueb.Dom.String VIDEO {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_multimedia_video_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
         }
         
         public System.IntPtr GetNotifier() {
@@ -290,6 +375,8 @@ private static extern System.IntPtr egueb_dom_event_script_type_get(System.IntPt
 private static extern System.IntPtr egueb_dom_event_script_scripter_get(System.IntPtr selfRaw);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void egueb_dom_event_script_scripter_set(System.IntPtr selfRaw, System.IntPtr scRaw);
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_script_scripter_get();
         
         public EventScript(System.IntPtr i, bool owned) : 
                 base(i, owned) {
@@ -306,6 +393,21 @@ private static extern void egueb_dom_event_script_scripter_set(System.IntPtr sel
             }
             System.IntPtr ret = egueb_dom_event_script_new(typeRaw);
             Initialize(ret, false);
+        }
+        
+        public static Egueb.Dom.String SCRIPTER {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_script_scripter_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
         }
         
         public Egueb.Dom.String GetType() {
@@ -419,19 +521,63 @@ private static extern System.Int32 egueb_dom_node_list_length_get(System.IntPtr 
         }
     }
     
-    public class Text : Egueb.Dom.Character.Data {
+    public class FeatureUi : Egueb.Dom.Feature {
         
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.IntPtr egueb_dom_text_new();
+private static extern System.Boolean egueb_dom_feature_ui_input_get(System.IntPtr selfRaw, IntPtr i);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_feature_ui_add(System.IntPtr nRaw, System.IntPtr dRaw);
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_feature_ui_name_get();
         
-        public Text(System.IntPtr i, bool owned) : 
+        protected FeatureUi() {
+        }
+        
+        public FeatureUi(System.IntPtr i, bool owned) : 
                 base(i, owned) {
             Initialize(i, owned);
         }
         
-        public Text() {
-            System.IntPtr ret = egueb_dom_text_new();
-            Initialize(ret, false);
+        public static Egueb.Dom.String NAME {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_feature_ui_name_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public bool GetInput(System.IntPtr i) {
+            bool ret = egueb_dom_feature_ui_input_get(raw, i);
+            return ret;
+        }
+        
+        public static bool Add(Egueb.Dom.Node n, Egueb.Dom.FeatureUiDescriptor d) {
+            System.IntPtr nRaw;
+            if ((n == null)) {
+                nRaw = IntPtr.Zero;
+            }
+            else {
+                nRaw = n.Raw;
+            }
+            System.IntPtr dRaw;
+            if ((d == null)) {
+                dRaw = IntPtr.Zero;
+            }
+            else {
+                dRaw = d.Raw;
+            }
+            bool ret = egueb_dom_feature_ui_add(nRaw, dRaw);
+            if ((dRaw != IntPtr.Zero)) {
+                Marshal.FreeHGlobal(dRaw);
+            }
+            return ret;
         }
     }
     
@@ -503,6 +649,22 @@ private static extern void egueb_dom_feature_unref(System.IntPtr selfRaw);
             objects[1] = owned;
             Egueb.Dom.Feature ret = ((Egueb.Dom.Feature)(ctorInfo.Invoke(objects)));
             return ret;
+        }
+    }
+    
+    public class Text : Egueb.Dom.Character.Data {
+        
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_text_new();
+        
+        public Text(System.IntPtr i, bool owned) : 
+                base(i, owned) {
+            Initialize(i, owned);
+        }
+        
+        public Text() {
+            System.IntPtr ret = egueb_dom_text_new();
+            Initialize(ret, false);
         }
     }
     
@@ -625,6 +787,55 @@ internal delegate void ListenerInternal();
         }
     }
     
+    public class FeatureIo : Egueb.Dom.Feature {
+        
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_feature_io_add(System.IntPtr nRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern void egueb_dom_feature_io_default_enable(System.IntPtr selfRaw, System.Boolean enable);
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_feature_io_name_get();
+        
+        protected FeatureIo() {
+        }
+        
+        public FeatureIo(System.IntPtr i, bool owned) : 
+                base(i, owned) {
+            Initialize(i, owned);
+        }
+        
+        public static Egueb.Dom.String NAME {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_feature_io_name_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static bool Add(Egueb.Dom.Node n) {
+            System.IntPtr nRaw;
+            if ((n == null)) {
+                nRaw = IntPtr.Zero;
+            }
+            else {
+                nRaw = n.Raw;
+            }
+            bool ret = egueb_dom_feature_io_add(nRaw);
+            return ret;
+        }
+        
+        public void DefaultEnable(bool enable) {
+            egueb_dom_feature_io_default_enable(raw, enable);
+        }
+    }
+    
     public class Node : IDisposable {
         
         public delegate bool Cb();
@@ -704,7 +915,7 @@ private static extern System.Boolean egueb_dom_node_is_freezed(System.IntPtr sel
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern void egueb_dom_node_thaw(System.IntPtr selfRaw);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean egueb_dom_node_feature_add(System.IntPtr selfRaw, System.IntPtr nameRaw, System.IntPtr versionRaw, IntPtr feature);
+private static extern System.Boolean egueb_dom_node_feature_add(System.IntPtr selfRaw, System.IntPtr nameRaw, System.IntPtr versionRaw, System.IntPtr featureRaw);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr egueb_dom_node_owner_document_get(System.IntPtr selfRaw);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -982,7 +1193,7 @@ return retInternal;
             return ret;
         }
         
-        public System.IntPtr GetFeature(Egueb.Dom.String name, Egueb.Dom.String version) {
+        public Egueb.Dom.Feature GetFeature(Egueb.Dom.String name, Egueb.Dom.String version) {
             System.IntPtr nameRaw;
             if ((name == null)) {
                 nameRaw = IntPtr.Zero;
@@ -998,7 +1209,7 @@ return retInternal;
                 versionRaw = version.Raw;
             }
             System.IntPtr ret = egueb_dom_node_feature_get(raw, nameRaw, versionRaw);
-            return ret;
+            return Egueb.Dom.Feature.Downcast(ret, false);
         }
         
         public Egueb.Dom.String PrefixLookup(Egueb.Dom.String ns_uri) {
@@ -1055,7 +1266,7 @@ return retInternal;
             egueb_dom_node_thaw(raw);
         }
         
-        public bool FeatureAdd(Egueb.Dom.String name, Egueb.Dom.String version, System.IntPtr feature) {
+        public bool FeatureAdd(Egueb.Dom.String name, Egueb.Dom.String version, Egueb.Dom.Feature feature) {
             System.IntPtr nameRaw;
             if ((name == null)) {
                 nameRaw = IntPtr.Zero;
@@ -1070,7 +1281,14 @@ return retInternal;
             else {
                 versionRaw = version.Raw;
             }
-            bool ret = egueb_dom_node_feature_add(raw, nameRaw, versionRaw, feature);
+            System.IntPtr featureRaw;
+            if ((feature == null)) {
+                featureRaw = IntPtr.Zero;
+            }
+            else {
+                featureRaw = feature.Raw;
+            }
+            bool ret = egueb_dom_node_feature_add(raw, nameRaw, versionRaw, featureRaw);
             return ret;
         }
     }
@@ -1181,12 +1399,64 @@ private static extern void egueb_dom_string_string_set(System.IntPtr selfRaw, Sy
     
     public class EventWindow : Egueb.Dom.EventUi {
         
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_window_close_get();
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_window_scroll_get();
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_window_resize_get();
+        
         protected EventWindow() {
         }
         
         public EventWindow(System.IntPtr i, bool owned) : 
                 base(i, owned) {
             Initialize(i, owned);
+        }
+        
+        public static Egueb.Dom.String CLOSE {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_window_close_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static Egueb.Dom.String SCROLL {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_window_scroll_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static Egueb.Dom.String RESIZE {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_window_resize_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
         }
     }
     
@@ -1309,6 +1579,49 @@ private static extern IntPtr egueb_dom_event_target_descriptor_get();
         
         public static System.IntPtr GetDescriptor() {
             IntPtr ret = egueb_dom_event_target_descriptor_get();
+            return ret;
+        }
+    }
+    
+    public class FeatureScript : Egueb.Dom.Feature {
+        
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_feature_script_add(System.IntPtr nRaw);
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_feature_script_name_get();
+        
+        protected FeatureScript() {
+        }
+        
+        public FeatureScript(System.IntPtr i, bool owned) : 
+                base(i, owned) {
+            Initialize(i, owned);
+        }
+        
+        public static Egueb.Dom.String NAME {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_feature_script_name_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static bool Add(Egueb.Dom.Node n) {
+            System.IntPtr nRaw;
+            if ((n == null)) {
+                nRaw = IntPtr.Zero;
+            }
+            else {
+                nRaw = n.Raw;
+            }
+            bool ret = egueb_dom_feature_script_add(nRaw);
             return ret;
         }
     }
@@ -1549,6 +1862,119 @@ internal delegate void FetchInternal();
         }
     }
     
+    public class FeatureRender : Egueb.Dom.Feature {
+        
+        public delegate bool DamageCb();
+        
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_feature_render_draw(System.IntPtr selfRaw, System.IntPtr sRaw, Enesim.Rop rop, System.IntPtr clipRaw, System.Int32 x, System.Int32 y, System.IntPtr errorRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_feature_render_draw_list(System.IntPtr selfRaw, System.IntPtr sRaw, Enesim.Rop rop, IntPtr clips, System.Int32 x, System.Int32 y, System.IntPtr errorRaw);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_feature_render_damages_get(System.IntPtr selfRaw, System.IntPtr sRaw, IntPtr cb, System.IntPtr data);
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_feature_render_add(System.IntPtr nRaw, IntPtr d);
+
+internal delegate System.Boolean DamageCbInternal();
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_feature_render_name_get();
+        
+        protected FeatureRender() {
+        }
+        
+        public FeatureRender(System.IntPtr i, bool owned) : 
+                base(i, owned) {
+            Initialize(i, owned);
+        }
+        
+        public static Egueb.Dom.String NAME {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_feature_render_name_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public bool Draw(Enesim.Surface s, Enesim.Rop rop, Eina.Rectangle clip, int x, int y, Enesim.Log error) {
+            System.IntPtr sRaw;
+            if ((s == null)) {
+                sRaw = IntPtr.Zero;
+            }
+            else {
+                sRaw = s.Raw;
+            }
+            System.IntPtr clipRaw;
+            if ((clip == null)) {
+                clipRaw = IntPtr.Zero;
+            }
+            else {
+                clipRaw = clip.Raw;
+            }
+            System.IntPtr errorRaw;
+            if ((error == null)) {
+                errorRaw = IntPtr.Zero;
+            }
+            else {
+                errorRaw = error.Raw;
+            }
+            bool ret = egueb_dom_feature_render_draw(raw, sRaw, rop, clipRaw, x, y, errorRaw);
+            if ((clipRaw != IntPtr.Zero)) {
+                Marshal.FreeHGlobal(clipRaw);
+            }
+            return ret;
+        }
+        
+        public bool DrawList(Enesim.Surface s, Enesim.Rop rop, System.IntPtr clips, int x, int y, Enesim.Log error) {
+            System.IntPtr sRaw;
+            if ((s == null)) {
+                sRaw = IntPtr.Zero;
+            }
+            else {
+                sRaw = s.Raw;
+            }
+            System.IntPtr errorRaw;
+            if ((error == null)) {
+                errorRaw = IntPtr.Zero;
+            }
+            else {
+                errorRaw = error.Raw;
+            }
+            bool ret = egueb_dom_feature_render_draw_list(raw, sRaw, rop, clips, x, y, errorRaw);
+            return ret;
+        }
+        
+        public bool GetDamages(Enesim.Surface s, System.IntPtr cb, System.IntPtr data) {
+            System.IntPtr sRaw;
+            if ((s == null)) {
+                sRaw = IntPtr.Zero;
+            }
+            else {
+                sRaw = s.Raw;
+            }
+            bool ret = egueb_dom_feature_render_damages_get(raw, sRaw, cb, data);
+            return ret;
+        }
+        
+        public static bool Add(Egueb.Dom.Node n, System.IntPtr d) {
+            System.IntPtr nRaw;
+            if ((n == null)) {
+                nRaw = IntPtr.Zero;
+            }
+            else {
+                nRaw = n.Raw;
+            }
+            bool ret = egueb_dom_feature_render_add(nRaw, d);
+            return ret;
+        }
+    }
+    
     public class EventMouse : Egueb.Dom.Event {
         
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -1565,6 +1991,18 @@ private static extern void egueb_dom_event_mouse_client_coords_get(System.IntPtr
 private static extern System.Int32 egueb_dom_event_mouse_client_x_get(System.IntPtr selfRaw);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Int32 egueb_dom_event_mouse_client_y_get(System.IntPtr selfRaw);
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_mouse_over_get();
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_mouse_click_get();
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_mouse_out_get();
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_mouse_up_get();
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_mouse_move_get();
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_mouse_down_get();
         
         public EventMouse(System.IntPtr i, bool owned) : 
                 base(i, owned) {
@@ -1590,6 +2028,96 @@ private static extern System.Int32 egueb_dom_event_mouse_client_y_get(System.Int
             }
         }
         
+        public static Egueb.Dom.String OVER {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_mouse_over_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static Egueb.Dom.String CLICK {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_mouse_click_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static Egueb.Dom.String OUT {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_mouse_out_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static Egueb.Dom.String UP {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_mouse_up_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static Egueb.Dom.String MOVE {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_mouse_move_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static Egueb.Dom.String DOWN {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_mouse_down_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
         public Egueb.Dom.Node GetRelated() {
             System.IntPtr ret = egueb_dom_event_mouse_related_get(raw);
             return new Egueb.Dom.Node(ret, false);
@@ -1609,16 +2137,59 @@ private static extern System.Int32 egueb_dom_event_mouse_client_y_get(System.Int
         }
     }
     
+    public class FeatureMultimedia : Egueb.Dom.Feature {
+        
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_feature_multimedia_add(System.IntPtr nRaw);
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_feature_multimedia_name_get();
+        
+        protected FeatureMultimedia() {
+        }
+        
+        public FeatureMultimedia(System.IntPtr i, bool owned) : 
+                base(i, owned) {
+            Initialize(i, owned);
+        }
+        
+        public static Egueb.Dom.String NAME {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_feature_multimedia_name_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static bool Add(Egueb.Dom.Node n) {
+            System.IntPtr nRaw;
+            if ((n == null)) {
+                nRaw = IntPtr.Zero;
+            }
+            else {
+                nRaw = n.Raw;
+            }
+            bool ret = egueb_dom_feature_multimedia_add(nRaw);
+            return ret;
+        }
+    }
+    
     public class FeatureWindow : Egueb.Dom.Feature {
         
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean egueb_dom_feature_window_type_get(System.IntPtr selfRaw, IntPtr type);
+private static extern System.Boolean egueb_dom_feature_window_type_get(System.IntPtr selfRaw, Egueb.Dom.FeatureWindowType type);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Boolean egueb_dom_feature_window_content_size_set(System.IntPtr selfRaw, System.Int32 w, System.Int32 h);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.Boolean egueb_dom_feature_window_content_size_get(System.IntPtr selfRaw, out System.Int32 w, out System.Int32 h);
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
-private static extern System.Boolean egueb_dom_feature_window_add(System.IntPtr nRaw, IntPtr d);
+private static extern System.Boolean egueb_dom_feature_window_add(System.IntPtr nRaw, System.IntPtr dRaw);
 [DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
 private static extern System.IntPtr egueb_dom_feature_window_name_get();
         
@@ -1645,7 +2216,7 @@ private static extern System.IntPtr egueb_dom_feature_window_name_get();
             }
         }
         
-        public bool GetType(System.IntPtr type) {
+        public bool GetType(Egueb.Dom.FeatureWindowType type) {
             bool ret = egueb_dom_feature_window_type_get(raw, type);
             return ret;
         }
@@ -1660,7 +2231,7 @@ private static extern System.IntPtr egueb_dom_feature_window_name_get();
             return ret;
         }
         
-        public static bool Add(Egueb.Dom.Node n, System.IntPtr d) {
+        public static bool Add(Egueb.Dom.Node n, Egueb.Dom.FeatureWindowDescriptor d) {
             System.IntPtr nRaw;
             if ((n == null)) {
                 nRaw = IntPtr.Zero;
@@ -1668,7 +2239,17 @@ private static extern System.IntPtr egueb_dom_feature_window_name_get();
             else {
                 nRaw = n.Raw;
             }
-            bool ret = egueb_dom_feature_window_add(nRaw, d);
+            System.IntPtr dRaw;
+            if ((d == null)) {
+                dRaw = IntPtr.Zero;
+            }
+            else {
+                dRaw = d.Raw;
+            }
+            bool ret = egueb_dom_feature_window_add(nRaw, dRaw);
+            if ((dRaw != IntPtr.Zero)) {
+                Marshal.FreeHGlobal(dRaw);
+            }
             return ret;
         }
     }
@@ -2007,6 +2588,49 @@ private static extern IntPtr egueb_dom_element_descriptor_get();
         }
     }
     
+    public class FeatureNavigation : Egueb.Dom.Feature {
+        
+[DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.Boolean egueb_dom_feature_navigation_add(System.IntPtr nRaw);
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_feature_navigation_name_get();
+        
+        protected FeatureNavigation() {
+        }
+        
+        public FeatureNavigation(System.IntPtr i, bool owned) : 
+                base(i, owned) {
+            Initialize(i, owned);
+        }
+        
+        public static Egueb.Dom.String NAME {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_feature_navigation_name_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static bool Add(Egueb.Dom.Node n) {
+            System.IntPtr nRaw;
+            if ((n == null)) {
+                nRaw = IntPtr.Zero;
+            }
+            else {
+                nRaw = n.Raw;
+            }
+            bool ret = egueb_dom_feature_navigation_add(nRaw);
+            return ret;
+        }
+    }
+    
     public class EventUi : Egueb.Dom.Event {
         
 [DllImport("egueb-dom.dll", CallingConvention=CallingConvention.Cdecl)]
@@ -2229,12 +2853,47 @@ private static extern System.IntPtr egueb_dom_document_document_element_get(Syst
     
     public class EventFocus : Egueb.Dom.Event {
         
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_focus_in_get();
+[DllImport("egueb-dom-sharp-glue.dll", CallingConvention=CallingConvention.Cdecl)]
+private static extern System.IntPtr egueb_dom_event_focus_out_get();
+        
         protected EventFocus() {
         }
         
         public EventFocus(System.IntPtr i, bool owned) : 
                 base(i, owned) {
             Initialize(i, owned);
+        }
+        
+        public static Egueb.Dom.String IN {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_focus_in_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
+        }
+        
+        public static Egueb.Dom.String OUT {
+            get {
+                Egueb.Dom.String ret;
+                System.IntPtr retRaw;
+                retRaw = egueb_dom_event_focus_out_get();
+                if ((retRaw == IntPtr.Zero)) {
+                    ret = null;
+                }
+                else {
+                    ret = new Egueb.Dom.String(retRaw, false);
+                }
+                return ret;
+            }
         }
     }
     
@@ -2440,6 +3099,120 @@ private static extern System.Boolean egueb_dom_scripter_script_run_listener(Syst
         CaptureBubble = 0,
         
         BubbleCapture = 1,
+    }
+    
+    public class FeatureRenderDescriptor {
+        
+        public delegate Enesim.Renderer GetRenderer();
+        
+        private Struct rawStruct;
+        
+
+internal delegate System.IntPtr GetRendererInternal();
+        
+        public FeatureRenderDescriptor() {
+        }
+        
+        public FeatureRenderDescriptor(System.IntPtr i, bool owned) {
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
+        }
+        
+        public IntPtr Raw {
+            get {
+                System.IntPtr raw;
+                raw = CreateRaw();
+                Marshal.StructureToPtr(rawStruct, raw, false);
+                return raw;
+            }
+            set {
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
+                DestroyRaw(value);
+            }
+        }
+        
+        public int Version {
+            get {
+                int ret;
+                ret = this.rawStruct.version;
+                return ret;
+            }
+            set {
+                this.rawStruct.version = value;
+            }
+        }
+        
+        public static System.IntPtr CreateRaw() {
+            System.IntPtr raw;
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
+            return raw;
+        }
+        
+        public static void DestroyRaw(System.IntPtr raw) {
+            Marshal.FreeHGlobal(raw);
+        }
+        
+        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct Struct {
+            
+            internal int version;
+        }
+    }
+    
+    public class FeatureUiDescriptor {
+        
+        public delegate System.IntPtr GetInput();
+        
+        private Struct rawStruct;
+        
+
+internal delegate IntPtr GetInputInternal();
+        
+        public FeatureUiDescriptor() {
+        }
+        
+        public FeatureUiDescriptor(System.IntPtr i, bool owned) {
+            rawStruct = ((Struct)(Marshal.PtrToStructure(i, typeof(Struct))));
+        }
+        
+        public IntPtr Raw {
+            get {
+                System.IntPtr raw;
+                raw = CreateRaw();
+                Marshal.StructureToPtr(rawStruct, raw, false);
+                return raw;
+            }
+            set {
+                rawStruct = ((Struct)(Marshal.PtrToStructure(value, typeof(Struct))));
+                DestroyRaw(value);
+            }
+        }
+        
+        public int Version {
+            get {
+                int ret;
+                ret = this.rawStruct.version;
+                return ret;
+            }
+            set {
+                this.rawStruct.version = value;
+            }
+        }
+        
+        public static System.IntPtr CreateRaw() {
+            System.IntPtr raw;
+            raw = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Struct)));
+            return raw;
+        }
+        
+        public static void DestroyRaw(System.IntPtr raw) {
+            Marshal.FreeHGlobal(raw);
+        }
+        
+        [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct Struct {
+            
+            internal int version;
+        }
     }
     
     public class ScripterDescriptor {
