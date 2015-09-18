@@ -79,13 +79,17 @@ pc_verbose = $(pc_verbose_@AM_V@)
 pc_verbose_ = $(pc_verbose_@AM_DEFAULT_V@)
 pc_verbose_0 = @echo "  PC      " $@;
 
+dllconfig_verbose = $(dllconfig_verbose_@AM_V@)
+dllconfig_verbose_ = $(dllconfig_verbose_@AM_DEFAULT_V@)
+dllconfig_verbose_0 = @echo "  DLLCONF " $@;
+
 %.pc: %.pc.in Makefile
 	@rm -f $@
 	$(pc_verbose)$(sed_process)
 
 %.dll.config: %.dll.config.in Makefile
 	@rm -f $@
-	$(pc_verbose)$(sed_process)
+	$(dllconfig_verbose)$(sed_process)
 
 pkgconfig_DATA += ender-sharp.pc
 
@@ -100,6 +104,12 @@ install-data-local:
         $(GACUTIL) /i $(output_DIR)/$(eina_BIN) /f $(GACUTIL_FLAGS) || exit 1;
 	echo "$(GACUTIL) /i $(output_DIR)/$(enesim_BIN) /f $(GACUTIL_FLAGS)";  \
         $(GACUTIL) /i $(output_DIR)/$(enesim_BIN) /f $(GACUTIL_FLAGS) || exit 1;
+if BUILD_EGUEB_DOM
+	echo "$(GACUTIL) /i $(output_DIR)/$(egueb_dom_BIN) /f $(GACUTIL_FLAGS)";  \
+        $(GACUTIL) /i $(output_DIR)/$(egueb_dom_BIN) /f $(GACUTIL_FLAGS) || exit 1;
+	echo "$(GACUTIL) /i $(output_DIR)/$(egueb_svg_BIN) /f $(GACUTIL_FLAGS)";  \
+        $(GACUTIL) /i $(output_DIR)/$(egueb_svg_BIN) /f $(GACUTIL_FLAGS) || exit 1;
+endif
 
 uninstall-local:
 	echo "$(GACUTIL) /u $(output_DIR)/$(lib_BIN) $(GACUTIL_FLAGS)"; \
@@ -108,3 +118,9 @@ uninstall-local:
         $(GACUTIL) /u $(output_DIR)/$(eina_BIN) $(GACUTIL_FLAGS) || exit 1;
 	echo "$(GACUTIL) /u $(output_DIR)/$(enesim_BIN) $(GACUTIL_FLAGS)"; \
         $(GACUTIL) /u $(output_DIR)/$(enesim_BIN) $(GACUTIL_FLAGS) || exit 1;
+if BUILD_EGUEB_DOM
+	echo "$(GACUTIL) /u $(output_DIR)/$(egueb_dom_BIN) $(GACUTIL_FLAGS)"; \
+        $(GACUTIL) /u $(output_DIR)/$(egueb_dom_BIN) $(GACUTIL_FLAGS) || exit 1;
+	echo "$(GACUTIL) /u $(output_DIR)/$(egueb_svg_BIN) $(GACUTIL_FLAGS)"; \
+        $(GACUTIL) /u $(output_DIR)/$(egueb_svg_BIN) $(GACUTIL_FLAGS) || exit 1;
+endif
