@@ -97,6 +97,8 @@ $(output_CHECK):
 	@mkdir -p $(output_DIR)
 	@touch $(output_CHECK)
 
+GACUTIL_FLAGS = /gacdir $(DESTDIR)$(prefix)/lib
+
 install-data-local:
 	echo "$(GACUTIL) /i $(output_DIR)/$(lib_BIN) /f $(GACUTIL_FLAGS)";  \
         $(GACUTIL) /i $(output_DIR)/$(lib_BIN) /f $(GACUTIL_FLAGS) || exit 1;
