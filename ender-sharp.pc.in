@@ -10,4 +10,4 @@ Name: ender-sharp
 Description: Ender .NET Bindings
 Requires: @ender_sharp_requirements@
 Version: @VERSION@
-Libs: -r${libdir}/cli/ender-sharp/ender-sharp.dll
+Libs: -r:${libdir}/ender-sharp/ender-sharp.dll

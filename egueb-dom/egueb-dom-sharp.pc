@@ -5,5 +5,5 @@ libdir=${exec_prefix}/lib
 Name: egueb-dom-sharp
 Description: egueb-dom .NET Binding
 Version: 0
-Libs: -r:${libdir}/egueb-dom-sharp/egueb-dom.dll
+Libs: -r:${libdir}/egueb-dom-sharp/egueb-dom-sharp.dll
 Requires: eina-sharp,enesim-sharp,ender-sharp

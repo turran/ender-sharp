@@ -5,5 +5,5 @@ libdir=${exec_prefix}/lib
 Name: eina-sharp
 Description: eina .NET Binding
 Version: 1
-Libs: -r:${libdir}/eina-sharp/eina.dll
+Libs: -r:${libdir}/eina-sharp/eina-sharp.dll
 Requires: 
